@@ -1,13 +1,14 @@
 (message "Loading .emacs...")
-(setq debug-on-error t)
 
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 
+;; if you change it; update using M-x el-get-elpa-build-local-recipes
 (setq package-archives
  (quote
   (("marmalade" . "https://marmalade-repo.org/packages/")
    ("gnu" . "https://elpa.gnu.org/packages/")
    ("melpa" . "https://melpa.org/packages/")
+   ("elpy" . "https://jorgenschaefer.github.io/packages/")
    ("org" . "http://orgmode.org/elpa/"))))
 
 
@@ -67,7 +68,7 @@
 (setq my-packages
       (append
        ;; list of packages we use straight from official recipes
-       '(el-get geiser helm company-mode dash deferred el-get elpy yasnippet pyvenv highlight-indentation find-file-in-project emacs-async epl flycheck let-alist package pkg-info seq fuzzy gh marshal ht request logito pcache gist tabulated-list git-modes google ein auto-complete popup cl-lib websocket helm-google ido-vertical-mode company company-restclient know-your-http-well restclient highlight-80+ ac-geiser color-theme-twilight color-theme names json-mode json-snatcher json-reformat multiple-cursors rg py-autopep8 magit with-editor smex sigbegone org-plus-contrib)
+       '(el-get geiser helm company-mode dash deferred el-get elpy yasnippet pyvenv highlight-indentation find-file-in-project emacs-async epl flycheck let-alist package pkg-info seq fuzzy gh marshal ht request logito pcache gist tabulated-list git-modes google ein auto-complete popup cl-lib websocket helm-google ido-vertical-mode company company-restclient know-your-http-well restclient highlight-80+ ac-geiser color-theme-twilight color-theme names json-mode json-snatcher json-reformat multiple-cursors s rg py-autopep8 magit with-editor smex sigbegone org-plus-contrib realgud)
        (mapcar 'el-get-as-symbol (mapcar 'el-get-source-name el-get-sources))))
 
 ;; https://github.com/dimitri/el-get/issues/2232
