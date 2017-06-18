@@ -1,4 +1,15 @@
+(message "Loading .emacs...")
+(setq debug-on-error t)
+
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+
+(setq package-archives
+ (quote
+  (("marmalade" . "https://marmalade-repo.org/packages/")
+   ("gnu" . "https://elpa.gnu.org/packages/")
+   ("melpa" . "https://melpa.org/packages/")
+   ("org" . "http://orgmode.org/elpa/"))))
+
 
 (unless (require 'el-get nil 'noerror)
   (with-current-buffer
@@ -6,17 +17,59 @@
        "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
     (goto-char (point-max))
     (eval-print-last-sexp)))
+;;
 
 (add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
 ;;;;(setq el-get-user-package-directory "~/.emacs.d/el-get-init-files/")
+
+;; https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links
+(setq vc-follow-symlinks t)
+
+
+;; org-mode setup
+;; from https://glyph.twistedmatrix.com/2015/11/editor-malware.html
+(let ((trustfile
+       (replace-regexp-in-string
+        "\\\\" "/"
+        (replace-regexp-in-string
+         "\n" ""
+         (shell-command-to-string "~/.virtualenvs/certifi/bin/python -m certifi")))))
+  (setq tls-program
+        (list
+         (format "gnutls-cli%s --x509cafile %s -p %%p %%h"
+                 (if (eq window-system 'w32) ".exe" "") trustfile))))
+
+;; from https://github.com/nicferrier/elmarmalade/issues/55#issuecomment-166271364
+(if (fboundp 'gnutls-available-p)
+    (fmakunbound 'gnutls-available-p))
+(setq tls-program '("gnutls-cli --tofu -p %p %h")
+      imap-ssl-program '("gnutls-cli --tofu -p %p %s")
+      smtpmail-stream-type 'starttls
+      starttls-extra-arguments '("--tofu")
+      )
+(unless package-archive-contents    ;; Refresh the packages descriptions
+  (package-refresh-contents))
+(setq package-load-list '(all))     ;; List of packages to load
+
+(package-initialize)                ;; Initialize & Install Package
+
+(require 'el-get-elpa) ;; install melpa packages via el-get
+;; Build the El-Get copy of the package.el packages if we have not
+;; built it before.  Will have to look into updating later ...
+;; M-x el-get-elpa-build-local-recipes
+(unless (file-directory-p el-get-recipe-path-elpa)
+  (el-get-elpa-build-local-recipes))
 
 ;;
 ;; my packages
 (setq my-packages
       (append
        ;; list of packages we use straight from official recipes
-       '(el-get geiser helm company-mode dash deferred el-get elpy s yasnippet pyvenv highlight-indentation find-file-in-project emacs-async epl flycheck let-alist package pkg-info seq fuzzy gh marshal ht request logito pcache gist tabulated-list git-modes google ein auto-complete popup cl-lib websocket helm-google ido-vertical-mode company-restclient know-your-http-well restclient highlight-80+ ac-geiser color-theme-twilight color-theme company-nand2tetris company nand2tetris names json-mode json-snatcher json-reformat marmalade-demo multiple-cursors nand2tetris-assembler org org-plus-contrib rg py-autopep8 magit with-editor smex sigbegone)
+       '(el-get geiser helm company-mode dash deferred el-get elpy s yasnippet pyvenv highlight-indentation find-file-in-project emacs-async epl flycheck let-alist package pkg-info seq fuzzy gh marshal ht request logito pcache gist tabulated-list git-modes google ein auto-complete popup cl-lib websocket helm-google ido-vertical-mode company company-restclient know-your-http-well restclient highlight-80+ ac-geiser color-theme-twilight color-theme names json-mode json-snatcher json-reformat multiple-cursors rg py-autopep8 magit with-editor smex sigbegone org-plus-contrib)
        (mapcar 'el-get-as-symbol (mapcar 'el-get-source-name el-get-sources))))
+
+;; https://github.com/dimitri/el-get/issues/2232
+(el-get-ensure-byte-compilable-autoload-file el-get-autoload-file)
 (el-get 'sync my-packages)
 
 ;;
@@ -46,9 +99,6 @@
 
 ;;
 (global-set-key (kbd "C-c g") 'magit-status)
-
-;;
-(require 'el-get-elpa) ;; install melpa packages via el-get
 
 ;;
 (global-set-key (kbd "M-x") 'smex)
@@ -296,33 +346,6 @@
 ;;change w3m user-agent to android
 (setq w3m-user-agent "Mozilla/5.0 (Linux; U; Android 2.3.3; zh-tw; HTC_Pyramid Build/GRI40) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.")
 
-;; org-mode setup
-;; from https://glyph.twistedmatrix.com/2015/11/editor-malware.html
-(let ((trustfile
-       (replace-regexp-in-string
-        "\\\\" "/"
-        (replace-regexp-in-string
-         "\n" ""
-         (shell-command-to-string "~/.virtualenvs/certifi/bin/python -m certifi")))))
-  (setq tls-program
-        (list
-         (format "gnutls-cli%s --x509cafile %s -p %%p %%h"
-                 (if (eq window-system 'w32) ".exe" "") trustfile))))
-
-;; from https://github.com/nicferrier/elmarmalade/issues/55#issuecomment-166271364
-(if (fboundp 'gnutls-available-p)
-    (fmakunbound 'gnutls-available-p))
-(setq tls-program '("gnutls-cli --tofu -p %p %h")
-      imap-ssl-program '("gnutls-cli --tofu -p %p %s")
-      smtpmail-stream-type 'starttls
-      starttls-extra-arguments '("--tofu")
-      )
-(unless package-archive-contents    ;; Refresh the packages descriptions
-  (package-refresh-contents))
-(setq package-load-list '(all))     ;; List of packages to load
-(package-initialize)                ;; Initialize & Install Package
-(unless (package-installed-p 'org)  ;; Make sure the Org package is
-  (package-install 'org))           ;; installed, install it if not
 
 ;;;;;; rgrep
 ;;;;(global-set-key (kbd "C-x C-r") 'rgrep)
@@ -516,46 +539,40 @@
 (require 'spam)
 (require 'sigbegone)
 
-(canlock-password "58c566bd78ee9cbec1af9280ae463f8a0df16fbc")
-(column-number-mode t)
-(elpy-mode-hook (quote (flycheck-mode hl-line-mode)))
-(inhibit-startup-screen t)
-(nand2tetris-core-base-dir "~/prj/coursera/nand2tetris")
-(org-agenda-files (quote ("~/private/org/notes.org")))
-(org-agenda-include-diary t)
-(org-babel-load-languages (quote ((python . t) (shell . t))))
-(package-archives
- (quote
-  (("marmalade" . "https://marmalade-repo.org/packages/")
-   ("gnu" . "https://elpa.gnu.org/packages/")
-   ("melpa" . "https://melpa.org/packages/")
-   ("org" . "http://orgmode.org/elpa/"))))
-(safe-local-variable-values
- (quote
-  ((encoding . utf-8)
-   (whitespace-style face trailing lines-tail)
-   (eval ignore-errors "Write-contents-functions is a buffer-local alternative to before-save-hook"
-	 (add-hook
-	  (quote write-contents-functions)
-	  (lambda nil
-	    (delete-trailing-whitespace)
-	    nil))
-	 (require
-	  (quote whitespace))
-	 "Sometimes the mode needs to be toggled off and on."
-	 (whitespace-mode 0)
-	 (whitespace-mode 1))
-   (whitespace-line-column . 80)
-   (whitespace-style face tabs trailing lines-tail)
-   (pyvenv-workon . py3\.5)
-   (require-final-newline . t))))
-(save-place t nil (saveplace))
-(show-paren-mode t)
-(tls-checktrust t)
+(require 'saveplace)
+(setq-default save-place t)
+
+(setq canlock-password "58c566bd78ee9cbec1af9280ae463f8a0df16fbc"
+      column-number-mode t
+      elpy-mode-hook (quote (flycheck-mode hl-line-mode))
+      inhibit-startup-screen t
+      nand2tetris-core-base-dir "~/prj/coursera/nand2tetris"
+      org-agenda-files (quote ("~/private/org/notes.org"))
+      org-agenda-include-diary t
+      org-babel-load-languages (quote ((python . t) (shell . t)))
+      safe-local-variable-values
+      (quote
+       ((encoding . utf-8)
+        (whitespace-style face trailing lines-tail)
+        (eval ignore-errors "Write-contents-functions is a buffer-local alternative to before-save-hook"
+              (add-hook
+               (quote write-contents-functions)
+               (lambda nil
+                 (delete-trailing-whitespace)
+                 nil))
+              (require
+               (quote whitespace))
+              "Sometimes the mode needs to be toggled off and on."
+              (whitespace-mode 0)
+              (whitespace-mode 1))
+        (whitespace-line-column . 80)
+        (whitespace-style face tabs trailing lines-tail)
+        (pyvenv-workon . py3\.5)
+        (require-final-newline . t)))
+      show-paren-mode t
+      tls-checktrust t)
 
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
-
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file)
+(message "Done .emacs")
 ;; end
