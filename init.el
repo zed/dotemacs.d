@@ -71,6 +71,9 @@
        '(el-get geiser helm company-mode dash deferred el-get elpy yasnippet pyvenv highlight-indentation find-file-in-project emacs-async epl flycheck let-alist package pkg-info seq fuzzy gh marshal ht request logito pcache gist tabulated-list git-modes google ein auto-complete popup cl-lib websocket helm-google ido-vertical-mode company company-restclient know-your-http-well restclient highlight-80+ ac-geiser color-theme-twilight color-theme names json-mode json-snatcher json-reformat multiple-cursors s rg py-autopep8 magit with-editor smex sigbegone org-plus-contrib realgud)
        (mapcar 'el-get-as-symbol (mapcar 'el-get-source-name el-get-sources))))
 
+;; run recompile on save
+(require 'tdd)
+
 ;; https://github.com/dimitri/el-get/issues/2232
 (el-get-ensure-byte-compilable-autoload-file el-get-autoload-file)
 (el-get 'sync my-packages)
