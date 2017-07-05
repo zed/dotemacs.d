@@ -68,7 +68,18 @@
 (setq my-packages
       (append
        ;; list of packages we use straight from official recipes
-       '(el-get geiser helm company-mode dash deferred el-get elpy yasnippet pyvenv highlight-indentation find-file-in-project emacs-async epl flycheck let-alist package pkg-info seq fuzzy gh marshal ht request logito pcache gist tabulated-list git-modes google ein auto-complete popup cl-lib websocket helm-google ido-vertical-mode company company-restclient know-your-http-well restclient highlight-80+ ac-geiser color-theme-twilight color-theme names json-mode json-snatcher json-reformat multiple-cursors s rg py-autopep8 magit with-editor smex sigbegone org-plus-contrib realgud)
+       '(ac-geiser auto-complete cl-generic cl-lib color-theme
+       color-theme-twilight company company-mode
+       company-restclient dash deferred ein el-get elpy
+       emacs-async epl find-file-in-project flycheck fuzzy geiser
+       gh gist git-modes google helm helm-google highlight-80+
+       highlight-indentation ht ido-vertical-mode json-mode
+       json-reformat json-snatcher know-your-http-well let-alist
+       logito magit markdown-mode marshal multiple-cursors names
+       org-plus-contrib package pcache pkg-info popup py-autopep8
+       pyvenv realgud request restclient rg s seq sigbegone
+       skewer-mode smex tabulated-list tdd websocket with-editor
+       yasnippet)
        (mapcar 'el-get-as-symbol (mapcar 'el-get-source-name el-get-sources))))
 
 ;; run recompile on save
