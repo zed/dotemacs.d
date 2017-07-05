@@ -591,3 +591,4 @@
 (put 'upcase-region 'disabled nil)
 (message "Done .emacs")
 ;; end
+(put 'narrow-to-region 'disabled nil)
