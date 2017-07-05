@@ -584,7 +584,6 @@
               (whitespace-mode 1))
         (whitespace-line-column . 80)
         (whitespace-style face tabs trailing lines-tail)
-        (pyvenv-workon . py3\.5)
         (require-final-newline . t)))
       show-paren-mode t)
 
