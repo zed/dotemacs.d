@@ -150,8 +150,8 @@
 ;; use 'y'/'n' instead of 'yes'/'no'
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;; Navigate windows with M-<arrows>
-(windmove-default-keybindings 'meta)
+;; Navigate windows with S-<arrows>
+(windmove-default-keybindings 'super)
 (setq windmove-wrap-around t)
 
 ;; whenever an external process changes a file underneath emacs, and there
