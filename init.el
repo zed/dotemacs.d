@@ -1,9 +1,9 @@
 (message "Loading .emacs...")
 
-					; * bootstrap el-get
+;; * bootstrap el-get
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 
-					;NOTE if you change it; update using M-x el-get-elpa-build-local-recipes
+;; NOTE if you change it; update using M-x el-get-elpa-build-local-recipes
 (unless (require 'el-get nil 'noerror)
   (require 'package)
   (setq package-archives
@@ -16,6 +16,12 @@
   (package-install 'el-get)
   (package-initialize)
   (require 'el-get))
+
+(setq el-get-allow-insecure 'nil)
+
+(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
+;;(setq el-get-user-package-directory "~/.emacs.d/el-get-init-files/")
+
 (el-get 'sync 'el-get)
 
 (el-get-bundle! tdd
@@ -190,10 +196,7 @@
 		skewer-mode)
        (mapcar 'el-get-as-symbol (mapcar 'el-get-source-name el-get-sources))))
 
-(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
-;;(setq el-get-user-package-directory "~/.emacs.d/el-get-init-files/")
-
-					; https://github.com/dimitri/el-get/issues/2232
+;; https://github.com/dimitri/el-get/issues/2232
 (el-get-ensure-byte-compilable-autoload-file el-get-autoload-file)
 (el-get-cleanup my-packages)
 (el-get 'sync my-packages)
