@@ -1,223 +1,65 @@
 (message "Loading .emacs...")
 
+					; * bootstrap el-get
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 
-;; if you change it; update using M-x el-get-elpa-build-local-recipes
-(setq package-archives
- (quote
-  (("marmalade" . "https://marmalade-repo.org/packages/")
-   ("gnu" . "https://elpa.gnu.org/packages/")
-   ("melpa" . "https://melpa.org/packages/")
-   ("elpy" . "https://jorgenschaefer.github.io/packages/")
-   ("org" . "http://orgmode.org/elpa/"))))
-
-
+					;NOTE if you change it; update using M-x el-get-elpa-build-local-recipes
 (unless (require 'el-get nil 'noerror)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
-    (goto-char (point-max))
-    (eval-print-last-sexp)))
-;;
+  (require 'package)
+  (setq package-archives
+	(quote
+	 (("gnu" . "https://elpa.gnu.org/packages/")
+	  ("marmalade" . "https://marmalade-repo.org/packages/")
+	  ("melpa" . "https://melpa.org/packages/")
+	  ("elpy" . "https://jorgenschaefer.github.io/packages/"))))
+  (package-refresh-contents)
+  (package-install 'el-get)
+  (package-initialize)
+  (require 'el-get))
+(el-get 'sync 'el-get)
 
-(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
-;;;;(setq el-get-user-package-directory "~/.emacs.d/el-get-init-files/")
+(el-get-bundle! tdd
+  :description "Run recompile (or a customisable function) after saving a buffer"
+  :type github
+  :pkgname "jorgenschaefer/emacs-tdd")
 
-;; https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links
-(setq vc-follow-symlinks t)
+(el-get-bundle elpy
+  (elpy-enable)
+  (add-hook 'pyvenv-post-activate-hooks 'pyvenv-restart-python)
+  (add-hook 'elpy-mode-hook 'hl-line-mode))
 
-
-;; org-mode setup
-;; from https://glyph.twistedmatrix.com/2015/11/editor-malware.html
-(let ((trustfile
-       (replace-regexp-in-string
-        "\\\\" "/"
-        (replace-regexp-in-string
-         "\n" ""
-         (shell-command-to-string "~/.virtualenvs/certifi/bin/python -m certifi")))))
-  (setq tls-program
-        (list
-         (format "gnutls-cli%s --x509cafile %s -p %%p %%h"
-                 (if (eq window-system 'w32) ".exe" "") trustfile))))
-
-;; from https://github.com/nicferrier/elmarmalade/issues/55#issuecomment-166271364
-(if (fboundp 'gnutls-available-p)
-    (fmakunbound 'gnutls-available-p))
-(setq tls-program '("gnutls-cli --tofu -p %p %h")
-      imap-ssl-program '("gnutls-cli --tofu -p %p %s")
-      smtpmail-stream-type 'starttls
-      starttls-extra-arguments '("--tofu")
-      )
-(setq tls-checktrust t)
-
-(unless package-archive-contents    ;; Refresh the packages descriptions
-  (package-refresh-contents))
-(setq package-load-list '(all))     ;; List of packages to load
-
-(package-initialize)                ;; Initialize & Install Package
-
-(require 'el-get-elpa) ;; install melpa packages via el-get
-;; Build the El-Get copy of the package.el packages if we have not
-;; built it before.  Will have to look into updating later ...
-;; M-x el-get-elpa-build-local-recipes
-(unless (file-directory-p el-get-recipe-path-elpa)
-  (el-get-elpa-build-local-recipes))
-
-;;
-;; my packages
-(setq my-packages
-      (append
-       ;; list of packages we use straight from official recipes
-       '(ac-geiser auto-complete cl-generic cl-lib color-theme
-       color-theme-twilight company company-mode
-       company-restclient dash deferred ein el-get elpy
-       emacs-async epl find-file-in-project flycheck fuzzy geiser
-       gh gist git-modes google helm helm-google highlight-80+
-       highlight-indentation ht ido-vertical-mode json-mode
-       json-reformat json-snatcher know-your-http-well let-alist
-       logito magit markdown-mode marshal multiple-cursors names
-       org-plus-contrib package pcache pkg-info popup py-autopep8
-       pyvenv realgud request restclient rg s seq sigbegone
-       skewer-mode smex tabulated-list tdd websocket with-editor
-       yasnippet)
-       (mapcar 'el-get-as-symbol (mapcar 'el-get-source-name el-get-sources))))
-
-;; run recompile on save
-(require 'tdd)
-
-;; https://github.com/dimitri/el-get/issues/2232
-(el-get-ensure-byte-compilable-autoload-file el-get-autoload-file)
-(el-get 'sync my-packages)
-
-;;
-(add-hook 'after-init-hook 'global-company-mode)
-
-;;
-(require 'ein)
-(setq ein:console-args '("--profile" "default"))
-(setq ein:console-security-dir "~/tmp")
-
-(elpy-enable)
-(add-hook 'pyvenv-post-activate-hooks 'pyvenv-restart-python)
-(add-hook 'elpy-mode-hook 'hl-line-mode)
-
-;;
-;; real-time syntax check
-(when (require 'flycheck nil t)
+					; real-time syntax check
+(el-get-bundle! flycheck
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
   (add-hook 'elpy-mode-hook 'flycheck-mode))
 
-;; format and correct any PEP8 erros on save (C-x C-s)
-(when (require 'py-autopep8 nil t)
+					; format and correct any PEP8 erros on save (C-x C-s)
+(el-get-bundle! py-autopep8
   (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save))
 
-;;
-(setq gist-view-gist t)
+(el-get-bundle magit
+  (global-set-key (kbd "C-c g") 'magit-status))
 
-;;
-(global-set-key (kbd "C-c g") 'magit-status)
+(el-get-bundle smex
+  (global-set-key (kbd "M-x") 'smex)
+  (global-set-key (kbd "M-X") 'smex-major-mode-commands))
 
-;;
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+(el-get-bundle flymake
+  (global-set-key [f3] 'flymake-display-err-menu-for-current-line)
+  (global-set-key [f4] 'flymake-goto-next-error))
 
-
-;; user specific configuration
-(require 'package)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-
-;; HELPER code (XXX lexical scoping for custom-basedir)
-(setq custom-basedir (expand-file-name "~/.emacs.d/"))
-
-;; 2015-07-04 bug of pasting in emacs.
-;; http://debbugs.gnu.org/cgi/bugreport.cgi?bug=16737#17
-;; http://ergoemacs.org/misc/emacs_bug_cant_paste_2015.html
-(setq x-selection-timeout 300)
-
-(defun my-add-path (p)
-  (add-to-list 'load-path (concat custom-basedir p)))
-
-(global-set-key (kbd "C-c C-f") 'ido-recentf-open)
-
-;; suppress Warning (mule): Invalid coding system `ascii' is specified
-(define-coding-system-alias 'ascii 'us-ascii)
-
-;; flymake
-(global-set-key [f3] 'flymake-display-err-menu-for-current-line)
-(global-set-key [f4] 'flymake-goto-next-error)
-
-;; flyspell
-(setq flyspell-default-dictionary "ru") ;;XXX test (ispell-change-dictionary "ru")
-
-;; run compile command on F5, change command with C-u F5
-(global-set-key [f5] 'compile)
-
-;;
-(setq compilation-ask-about-save nil)
-(setq compilation-read-command nil)
-
-;; [http://www.jwz.org/doc/x-cut-and-paste.html]
-(setq x-select-enable-clipboard t)
-;; fixes hanging on paste from System Clipboard in Emacs 24 on Ubuntu 14.04
-(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
-
-;; use 'y'/'n' instead of 'yes'/'no'
-(fset 'yes-or-no-p 'y-or-n-p)
-
-;; Navigate windows with S-<arrows>
+					; Navigate windows with S-<arrows>
 (windmove-default-keybindings 'super)
 (setq windmove-wrap-around t)
 
-;; whenever an external process changes a file underneath emacs, and there
-;; was no unsaved changes in the corresponding buffer, just revert its
-;; content to reflect what's on-disk.
-(global-auto-revert-mode 1)
-
-;; gist.el open browser with created gist
-;;;;(setq gist-view-gist t)
-
-;; enable line numbers globally
-(global-linum-mode t)
-
-;;
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-;; copy/kill line on M-w, C-w
-(defadvice kill-ring-save (before slickcopy activate compile)
-  "When called interactively with no active region, copy a single line instead."
-  (interactive
-   (if mark-active (list (region-beginning) (region-end))
-     (list (line-beginning-position)
-           (line-beginning-position 2)))))
-(defadvice kill-region (before slickcut activate compile)
-  "When called interactively with no active region, kill a single line instead."
-  (interactive
-   (if mark-active (list (region-beginning) (region-end))
-     (list (line-beginning-position)
-           (line-beginning-position 2)))))
-
-;; http://www.emacswiki.org/emacs/BackupDirectory
-(setq
-   backup-by-copying t      ; don't clobber symlinks
-   backup-directory-alist
-    '(("." . "~/.saves"))    ; don't litter my fs tree
-   delete-old-versions t
-   kept-new-versions 6
-   kept-old-versions 2
-   version-control t)       ; use versioned backups
-
-;; show column number
-(column-number-mode t) ;;NOTE: it has a performance hit
-
-;; uniquify buffers with the same name
-;; instead of buf<2>, etc it shows
-(require 'uniquify)
+					; uniquify buffers with the same name
+					; instead of buf<2>, etc it shows
 (setq uniquify-buffer-name-style 'reverse)
 (setq uniquify-after-kill-buffer-p t)
 (setq uniquify-ignore-buffers-re "^\\*")
 
-;; enable recent files menu
-(require 'recentf)
+					; enable recent files menu
+
 (recentf-mode t)
 (setq recentf-max-saved-items 100)
 
@@ -231,13 +73,11 @@
 (setq ido-use-virtual-buffers t)
 
 
-;; use 4 spaces instead of tabs for indentation
-;; http://stackoverflow.com/a/471916/
+					; use 4 spaces instead of tabs for indentation
+					; http://stackoverflow.com/a/471916/
 (setq tab-width 4)
 (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80))
 (setq indent-tabs-mode nil)
-;;;;(highlight-tabs)
-;;;;(highlight-trailing-whitespace)
 
 
 ;; Activate occur easily inside isearch
@@ -278,171 +118,93 @@
 (global-set-key (kbd "C-M-s") 'isearch-forward)
 (global-set-key (kbd "C-M-r") 'isearch-backward)
 
-;; ;; Make C-c C-c behave like C-u C-c C-c in Python mode
-;; ;; always pass ARG when run the functions interactively regardless
-;; ;; of key bindings
-;; (require 'python)
-;; (define-key python-mode-map [remap python-shell-send-buffer]
-;;   (lambda () (interactive) (python-shell-send-buffer t)))
-;; (require 'elpy)
-;; (define-key elpy-mode-map [remap elpy-shell-send-region-or-buffer]
-;;   (lambda () (interactive) (elpy-shell-send-region-or-buffer t)))
-
-;; [[https://github.com/dimitri/emacs-kicker/blob/master/init.el]]
-;; If you do use M-x term, you will notice there's line mode that acts like
-;; emacs buffers, and there's the default char mode that will send your
-;; input char-by-char, so that curses application see each of your key
-;; strokes.
-;;
-;; The default way to toggle between them is C-c C-j and C-c C-k, let's
-;; better use just one key to do the same.
+					; [[https://github.com/dimitri/emacs-kicker/blob/master/init.el]]
+					; If you do use M-x term, you will notice there's line mode that acts like
+					; emacs buffers, and there's the default char mode that will send your
+					; input char-by-char, so that curses application see each of your key
+					; strokes.
+					;
+					; The default way to toggle between them is C-c C-j and C-c C-k, let's
+					; better use just one key to do the same.
 (require 'term)
 (define-key term-raw-map  (kbd "C-'") 'term-line-mode)
 (define-key term-mode-map (kbd "C-'") 'term-char-mode)
-
-;; Have C-y act as usual in term-mode, to avoid C-' C-y C-'
-;; Well the real default would be C-c C-j C-y C-c C-k.
+					; Have C-y act as usual in term-mode, to avoid C-' C-y C-'
+					; Well the real default would be C-c C-j C-y C-c C-k.
 (define-key term-raw-map  (kbd "C-y") 'term-paste)
 
-;; use ido for minibuffer completion
-(require 'ido)
+
+					; use ido for minibuffer completion
+
 (ido-mode t)
 (setq ido-save-directory-list-file "~/.emacs.d/.ido.last")
 (setq ido-enable-flex-matching t)
 (setq ido-use-filename-at-point 'guess)
 (setq ido-show-dot-for-dired t)
-
-;; default key to switch buffer is C-x b, but that's not easy enough
-;;
-;; when you do that, to kill emacs either close its frame from the window
-;; manager or do M-x kill-emacs.  Don't need a nice shortcut for a once a
-;; week (or day) action.
+					; default key to switch buffer is C-x b, but that's not easy enough
+					;
+					; when you do that, to kill emacs either close its frame from the window
+					; manager or do M-x kill-emacs.  Don't need a nice shortcut for a once a
+					; week (or day) action.
 (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
-(global-set-key (kbd "C-x C-c") 'ido-switch-buffer)
 (global-set-key (kbd "C-x B") 'ibuffer)
 
-;; C-x C-j opens dired with the cursor right on the file you're editing
+
+					; C-x C-j opens dired with the cursor right on the file you're editing
 (require 'dired-x)
 
-;; Open *.m in Octave-mode instead of ObjC
-(setq auto-mode-alist
-      (cons
-       '("\\.m$" . octave-mode)
-       auto-mode-alist))
+					; ripgrep -- https://github.com/dajva/rg.el
+(el-get-bundle rg
+  (global-set-key (kbd "C-x C-r") 'rg))
 
-;; style I want to use in c++ mode
-;; from http://www.emacswiki.org/emacs/CPlusPlusMode
-(c-add-style "my-style"
-	     '("python"
-	       (indent-tabs-mode . nil)        ; use spaces rather than tabs
-           (c-basic-offset . 2)
-))
-(defun my-c-mode-common-hook ()
-  (c-set-style "my-style")        ; use my-style defined above
-  (auto-fill-mode)
-  (c-toggle-auto-hungry-state 1))
+(el-get-bundle multiple-cursors
+  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+  (global-set-key (kbd "C-S-<mouse-1>") 'mc/add-cursor-on-click))
 
-(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+(el-get-bundle which-key
+  (which-key-mode))
 
-;; список используемых нами словарей
-;; from https://habrahabr.ru/post/215055/
-(setq ispell-local-dictionary-alist
-    '(("russian"
-       "[АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯабвгдеёжзийклмнопрстуфхцчшщьыъэюя]"
-       "[^АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯабвгдеёжзийклмнопрстуфхцчшщьыъэюя]"
-       "[-]"  nil ("-d" "ru_RU") nil utf-8)
-      ("english"
-       "[A-Za-z]" "[^A-Za-z]"
-       "[']"  nil ("-d" "en_US") nil iso-8859-1)))
+(require 'el-get-elpa) ; install melpa packages via el-get
+; Build the El-Get copy of the package.el packages if we have not
+; built it before.  Will have to look into updating later ...
+; M-x el-get-elpa-build-local-recipes
+(unless (file-directory-p el-get-recipe-path-elpa)
+  (el-get-elpa-build-local-recipes))
 
-;; w3m setup
-;; from http://beatofthegeek.com/2014/02/my-setup-for-using-emacs-as-web-browser.html
-;;change default browser for 'browse-url' to w3m
-;;;;(setq browse-url-browser-function 'w3m-goto-url-new-session)
+(setq my-packages
+      (append
+       ;; list of packages we use straight from official recipes
+       '(el-get geiser helm dash deferred el-get elpy
+		yasnippet pyvenv highlight-indentation find-file-in-project
+		async epl flycheck let-alist package pkg-info fuzzy gh
+		marshal ht request logito pcache gist tabulated-list git-modes
+		google ein auto-complete popup cl-lib websocket helm-google
+		ido-vertical-mode company company-restclient know-your-http-well
+		restclient ac-geiser
+		names json-mode json-snatcher json-reformat
+		multiple-cursors rg py-autopep8 magit with-editor smex
+		; for org-store-link
+		skewer-mode)
+       (mapcar 'el-get-as-symbol (mapcar 'el-get-source-name el-get-sources))))
 
-;;change w3m user-agent to android
-(setq w3m-user-agent "Mozilla/5.0 (Linux; U; Android 2.3.3; zh-tw; HTC_Pyramid Build/GRI40) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.")
+(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
+;;(setq el-get-user-package-directory "~/.emacs.d/el-get-init-files/")
 
+					; https://github.com/dimitri/el-get/issues/2232
+(el-get-ensure-byte-compilable-autoload-file el-get-autoload-file)
+(el-get-cleanup my-packages)
+(el-get 'sync my-packages)
 
-;;;;;; rgrep
-;;;;(global-set-key (kbd "C-x C-r") 'rgrep)
-;; ripgrep -- https://github.com/dajva/rg.el
-(require 'rg)
-(global-set-key (kbd "C-x C-r") 'rg)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;
-(require 'multiple-cursors)
-(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-(global-set-key (kbd "C-S-<mouse-1>") 'mc/add-cursor-on-click)
+(require 'saveplace)
+(setq-default save-place t)
 
-
-;; Set to the location of your Org files on your local system
-(setq org-directory "~/private/org")
-;; Set to the name of the file where new notes will be stored
-(setq org-mobile-inbox-for-pull "~/private/org/from-mobile.org")
-;; Set to <your Dropbox root directory>/MobileOrg.
-(setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
-(setq org-confirm-babel-evaluate nil)
-(global-set-key "\C-cl" 'org-store-link)
-(global-set-key "\C-ca" 'org-agenda)
-(global-set-key "\C-cc" 'org-capture)
-(global-set-key "\C-cb" 'org-iswitchb)
-
-;; enable export to markdown in on C-c C-e
-(eval-after-load "org"
-  '(require 'ox-md nil t))
-
-;; IRC client (*nix only)
-(require 'erc)
-;; . Make C-c RET (or C-c C-RET) send messages instead of RET.
-(define-key erc-mode-map (kbd "RET") nil)
-(define-key erc-mode-map (kbd "C-c RET") 'erc-send-current-line)
-(define-key erc-mode-map (kbd "C-c C-RET") 'erc-send-current-line)
-;; Kill buffers for channels after /part
-(setq erc-kill-buffer-on-part t)
-;; Kill buffers for private queries after quitting the server
-(setq erc-kill-queries-on-quit t)
-;; Kill buffers for server messages after quitting the server
-(setq erc-kill-server-buffer-on-quit t)
-;; . hide server messages
-;;;;(setq erc-hide-list '("JOIN" "PART" "QUIT"))
-
-(setq erc-auto-query 'buffer) ;; add a whois when someone pms
-
-;; keep erc from eating ram by truncating chat logs
-(setq erc-max-buffer-size 20000)
-(defvar erc-insert-post-hook)
-(add-hook 'erc-insert-post-hook 'erc-truncate-buffer)
-
-
-;; .
-(defun irc-seen_ ()
-  "Connect to IRC."
-  (interactive)
-  (erc-tls :server "me" :port 6697
-           :nick "seen_"
-           :full-name "D M"
-           :password "seen_@erc/freenode:sweOwamAygIlcejIcVic"))
-
-;; Notify when someone mentions my nick.
-;; http://bbs.archlinux.org/viewtopic.php?id=40190
-(defun erc-global-notify (matched-type nick msg)
-  (interactive)
-  (when (and (eq matched-type 'current-nick)
-         (not (string= (frame-parameter (selected-frame) 'name) "#python")))
-    (shell-command
-     (concat "notify-send -t 4000 -c \"im.received\" \""
-         (car (split-string nick "!"))
-         " mentioned your nick\" \""
-         msg
-         "\""))))
-(add-hook 'erc-text-matched-hook 'erc-global-notify)
-
-;; Configure gnus (mail lists, nntp news groups)
-;; http://www.xsteve.at/prg/gnus/
+					; Configure gnus (mail lists, nntp news groups)
+					; http://www.xsteve.at/prg/gnus/
 (setq gnus-select-method '(nnimap "gmail"
 				  (nnimap-address "imap.gmail.com")
 				  (nnimap-server-port 993)
@@ -481,31 +243,31 @@
 (setq mm-discouraged-alternatives '("text/html" "text/richtext"))
 (setq gnus-message-archive-group
       '((if (message-news-p)
-            "sent-news"
-          "sent-mail")))
+	    "sent-news"
+	  "sent-mail")))
 (setq gnus-use-adaptive-scoring t)
 (setq gnus-score-expiry-days 14)
 (setq gnus-default-adaptive-score-alist
-  '((gnus-unread-mark)
-    (gnus-ticked-mark (from 4))
-    (gnus-dormant-mark (from 5))
-    (gnus-saved-mark (from 20) (subject 5))
-    (gnus-del-mark (from -2) (subject -5))
-    (gnus-read-mark (from 2) (subject 1))
-    (gnus-killed-mark (from 0) (subject -3))))
-    ;(gnus-killed-mark (from -1) (subject -3))))
-    ;(gnus-kill-file-mark (from -9999)))
-    ;(gnus-expirable-mark (from -1) (subject -1))
-    ;(gnus-ancient-mark (subject -1))
-    ;(gnus-low-score-mark (subject -1))
-    ;(gnus-catchup-mark (subject -1))))
+      '((gnus-unread-mark)
+	(gnus-ticked-mark (from 4))
+	(gnus-dormant-mark (from 5))
+	(gnus-saved-mark (from 20) (subject 5))
+	(gnus-del-mark (from -2) (subject -5))
+	(gnus-read-mark (from 2) (subject 1))
+	(gnus-killed-mark (from 0) (subject -3))))
+					;(gnus-killed-mark (from -1) (subject -3))))
+					;(gnus-kill-file-mark (from -9999)))
+					;(gnus-expirable-mark (from -1) (subject -1))
+					;(gnus-ancient-mark (subject -1))
+					;(gnus-low-score-mark (subject -1))
+					;(gnus-catchup-mark (subject -1))))
 
-(setq gnus-score-decay-constant 1) ;default = 3
-(setq gnus-score-decay-scale 0.03) ;default = 0.05
+(setq gnus-score-decay-constant 1)	;default = 3
+(setq gnus-score-decay-scale 0.03)	;default = 0.05
 
-(setq gnus-decay-scores t) ;(gnus-decay-score 1000)
+(setq gnus-decay-scores t)		;(gnus-decay-score 1000)
 (setq gnus-global-score-files
-       '("~/gnus/scores/all.SCORE"))
+      '("~/gnus/scores/all.SCORE"))
 
 ;; all.SCORE contains:
 ;;(("xref"
@@ -551,13 +313,176 @@
 
 (setq gnus-spam-process-newsgroups
       '(("^gmane\\."
-         ((spam spam-use-gmane)))))
+	 ((spam spam-use-gmane)))))
 
 (require 'spam)
-(require 'sigbegone)
 
-(require 'saveplace)
-(setq-default save-place t)
+					; IRC client (*nix only)
+(require 'erc)
+					; . Make C-c RET (or C-c C-RET) send messages instead of RET.
+(define-key erc-mode-map (kbd "RET") nil)
+(define-key erc-mode-map (kbd "C-c RET") 'erc-send-current-line)
+(define-key erc-mode-map (kbd "C-c C-RET") 'erc-send-current-line)
+					; Kill buffers for channels after /part
+(setq erc-kill-buffer-on-part t)
+					; Kill buffers for private queries after quitting the server
+(setq erc-kill-queries-on-quit t)
+					; Kill buffers for server messages after quitting the server
+(setq erc-kill-server-buffer-on-quit t)
+					; . hide server messages
+;;(setq erc-hide-list '("JOIN" "PART" "QUIT"))
+
+(setq erc-auto-query 'buffer) ; add a whois when someone pms
+
+					; keep erc from eating ram by truncating chat logs
+(setq erc-max-buffer-size 20000)
+(defvar erc-insert-post-hook)
+(add-hook 'erc-insert-post-hook 'erc-truncate-buffer)
+
+
+					; .
+(defun irc-seen_ ()
+  "Connect to IRC."
+  (interactive)
+  (erc-tls :server "me" :port 6697
+	   :nick "seen_"
+	   :full-name "D M"
+	   :password "seen_@erc/freenode:sweOwamAygIlcejIcVic"))
+
+					; Notify when someone mentions my nick.
+					; http://bbs.archlinux.org/viewtopic.php?id=40190
+(defun erc-global-notify (matched-type nick msg)
+  (interactive)
+  (when (and (eq matched-type 'current-nick)
+	     (not (string= (frame-parameter (selected-frame) 'name) "#python")))
+    (shell-command
+     (concat "notify-send -t 4000 -c \"im.received\" \""
+	     (car (split-string nick "!"))
+	     " mentioned your nick\" \""
+	     msg
+	     "\""))))
+(add-hook 'erc-text-matched-hook 'erc-global-notify)
+
+					; * https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links
+(setq vc-follow-symlinks t)
+
+
+(add-hook 'after-init-hook 'global-company-mode)
+
+(setq gist-view-gist t)
+
+					; suppress Warning (mule): Invalid coding system `ascii' is specified
+(define-coding-system-alias 'ascii 'us-ascii)
+
+					; run compile command on F5, change command with C-u F5
+(global-set-key [f5] 'compile)
+
+
+(setq compilation-ask-about-save nil)
+(setq compilation-read-command nil)
+
+					; use 'y'/'n' instead of 'yes'/'no'
+(fset 'yes-or-no-p 'y-or-n-p)
+
+					; whenever an external process changes a file underneath emacs, and there
+					; was no unsaved changes in the corresponding buffer, just revert its
+					; content to reflect what's on-disk.
+(global-auto-revert-mode 1)
+
+;; enable line numbers globally
+(global-linum-mode t)
+
+					;
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+					; copy/kill line on M-w, C-w
+(defadvice kill-ring-save (before slickcopy activate compile)
+  "When called interactively with no active region, copy a single line instead."
+  (interactive
+   (if mark-active (list (region-beginning) (region-end))
+     (list (line-beginning-position)
+           (line-beginning-position 2)))))
+(defadvice kill-region (before slickcut activate compile)
+  "When called interactively with no active region, kill a single line instead."
+  (interactive
+   (if mark-active (list (region-beginning) (region-end))
+     (list (line-beginning-position)
+           (line-beginning-position 2)))))
+
+					; http://www.emacswiki.org/emacs/BackupDirectory
+(setq
+ backup-by-copying t      ; don't clobber symlinks
+ backup-directory-alist
+ '(("." . "~/.saves"))    ; don't litter my fs tree
+ delete-old-versions t
+ kept-new-versions 6
+ kept-old-versions 2
+ version-control t)       ; use versioned backups
+
+					; show column number
+(column-number-mode t) ;;NOTE: it has a performance hit
+
+					; Open *.m in Octave-mode instead of ObjC
+(setq auto-mode-alist
+      (cons
+       '("\\.m$" . octave-mode)
+       auto-mode-alist))
+
+					; style I want to use in c++ mode
+					; from http://www.emacswiki.org/emacs/CPlusPlusMode
+(c-add-style "my-style"
+	     '("python"
+	       (indent-tabs-mode . nil)        ; use spaces rather than tabs
+	       (c-basic-offset . 2)
+	       ))
+(defun my-c-mode-common-hook ()
+  (c-set-style "my-style")        ; use my-style defined above
+  (auto-fill-mode)
+  (c-toggle-auto-hungry-state 1))
+
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+					; список используемых нами словарей
+					; from https://habrahabr.ru/post/215055/
+(setq ispell-local-dictionary-alist
+      '(("russian"
+	 "[АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯабвгдеёжзийклмнопрстуфхцчшщьыъэюя]"
+	 "[^АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯабвгдеёжзийклмнопрстуфхцчшщьыъэюя]"
+	 "[-]"  nil ("-d" "ru_RU") nil utf-8)
+	("english"
+	 "[A-Za-z]" "[^A-Za-z]"
+	 "[']"  nil ("-d" "en_US") nil iso-8859-1)))
+
+;; w3m setup
+;; from http://beatofthegeek.com/2014/02/my-setup-for-using-emacs-as-web-browser.html
+;;change default browser for 'browse-url' to w3m
+;;;;(setq browse-url-browser-function 'w3m-goto-url-new-session)
+
+;;change w3m user-agent to android
+(setq w3m-user-agent "Mozilla/5.0 (Linux; U; Android 2.3.3; zh-tw; HTC_Pyramid Build/GRI40) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.")
+
+(global-set-key (kbd "C-c C-f") 'ido-recentf-open)
+(setq flyspell-default-dictionary "ru")
+
+
+(require 'org)
+					; Set to the location of your Org files on your local system
+(setq org-directory "~/private/org")
+					; Set to the name of the file where new notes will be stored
+(setq org-mobile-inbox-for-pull "~/private/org/from-mobile.org")
+					; Set to <your Dropbox root directory>/MobileOrg.
+(setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
+(setq org-confirm-babel-evaluate nil)
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-cb" 'org-iswitchb)
+
+					; enable export to markdown in on C-c C-e
+(eval-after-load "org"
+  '(require 'ox-md nil t))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq canlock-password "58c566bd78ee9cbec1af9280ae463f8a0df16fbc"
       column-number-mode t
@@ -589,6 +514,8 @@
 
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
+
+(put 'narrow-to-region 'disabled nil)
+
 (message "Done .emacs")
 ;; end
-(put 'narrow-to-region 'disabled nil)
