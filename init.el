@@ -173,6 +173,15 @@
 (el-get-bundle which-key
   (which-key-mode))
 
+(el-get-bundle markdown-mode
+  (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+  (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+
+  (autoload 'gfm-mode "markdown-mode"
+    "Major mode for editing GitHub Flavored Markdown files" t)
+  (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode)))
+
+
 (require 'el-get-elpa) ; install melpa packages via el-get
 ; Build the El-Get copy of the package.el packages if we have not
 ; built it before.  Will have to look into updating later ...
