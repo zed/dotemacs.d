@@ -211,7 +211,7 @@ T - tag prefix
     (define-key pdf-view-mode-map (kbd "b")  'pdf-view-set-slice-from-bounding-box)
     (define-key pdf-view-mode-map (kbd "r")  'pdf-view-reset-slice)))
 
-(el-get-bundle! tdd
+(el-get-bundle tdd
   :description "Run recompile (or a customisable function) after saving a buffer"
   :type github
   :pkgname "jorgenschaefer/emacs-tdd")
