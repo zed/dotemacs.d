@@ -12,9 +12,9 @@
 	  ("marmalade" . "https://marmalade-repo.org/packages/")
 	  ("melpa" . "https://melpa.org/packages/")
 	  ("elpy" . "https://jorgenschaefer.github.io/packages/"))))
+  (package-initialize)
   (package-refresh-contents)
   (package-install 'el-get)
-  (package-initialize)
   (require 'el-get))
 
 (setq el-get-allow-insecure 'nil)
@@ -23,7 +23,6 @@
 ;;(setq el-get-user-package-directory "~/.emacs.d/el-get-init-files/")
 
 (el-get 'sync 'el-get)
-
 
 (el-get-bundle hydra
   (defhydra hydra-zoom (global-map "C-c")
@@ -124,6 +123,7 @@ T - tag prefix
 	("q" nil :color blue)
 	("." nil :color blue))))
 
+  (require 'rect)
   (global-set-key
    (kbd "C-c r")
    (defhydra hydra-rectangle (:body-pre (rectangle-mark-mode 1)
@@ -206,8 +206,12 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
   (add-to-list 'aw-dispatch-alist '(?\\ hydra-window-stuff/body) t))
 
 ;; PDF Tools https://github.com/abo-abo/hydra/wiki/PDF-Tools
-(el-get-eval-after-load 'pdf-tools
-  (defhydra hydra-pdftools (:color blue :hint nil)
+(el-get-bundle pdf-tools
+  (pdf-tools-install))
+(with-eval-after-load 'pdf-tools
+  (setq-default pdf-view-display-size 'fit-page)
+  (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
+   (defhydra hydra-pdftools (:color blue :hint nil)
     "
                                                                       ╭───────────┐
        Move  History   Scale/Fit     Annotations  Search/Link    Do   │ PDF Tools │
@@ -254,14 +258,8 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
     ("B" pdf-history-backward :color red)
     ("N" pdf-history-forward :color red)
     ("l" image-forward-hscroll :color red)
-    ("h" image-backward-hscroll :color red)))
-
-(el-get-bundle pdf-tools
-  (pdf-tools-install))
-(with-eval-after-load 'pdf-tools
-  (setq-default pdf-view-display-size 'fit-page)
-  (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
-  (progn
+    ("h" image-backward-hscroll :color red))
+   (progn
     (define-key pdf-view-mode-map (kbd "\\") 'hydra-pdftools/body)
     (define-key pdf-view-mode-map (kbd "<s-spc>") 'pdf-view-scroll-down-or-next-page)
     (define-key pdf-view-mode-map (kbd "g")  'pdf-view-first-page)
