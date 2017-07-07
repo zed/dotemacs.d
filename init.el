@@ -52,6 +52,37 @@
 
   ;; PDF Tools
   (eval-after-load "pdf-tools"
+  (el-get-eval-after-load 'multiple-cursors
+    (global-set-key
+     (kbd "C-c m")
+     (defhydra hydra-multiple-cursors (:hint nil)
+       "
+     ^Up^            ^Down^          ^Mark^                ^Edit^            ^Other^
+--------------------------------------------------------------------------------------
+[_p_]   Next    [_n_]   Next    [_a_] Mark all        [_l_] Edit lines  [_i_] Insert numbers
+[_P_]   Skip    [_N_]   Skip    [_m_] Mark all dwim   [_C-a_] Edit BOL  [_R_] Reverse regions
+[_M-p_] Unmark  [_M-n_] Unmark  [_r_] Mark by regexp  [_C-e_] Edit EOL  [_s_] Sort regions
+^ ^             ^ ^             [_d_] Mark in defun   ^ ^               [_q_] Quit
+"
+       ("a" mc/mark-all-like-this :exit t)
+       ("d" mc/mark-all-symbols-like-this-in-defun :exit t)
+       ("h" mc/hide-unmatched-lines-mode)
+       ("i" mc/insert-numbers :exit t)
+       ("n" mc/mark-next-like-this)
+       ("N" mc/skip-to-next-like-this)
+       ("l" mc/edit-lines :exit t)
+       ("m" mc/mark-all-dwim :exit t)
+       ("M-n" mc/unmark-next-like-this)
+       ("p" mc/mark-previous-like-this)
+       ("P" mc/skip-to-previous-like-this)
+       ("M-p" mc/unmark-previous-like-this)
+       ("r" mc/mark-all-in-region-regexp :exit t)
+       ("R" mc/reverse-regions)
+       ("s" mc/sort-regions)
+       ("q" nil)
+       ("C-a" mc/edit-beginnings-of-lines :exit t)
+       ("C-e" mc/edit-ends-of-lines) :exit  t))))
+
 ;; https://github.com/abo-abo/hydra/wiki/Dired
 (define-key dired-mode-map "."
   (defhydra hydra-dired (:hint nil :color pink)
