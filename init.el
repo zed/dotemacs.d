@@ -37,7 +37,7 @@
   (global-set-key
    (kbd "C-n")
    (defhydra hydra-move
-     (:body-pre (next-line))
+     (:body-pre (forward-line))
      "move"
      ("n" next-line)
      ("p" previous-line)
