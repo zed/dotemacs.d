@@ -50,8 +50,6 @@
      ("V" scroll-down-command)
      ("l" recenter-top-bottom)))
 
-  ;; PDF Tools
-  (eval-after-load "pdf-tools"
   (el-get-eval-after-load 'multiple-cursors
     (global-set-key
      (kbd "C-c m")
@@ -136,8 +134,10 @@ T - tag prefix
     ("q" nil :color blue)
     ("." nil :color blue)))
 
-    (defhydra hydra-pdftools (:color blue :hint nil)
-      "
+;; PDF Tools https://github.com/abo-abo/hydra/wiki/PDF-Tools
+(el-get-eval-after-load 'pdf-tools
+  (defhydra hydra-pdftools (:color blue :hint nil)
+    "
                                                                       ╭───────────┐
        Move  History   Scale/Fit     Annotations  Search/Link    Do   │ PDF Tools │
    ╭──────────────────────────────────────────────────────────────────┴───────────╯
@@ -152,38 +152,38 @@ T - tag prefix
          ^^_G_^^
    --------------------------------------------------------------------------------
         "
-      ("\\" hydra-master/body "back")
-      ("<ESC>" nil "quit")
-      ("al" pdf-annot-list-annotations)
-      ("ad" pdf-annot-delete)
-      ("aa" pdf-annot-attachment-dired)
-      ("am" pdf-annot-add-markup-annotation)
-      ("at" pdf-annot-add-text-annotation)
-      ("y"  pdf-view-kill-ring-save)
-      ("+" pdf-view-enlarge :color red)
-      ("-" pdf-view-shrink :color red)
-      ("0" pdf-view-scale-reset)
-      ("H" pdf-view-fit-height-to-window)
-      ("W" pdf-view-fit-width-to-window)
-      ("P" pdf-view-fit-page-to-window)
-      ("n" pdf-view-next-page-command :color red)
-      ("p" pdf-view-previous-page-command :color red)
-      ("d" pdf-view-dark-minor-mode)
-      ("b" pdf-view-set-slice-from-bounding-box)
-      ("r" pdf-view-reset-slice)
-      ("g" pdf-view-first-page)
-      ("G" pdf-view-last-page)
-      ("e" pdf-view-goto-page)
-      ("o" pdf-outline)
-      ("s" pdf-occur)
-      ("i" pdf-misc-display-metadata)
-      ("u" pdf-view-revert-buffer)
-      ("F" pdf-links-action-perfom)
-      ("f" pdf-links-isearch-link)
-      ("B" pdf-history-backward :color red)
-      ("N" pdf-history-forward :color red)
-      ("l" image-forward-hscroll :color red)
-      ("h" image-backward-hscroll :color red))))
+    ("\\" hydra-master/body "back")
+    ("<ESC>" nil "quit")
+    ("al" pdf-annot-list-annotations)
+    ("ad" pdf-annot-delete)
+    ("aa" pdf-annot-attachment-dired)
+    ("am" pdf-annot-add-markup-annotation)
+    ("at" pdf-annot-add-text-annotation)
+    ("y"  pdf-view-kill-ring-save)
+    ("+" pdf-view-enlarge :color red)
+    ("-" pdf-view-shrink :color red)
+    ("0" pdf-view-scale-reset)
+    ("H" pdf-view-fit-height-to-window)
+    ("W" pdf-view-fit-width-to-window)
+    ("P" pdf-view-fit-page-to-window)
+    ("n" pdf-view-next-page-command :color red)
+    ("p" pdf-view-previous-page-command :color red)
+    ("d" pdf-view-dark-minor-mode)
+    ("b" pdf-view-set-slice-from-bounding-box)
+    ("r" pdf-view-reset-slice)
+    ("g" pdf-view-first-page)
+    ("G" pdf-view-last-page)
+    ("e" pdf-view-goto-page)
+    ("o" pdf-outline)
+    ("s" pdf-occur)
+    ("i" pdf-misc-display-metadata)
+    ("u" pdf-view-revert-buffer)
+    ("F" pdf-links-action-perfom)
+    ("f" pdf-links-isearch-link)
+    ("B" pdf-history-backward :color red)
+    ("N" pdf-history-forward :color red)
+    ("l" image-forward-hscroll :color red)
+    ("h" image-backward-hscroll :color red)))
 
 (el-get-bundle pdf-tools
   (pdf-tools-install)
