@@ -716,6 +716,7 @@ T - tag prefix
 (put 'upcase-region 'disabled nil)
 
 (put 'narrow-to-region 'disabled nil)
+(show-paren-mode)
 
 (message "Done .emacs")
 ;; end
