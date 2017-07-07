@@ -340,6 +340,7 @@ T - tag prefix
 					; manager or do M-x kill-emacs.  Don't need a nice shortcut for a once a
 					; week (or day) action.
 (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
+(global-set-key (kbd "C-x C-c") 'save-buffers-kill-emacs)
 (global-set-key (kbd "C-x B") 'ibuffer)
 
 
