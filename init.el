@@ -24,6 +24,109 @@
 
 (el-get 'sync 'el-get)
 
+
+(el-get-bundle hydra
+  (setq hydra-look-for-remap t)
+
+  (defhydra hydra-zoom (global-map "C-c")
+    "zoom"
+    ("+" text-scale-increase "in")
+    ("-" text-scale-decrease "out"))
+
+  ;; Movement
+  (global-set-key
+   (kbd "C-n")
+   (defhydra hydra-move
+     (:body-pre (next-line))
+     "move"
+     ("n" next-line)
+     ("p" previous-line)
+     ("f" forward-char)
+     ("b" backward-char)
+     ("a" beginning-of-line)
+     ("e" move-end-of-line)
+     ("v" scroll-up-command)
+     ;; Converting M-v to V here by analogy.
+     ("V" scroll-down-command)
+     ("l" recenter-top-bottom)))
+
+  ;; PDF Tools
+  (eval-after-load "pdf-tools"
+    (defhydra hydra-pdftools (:color blue :hint nil)
+      "
+                                                                      ╭───────────┐
+       Move  History   Scale/Fit     Annotations  Search/Link    Do   │ PDF Tools │
+   ╭──────────────────────────────────────────────────────────────────┴───────────╯
+         ^^_g_^^      _B_    ^↧^    _+_    ^ ^     [_al_] list    [_s_] search    [_u_] revert buffer
+         ^^^↑^^^      ^↑^    _H_    ^↑^  ↦ _W_ ↤   [_am_] markup  [_o_] outline   [_i_] info
+         ^^_p_^^      ^ ^    ^↥^    _0_    ^ ^     [_at_] text    [_F_] link      [_d_] dark mode
+         ^^^↑^^^      ^↓^  ╭─^─^─┐  ^↓^  ╭─^ ^─┐   [_ad_] delete  [_f_] search link
+    _h_ ←pag_e_→ _l_  _N_  │ _P_ │  _-_    _b_     [_aa_] dired
+         ^^^↓^^^      ^ ^  ╰─^─^─╯  ^ ^  ╰─^ ^─╯   [_y_]  yank
+         ^^_n_^^      ^ ^  _r_eset slice box
+         ^^^↓^^^
+         ^^_G_^^
+   --------------------------------------------------------------------------------
+        "
+      ("\\" hydra-master/body "back")
+      ("<ESC>" nil "quit")
+      ("al" pdf-annot-list-annotations)
+      ("ad" pdf-annot-delete)
+      ("aa" pdf-annot-attachment-dired)
+      ("am" pdf-annot-add-markup-annotation)
+      ("at" pdf-annot-add-text-annotation)
+      ("y"  pdf-view-kill-ring-save)
+      ("+" pdf-view-enlarge :color red)
+      ("-" pdf-view-shrink :color red)
+      ("0" pdf-view-scale-reset)
+      ("H" pdf-view-fit-height-to-window)
+      ("W" pdf-view-fit-width-to-window)
+      ("P" pdf-view-fit-page-to-window)
+      ("n" pdf-view-next-page-command :color red)
+      ("p" pdf-view-previous-page-command :color red)
+      ("d" pdf-view-dark-minor-mode)
+      ("b" pdf-view-set-slice-from-bounding-box)
+      ("r" pdf-view-reset-slice)
+      ("g" pdf-view-first-page)
+      ("G" pdf-view-last-page)
+      ("e" pdf-view-goto-page)
+      ("o" pdf-outline)
+      ("s" pdf-occur)
+      ("i" pdf-misc-display-metadata)
+      ("u" pdf-view-revert-buffer)
+      ("F" pdf-links-action-perfom)
+      ("f" pdf-links-isearch-link)
+      ("B" pdf-history-backward :color red)
+      ("N" pdf-history-forward :color red)
+      ("l" image-forward-hscroll :color red)
+      ("h" image-backward-hscroll :color red))))
+
+(el-get-bundle pdf-tools
+  (pdf-tools-install)
+  (setq-default pdf-view-display-size 'fit-page)
+  (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
+  (progn
+    (define-key pdf-view-mode-map (kbd "\\") 'hydra-pdftools/body)
+    (define-key pdf-view-mode-map (kbd "<s-spc>") 'pdf-view-scroll-down-or-next-page)
+    (define-key pdf-view-mode-map (kbd "g")  'pdf-view-first-page)
+    (define-key pdf-view-mode-map (kbd "G")  'pdf-view-last-page)
+    (define-key pdf-view-mode-map (kbd "l")  'image-forward-hscroll)
+    (define-key pdf-view-mode-map (kbd "h")  'image-backward-hscroll)
+    (define-key pdf-view-mode-map (kbd "j")  'pdf-view-next-page)
+    (define-key pdf-view-mode-map (kbd "k")  'pdf-view-previous-page)
+    (define-key pdf-view-mode-map (kbd "e")  'pdf-view-goto-page)
+    (define-key pdf-view-mode-map (kbd "u")  'pdf-view-revert-buffer)
+    (define-key pdf-view-mode-map (kbd "al") 'pdf-annot-list-annotations)
+    (define-key pdf-view-mode-map (kbd "ad") 'pdf-annot-delete)
+    (define-key pdf-view-mode-map (kbd "aa") 'pdf-annot-attachment-dired)
+    (define-key pdf-view-mode-map (kbd "am") 'pdf-annot-add-markup-annotation)
+    (define-key pdf-view-mode-map (kbd "at") 'pdf-annot-add-text-annotation)
+    (define-key pdf-view-mode-map (kbd "y")  'pdf-view-kill-ring-save)
+    (define-key pdf-view-mode-map (kbd "i")  'pdf-misc-display-metadata)
+    (define-key pdf-view-mode-map (kbd "s")  'pdf-occur)
+    (define-key pdf-view-mode-map (kbd "b")  'pdf-view-set-slice-from-bounding-box)
+    (define-key pdf-view-mode-map (kbd "r")  'pdf-view-reset-slice)))
+
 (el-get-bundle! tdd
   :description "Run recompile (or a customisable function) after saving a buffer"
   :type github
