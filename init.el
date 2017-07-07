@@ -26,8 +26,6 @@
 
 
 (el-get-bundle hydra
-  (setq hydra-look-for-remap t)
-
   (defhydra hydra-zoom (global-map "C-c")
     "zoom"
     ("+" text-scale-increase "in")
@@ -60,11 +58,11 @@
 [_p_]   Next    [_n_]   Next    [_a_] Mark all        [_l_] Edit lines  [_i_] Insert numbers
 [_P_]   Skip    [_N_]   Skip    [_m_] Mark all dwim   [_C-a_] Edit BOL  [_R_] Reverse regions
 [_M-p_] Unmark  [_M-n_] Unmark  [_r_] Mark by regexp  [_C-e_] Edit EOL  [_s_] Sort regions
-^ ^             ^ ^             [_d_] Mark in defun   ^ ^               [_q_] Quit
+^ ^             ^ ^             [_d_] Mark in defun   [_C-'_] Hide unmatched [_q_] Quit
 "
        ("a" mc/mark-all-like-this :exit t)
        ("d" mc/mark-all-symbols-like-this-in-defun :exit t)
-       ("h" mc/hide-unmatched-lines-mode)
+       ("C-'" mc-hide-unmatched-lines-mode)
        ("i" mc/insert-numbers :exit t)
        ("n" mc/mark-next-like-this)
        ("N" mc/skip-to-next-like-this)
@@ -79,115 +77,103 @@
        ("s" mc/sort-regions)
        ("q" nil)
        ("C-a" mc/edit-beginnings-of-lines :exit t)
-       ("C-e" mc/edit-ends-of-lines) :exit  t)))
+       ("C-e" mc/edit-ends-of-lines :exit t))))
 
-;; https://github.com/abo-abo/hydra/wiki/Dired
-  (define-key dired-mode-map "."
-    (defhydra hydra-dired (:hint nil :color pink)
-      "
+  ;; https://github.com/abo-abo/hydra/wiki/Dired
+  (with-eval-after-load 'dired
+    (define-key dired-mode-map "."
+      (defhydra hydra-dired (:hint nil :color pink)
+	"
 _+_ mkdir          _v_iew           _m_ark             _(_ details        _i_nsert-subdir    wdired
-_C_opy             _O_ view other   _U_nmark all       _)_ omit-mode      _$_ hide-subdir    C-x C-q : edit
+_C_opy             _O_ view other   _U_nmark all                                             C-x C-q : edit
 _D_elete           _o_pen other     _u_nmark           _l_ redisplay      _w_ kill-subdir    C-c C-c : commit
-_R_ename           _M_ chmod        _t_oggle           _g_ revert buf     _e_ ediff          C-c ESC : abort
-_Y_ rel symlink    _G_ chgrp        _E_xtension mark   _s_ort             _=_ pdiff
-_S_ymlink          ^ ^              _F_ind marked      _._ toggle hydra   \\ flyspell
-_r_sync            ^ ^              ^ ^                ^ ^                _?_ summary
-_z_ compress-file  _A_ find regexp
+_R_ename           _M_ chmod        _t_oggle           _g_ revert buf     ^ ^                C-c ESC : abort
+_Y_ rel symlink    _G_ chgrp        ^ ^                _s_ort             ^ ^
+_S_ymlink          ^ ^                                 _._ toggle hydra   \\ flyspell
+^ ^                ^ ^              ^ ^                ^ ^                _?_ summary
+^ ^                _A_ find regexp
 _Z_ compress       _Q_ repl regexp
 
 T - tag prefix
 "
-      ("\\" dired-do-ispell)
-      ("(" dired-hide-details-mode)
-      (")" dired-omit-mode)
-      ("+" dired-create-directory)
-      ("=" diredp-ediff) ;; smart diff
-      ("?" dired-summary)
-      ("$" diredp-hide-subdir-nomove)
-      ("A" dired-do-find-regexp)
-      ("C" dired-do-copy) ;; Copy all marked files
-      ("D" dired-do-delete)
-      ("E" dired-mark-extension)
-      ("e" dired-ediff-files)
-      ("F" dired-do-find-marked-files)
-      ("G" dired-do-chgrp)
-      ("g" revert-buffer) ;; read all directories again (refresh)
-      ("i" dired-maybe-insert-subdir)
-      ("l" dired-do-redisplay) ;; relist the marked or singel directory
-      ("M" dired-do-chmod)
-      ("m" dired-mark)
-      ("O" dired-display-file)
-      ("o" dired-find-file-other-window)
-      ("Q" dired-do-find-regexp-and-replace)
-      ("R" dired-do-rename)
-      ("r" dired-do-rsynch)
-      ("S" dired-do-symlink)
-      ("s" dired-sort-toggle-or-edit)
-      ("t" dired-toggle-marks)
-      ("U" dired-unmark-all-marks)
-      ("u" dired-unmark)
-      ("v" dired-view-file) ;; q to exit, s to search, = gets line #
-      ("w" dired-kill-subdir)
-      ("Y" dired-do-relsymlink)
-      ("z" diredp-compress-this-file)
-      ("Z" dired-do-compress)
-      ("q" nil :color blue)
-      ("." nil :color blue))))
+	("(" dired-hide-details-mode)
+	("+" dired-create-directory)
+	("?" dired-summary)
+	("A" dired-do-find-regexp)
+	("C" dired-do-copy) ;; Copy all marked files
+	("D" dired-do-delete)
+	("G" dired-do-chgrp)
+	("g" revert-buffer) ;; read all directories again (refresh)
+	("i" dired-maybe-insert-subdir)
+	("l" dired-do-redisplay) ;; relist the marked or singel directory
+	("M" dired-do-chmod)
+	("m" dired-mark)
+	("O" dired-display-file)
+	("o" dired-find-file-other-window)
+	("Q" dired-do-find-regexp-and-replace)
+	("R" dired-do-rename)
+	("S" dired-do-symlink)
+	("s" dired-sort-toggle-or-edit)
+	("t" dired-toggle-marks)
+	("U" dired-unmark-all-marks)
+	("u" dired-unmark)
+	("v" dired-view-file) ;; q to exit, s to search, = gets line #
+	("w" dired-kill-subdir)
+	("Y" dired-do-relsymlink)
+	("Z" dired-do-compress)
+	("q" nil :color blue)
+	("." nil :color blue)))))
+(with-eval-after-load 'hydra
+  (setq hydra-look-for-remap t)) ; fix "free variable warning"
 
 
-(el-get-bundle 'ace-window
-  (global-set-key (kbd "C-c f") 'ace-window)
+
 (el-get-bundle ace-window
+  (global-set-key (kbd "M-p") 'ace-window))
+(with-eval-after-load 'ace-window
   (setq aw-background t)
-  (setq aw-dispatch-always t)
-  ;; hydra-frame-window is designed from ace-window and
-  ;; matches aw-dispatch-alist with a few extra
-  ;; https://github.com/abo-abo/ace-window/wiki/Hydra
-  (defhydra hydra-frame-window (:color red :hint nil)
+  (defhydra hydra-window-stuff (:hint nil)
     "
-^Delete^                       ^Frame resize^             ^Window^                Window Size^^^^^^   ^Text^                         (__)
-_0_: delete-frame              _g_: resize-frame-right    _t_: toggle               ^ ^ _k_ ^ ^        _K_                           (oo)
-_1_: delete-other-frames       _H_: resize-frame-left     _e_: ace-swap-win         _h_ ^+^ _l_        ^+^                     /------\\/
-_2_: make-frame                _F_: fullscreen            ^ ^                       ^ ^ _j_ ^ ^        _J_                    / |    ||
-_d_: kill-and-delete-frame     _n_: new-frame-right       _w_: ace-delete-window    _b_alance^^^^      ^ ^                   *  /\\---/\\  ~~  C-x f ;
-"
-    ("0" delete-frame :exit t)
-    ("1" delete-other-frames :exit t)
-    ("2" make-frame  :exit t)
-    ("b" balance-windows)
-    ("d" kill-and-delete-frame :exit t)
-    ("e" ace-swap-window)
-    ("F" toggle-frame-fullscreen) ;; is <f11>
-    ("g" resize-frame-right :exit t)
-    ("H" resize-frame-left :exit t) ;; aw-dispatch-alist uses h, I rebind here so hjkl can be used for size
-    ("n" new-frame-right :exit t)
-    ;; ("r" reverse-windows)
-    ("t" toggle-window-spilt)
-    ("w" ace-delete-window :exit t)
-    ("x" delete-frame :exit t)
-    ("K" text-scale-decrease)
-    ("J" text-scale-increase)
-    ("h" shrink-window-horizontally)
-    ("k" shrink-window)
-    ("j" enlarge-window)
-    ("l" enlarge-window-horizontally))
-  (setq aw-keys '(?a ?s ?d ?f ?j ?k ?l))
-  (setq aw-dispatch-alist
-	'((?\; hydra-frame-window/body)
-	  (?0 delete-frame)
-	  (?1 delete-other-frames)
-	  (?2 make-frame)
-	  (?b balance-windows)
-	  (?e ace-swap-window)
-	  (?F toggle-frame-fullscreen)
-	  (?g resize-frame-left)
-	  (?h resize-frame-right)
-	  (?n new-frame-right)
-	  (?r reverse-windows)
-	  (?t toggle-window-spilt)
-	  (?x delete-frame)
-	  (?w ace-delete-window)
-	  )))
+          Split: _v_ert  _s_:horz
+         Delete: _c_lose  _o_nly
+  Switch Window: _h_:left  _j_:down  _k_:up  _l_:right
+        Buffers: _p_revious  _n_ext  _b_:select  _f_ind-file  _F_projectile
+         Winner: _u_ndo  _r_edo
+         Resize: _H_:splitter left  _J_:splitter down  _K_:splitter up  _L_:splitter right
+           Move: _a_:up  _z_:down  _i_menu"
+
+
+    ("z" scroll-up-line)
+    ("a" scroll-down-line)
+    ("i" idomenu)
+
+    ("u" winner-undo)
+    ("r" winner-redo)
+
+    ("h" windmove-left)
+    ("j" windmove-down)
+    ("k" windmove-up)
+    ("l" windmove-right)
+
+    ("p" previous-buffer)
+    ("n" next-buffer)
+    ("b" ido-switch-buffer)
+    ("f" ido-find-file)
+    ("F" projectile-find-file)
+
+    ("s" split-window-below)
+    ("v" split-window-right)
+
+    ("c" delete-window)
+    ("o" delete-other-windows)
+
+    ("H" hydra-move-splitter-left)
+    ("J" hydra-move-splitter-down)
+    ("K" hydra-move-splitter-up)
+    ("L" hydra-move-splitter-right)
+
+    ("q" nil))
+  (add-to-list 'aw-dispatch-alist '(?\\ hydra-window-stuff/body) t))
 
 ;; PDF Tools https://github.com/abo-abo/hydra/wiki/PDF-Tools
 (el-get-eval-after-load 'pdf-tools
@@ -241,7 +227,8 @@ _d_: kill-and-delete-frame     _n_: new-frame-right       _w_: ace-delete-window
     ("h" image-backward-hscroll :color red)))
 
 (el-get-bundle pdf-tools
-  (pdf-tools-install)
+  (pdf-tools-install))
+(with-eval-after-load 'pdf-tools
   (setq-default pdf-view-display-size 'fit-page)
   (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
   (progn
