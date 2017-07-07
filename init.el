@@ -298,7 +298,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 
 					; format and correct any PEP8 erros on save (C-x C-s)
 (el-get-bundle py-autopep8
-  (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save))
+  (add-hook 'python-mode-hook 'py-autopep8-enable-on-save))
 
 (el-get-bundle magit
   (global-set-key (kbd "C-c g") 'magit-status))
