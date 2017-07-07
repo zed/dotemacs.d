@@ -137,6 +137,7 @@ T - tag prefix
 
 (el-get-bundle 'ace-window
   (global-set-key (kbd "C-c f") 'ace-window)
+(el-get-bundle ace-window
   (setq aw-background t)
   (setq aw-dispatch-always t)
   ;; hydra-frame-window is designed from ace-window and
@@ -276,12 +277,12 @@ _d_: kill-and-delete-frame     _n_: new-frame-right       _w_: ace-delete-window
   (add-hook 'elpy-mode-hook 'hl-line-mode))
 
 					; real-time syntax check
-(el-get-bundle! flycheck
+(el-get-bundle flycheck
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
   (add-hook 'elpy-mode-hook 'flycheck-mode))
 
 					; format and correct any PEP8 erros on save (C-x C-s)
-(el-get-bundle! py-autopep8
+(el-get-bundle py-autopep8
   (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save))
 
 (el-get-bundle magit
