@@ -1,4 +1,5 @@
 (message "Loading .emacs...")
+(setq load-prefer-newer t) ; suppress warning about .autoloads file
 
 ;; * bootstrap el-get
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
@@ -7,22 +8,29 @@
 (unless (require 'el-get nil 'noerror)
   (require 'package)
   (setq package-archives
-	(quote
-	 (("gnu" . "https://elpa.gnu.org/packages/")
-	  ("marmalade" . "https://marmalade-repo.org/packages/")
-	  ("melpa" . "https://melpa.org/packages/")
-	  ("elpy" . "https://jorgenschaefer.github.io/packages/"))))
+    (quote
+     (("gnu" . "https://elpa.gnu.org/packages/")
+      ("marmalade" . "https://marmalade-repo.org/packages/")
+      ("melpa" . "https://melpa.org/packages/")
+      ("elpy" . "https://jorgenschaefer.github.io/packages/"))))
   (package-initialize)
   (package-refresh-contents)
   (package-install 'el-get)
   (require 'el-get))
+(el-get 'sync 'el-get)
 
 (setq el-get-allow-insecure 'nil)
-
 (add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
 ;;(setq el-get-user-package-directory "~/.emacs.d/el-get-init-files/")
 
-(el-get 'sync 'el-get)
+(el-get-bundle! with-eval-after-load-feature)
+
+(el-get-bundle gist
+  (setq gist-view-gist t))
+
+(el-get-bundle company
+  (add-hook 'after-init-hook #'global-company-mode))
+
 
 (el-get-bundle hydra
   (defhydra hydra-zoom (global-map "C-c")
@@ -31,9 +39,7 @@
     ("-" text-scale-decrease "out"))
 
   ;; Movement
-  (global-set-key
-   (kbd "C-n")
-   (defhydra hydra-move
+  (global-set-key (kbd "C-n")  (defhydra hydra-move
      (:body-pre (forward-line))
      "move"
      ("n" next-line)
@@ -47,11 +53,8 @@
      ("V" scroll-down-command)
      ("l" recenter-top-bottom)))
 
-  (el-get-eval-after-load 'multiple-cursors
-    (global-set-key
-     (kbd "C-c m")
-     (defhydra hydra-multiple-cursors (:hint nil)
-       "
+  (defhydra hydra-multiple-cursors (:hint nil)
+    "
      ^Up^            ^Down^          ^Mark^                ^Edit^            ^Other^
 --------------------------------------------------------------------------------------
 [_p_]   Next    [_n_]   Next    [_a_] Mark all        [_l_] Edit lines  [_i_] Insert numbers
@@ -59,30 +62,30 @@
 [_M-p_] Unmark  [_M-n_] Unmark  [_r_] Mark by regexp  [_C-e_] Edit EOL  [_s_] Sort regions
 ^ ^             ^ ^             [_d_] Mark in defun   [_C-'_] Hide unmatched [_q_] Quit
 "
-       ("a" mc/mark-all-like-this :exit t)
-       ("d" mc/mark-all-symbols-like-this-in-defun :exit t)
-       ("C-'" mc-hide-unmatched-lines-mode)
-       ("i" mc/insert-numbers :exit t)
-       ("n" mc/mark-next-like-this)
-       ("N" mc/skip-to-next-like-this)
-       ("l" mc/edit-lines :exit t)
-       ("m" mc/mark-all-dwim :exit t)
-       ("M-n" mc/unmark-next-like-this)
-       ("p" mc/mark-previous-like-this)
-       ("P" mc/skip-to-previous-like-this)
-       ("M-p" mc/unmark-previous-like-this)
-       ("r" mc/mark-all-in-region-regexp :exit t)
-       ("R" mc/reverse-regions)
-       ("s" mc/sort-regions)
-       ("q" nil)
-       ("C-a" mc/edit-beginnings-of-lines :exit t)
-       ("C-e" mc/edit-ends-of-lines :exit t))))
+    ("a" mc/mark-all-like-this :exit t)
+    ("d" mc/mark-all-symbols-like-this-in-defun :exit t)
+    ("C-'" mc-hide-unmatched-lines-mode)
+    ("i" mc/insert-numbers :exit t)
+    ("n" mc/mark-next-like-this)
+    ("N" mc/skip-to-next-like-this)
+    ("l" mc/edit-lines :exit t)
+    ("m" mc/mark-all-dwim :exit t)
+    ("M-n" mc/unmark-next-like-this)
+    ("p" mc/mark-previous-like-this)
+    ("P" mc/skip-to-previous-like-this)
+    ("M-p" mc/unmark-previous-like-this)
+    ("r" mc/mark-all-in-region-regexp :exit t)
+    ("R" mc/reverse-regions)
+    ("s" mc/sort-regions)
+    ("q" nil)
+    ("C-a" mc/edit-beginnings-of-lines :exit t)
+    ("C-e" mc/edit-ends-of-lines :exit t))
 
   ;; https://github.com/abo-abo/hydra/wiki/Dired
-  (with-eval-after-load 'dired
+  (with-eval-after-load-feature 'dired
     (define-key dired-mode-map "."
       (defhydra hydra-dired (:hint nil :color pink)
-	"
+    "
 _+_ mkdir          _v_iew           _m_ark             _(_ details        _i_nsert-subdir    wdired
 _C_opy             _O_ view other   _U_nmark all                                             C-x C-q : edit
 _D_elete           _o_pen other     _u_nmark           _l_ redisplay      _w_ kill-subdir    C-c C-c : commit
@@ -95,72 +98,72 @@ _Z_ compress       _Q_ repl regexp
 
 T - tag prefix
 "
-	("(" dired-hide-details-mode)
-	("+" dired-create-directory)
-	("?" dired-summary)
-	("A" dired-do-find-regexp)
-	("C" dired-do-copy) ;; Copy all marked files
-	("D" dired-do-delete)
-	("G" dired-do-chgrp)
-	("g" revert-buffer) ;; read all directories again (refresh)
-	("i" dired-maybe-insert-subdir)
-	("l" dired-do-redisplay) ;; relist the marked or singel directory
-	("M" dired-do-chmod)
-	("m" dired-mark)
-	("O" dired-display-file)
-	("o" dired-find-file-other-window)
-	("Q" dired-do-find-regexp-and-replace)
-	("R" dired-do-rename)
-	("S" dired-do-symlink)
-	("s" dired-sort-toggle-or-edit)
-	("t" dired-toggle-marks)
-	("U" dired-unmark-all-marks)
-	("u" dired-unmark)
-	("v" dired-view-file) ;; q to exit, s to search, = gets line #
-	("w" dired-kill-subdir)
-	("Y" dired-do-relsymlink)
-	("Z" dired-do-compress)
-	("q" nil :color blue)
-	("." nil :color blue))))
+    ("(" dired-hide-details-mode)
+    ("+" dired-create-directory)
+    ("?" dired-summary)
+    ("A" dired-do-find-regexp)
+    ("C" dired-do-copy) ;; Copy all marked files
+    ("D" dired-do-delete)
+    ("G" dired-do-chgrp)
+    ("g" revert-buffer) ;; read all directories again (refresh)
+    ("i" dired-maybe-insert-subdir)
+    ("l" dired-do-redisplay) ;; relist the marked or singel directory
+    ("M" dired-do-chmod)
+    ("m" dired-mark)
+    ("O" dired-display-file)
+    ("o" dired-find-file-other-window)
+    ("Q" dired-do-find-regexp-and-replace)
+    ("R" dired-do-rename)
+    ("S" dired-do-symlink)
+    ("s" dired-sort-toggle-or-edit)
+    ("t" dired-toggle-marks)
+    ("U" dired-unmark-all-marks)
+    ("u" dired-unmark)
+    ("v" dired-view-file) ;; q to exit, s to search, = gets line #
+    ("w" dired-kill-subdir)
+    ("Y" dired-do-relsymlink)
+    ("Z" dired-do-compress)
+    ("q" nil :color blue)
+    ("." nil :color blue))))
 
-  (require 'rect)
-  (global-set-key
-   (kbd "C-c r")
-   (defhydra hydra-rectangle (:body-pre (rectangle-mark-mode 1)
-					:color pink
-					:hint nil
-					:post (deactivate-mark))
-     "
+  (with-eval-after-load-feature 'rect
+    (global-set-key
+     (kbd "C-c r")
+     (defhydra hydra-rectangle (:body-pre (rectangle-mark-mode 1)
+					  :color pink
+					  :hint nil
+					  :post (deactivate-mark))
+       "
   ^_k_^       _w_ copy      _o_pen       _N_umber-lines            |\\     -,,,--,,_
 _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..  \-;;,_
   ^_j_^       _d_ kill      _c_lear      _r_eset-region-mark      |,4-  ) )_   .;.(  `'-'
 ^^^^          _u_ndo        _q_ quit     ^ ^                     '---''(./..)-'(_\_)
 "
-     ("k" rectangle-previous-line)
-     ("j" rectangle-next-line)
-     ("h" rectangle-backward-char)
-     ("l" rectangle-forward-char)
-     ("d" kill-rectangle)		  ;; C-x r k
-     ("y" yank-rectangle)		  ;; C-x r y
-     ("w" copy-rectangle-as-kill)	  ;; C-x r M-w
-     ("o" open-rectangle)		  ;; C-x r o
-     ("t" string-rectangle)		  ;; C-x r t
-     ("c" clear-rectangle)		  ;; C-x r c
-     ("e" rectangle-exchange-point-and-mark) ;; C-x C-x
-     ("N" rectangle-number-lines)            ;; C-x r N
-     ("r" (if (region-active-p)
-	      (deactivate-mark)
-	    (rectangle-mark-mode 1)))
-     ("u" undo nil)
-     ("q" nil))))
-(with-eval-after-load 'hydra
+       ("k" rectangle-previous-line)
+       ("j" rectangle-next-line)
+       ("h" rectangle-backward-char)
+       ("l" rectangle-forward-char)
+       ("d" kill-rectangle)		     ;; C-x r k
+       ("y" yank-rectangle)		     ;; C-x r y
+       ("w" copy-rectangle-as-kill)	     ;; C-x r M-w
+       ("o" open-rectangle)		     ;; C-x r o
+       ("t" string-rectangle)		     ;; C-x r t
+       ("c" clear-rectangle)		     ;; C-x r c
+       ("e" rectangle-exchange-point-and-mark) ;; C-x C-x
+       ("N" rectangle-number-lines)            ;; C-x r N
+       ("r" (if (region-active-p)
+		(deactivate-mark)
+	      (rectangle-mark-mode 1)))
+       ("u" undo nil)
+       ("q" nil)))))
+(with-eval-after-load-feature 'hydra
   (setq hydra-look-for-remap t)) ; fix "free variable warning"
 
 
 
 (el-get-bundle ace-window
-  (global-set-key (kbd "M-p") 'ace-window))
-(with-eval-after-load 'ace-window
+  (global-set-key (kbd "M-p") #'ace-window))
+(with-eval-after-load-feature 'ace-window
   (setq aw-background t)
   (defhydra hydra-window-stuff (:hint nil)
     "
@@ -208,8 +211,8 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 ;; PDF Tools https://github.com/abo-abo/hydra/wiki/PDF-Tools
 (el-get-bundle pdf-tools
   (pdf-tools-install))
-(with-eval-after-load 'pdf-tools
-  (setq-default pdf-view-display-size 'fit-page)
+(with-eval-after-load-feature 'pdf-tools
+  (setq-default pdf-view-display-size #'fit-page)
   (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
    (defhydra hydra-pdftools (:color blue :hint nil)
     "
@@ -260,26 +263,26 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
     ("l" image-forward-hscroll :color red)
     ("h" image-backward-hscroll :color red))
    (progn
-    (define-key pdf-view-mode-map (kbd "\\") 'hydra-pdftools/body)
-    (define-key pdf-view-mode-map (kbd "<s-spc>") 'pdf-view-scroll-down-or-next-page)
-    (define-key pdf-view-mode-map (kbd "g")  'pdf-view-first-page)
-    (define-key pdf-view-mode-map (kbd "G")  'pdf-view-last-page)
-    (define-key pdf-view-mode-map (kbd "l")  'image-forward-hscroll)
-    (define-key pdf-view-mode-map (kbd "h")  'image-backward-hscroll)
-    (define-key pdf-view-mode-map (kbd "j")  'pdf-view-next-page)
-    (define-key pdf-view-mode-map (kbd "k")  'pdf-view-previous-page)
-    (define-key pdf-view-mode-map (kbd "e")  'pdf-view-goto-page)
-    (define-key pdf-view-mode-map (kbd "u")  'pdf-view-revert-buffer)
-    (define-key pdf-view-mode-map (kbd "al") 'pdf-annot-list-annotations)
-    (define-key pdf-view-mode-map (kbd "ad") 'pdf-annot-delete)
-    (define-key pdf-view-mode-map (kbd "aa") 'pdf-annot-attachment-dired)
-    (define-key pdf-view-mode-map (kbd "am") 'pdf-annot-add-markup-annotation)
-    (define-key pdf-view-mode-map (kbd "at") 'pdf-annot-add-text-annotation)
-    (define-key pdf-view-mode-map (kbd "y")  'pdf-view-kill-ring-save)
-    (define-key pdf-view-mode-map (kbd "i")  'pdf-misc-display-metadata)
-    (define-key pdf-view-mode-map (kbd "s")  'pdf-occur)
-    (define-key pdf-view-mode-map (kbd "b")  'pdf-view-set-slice-from-bounding-box)
-    (define-key pdf-view-mode-map (kbd "r")  'pdf-view-reset-slice)))
+    (define-key pdf-view-mode-map (kbd "\\") #'hydra-pdftools/body)
+    (define-key pdf-view-mode-map (kbd "<s-spc>") #'pdf-view-scroll-down-or-next-page)
+    (define-key pdf-view-mode-map (kbd "g")  #'pdf-view-first-page)
+    (define-key pdf-view-mode-map (kbd "G")  #'pdf-view-last-page)
+    (define-key pdf-view-mode-map (kbd "l")  #'image-forward-hscroll)
+    (define-key pdf-view-mode-map (kbd "h")  #'image-backward-hscroll)
+    (define-key pdf-view-mode-map (kbd "j")  #'pdf-view-next-page)
+    (define-key pdf-view-mode-map (kbd "k")  #'pdf-view-previous-page)
+    (define-key pdf-view-mode-map (kbd "e")  #'pdf-view-goto-page)
+    (define-key pdf-view-mode-map (kbd "u")  #'pdf-view-revert-buffer)
+    (define-key pdf-view-mode-map (kbd "al") #'pdf-annot-list-annotations)
+    (define-key pdf-view-mode-map (kbd "ad") #'pdf-annot-delete)
+    (define-key pdf-view-mode-map (kbd "aa") #'pdf-annot-attachment-dired)
+    (define-key pdf-view-mode-map (kbd "am") #'pdf-annot-add-markup-annotation)
+    (define-key pdf-view-mode-map (kbd "at") #'pdf-annot-add-text-annotation)
+    (define-key pdf-view-mode-map (kbd "y")  #'pdf-view-kill-ring-save)
+    (define-key pdf-view-mode-map (kbd "i")  #'pdf-misc-display-metadata)
+    (define-key pdf-view-mode-map (kbd "s")  #'pdf-occur)
+    (define-key pdf-view-mode-map (kbd "b")  #'pdf-view-set-slice-from-bounding-box)
+    (define-key pdf-view-mode-map (kbd "r")  #'pdf-view-reset-slice)))
 
 (el-get-bundle tdd
   :description "Run recompile (or a customisable function) after saving a buffer"
@@ -288,40 +291,36 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 
 (el-get-bundle elpy
   (elpy-enable)
-  (add-hook 'pyvenv-post-activate-hooks 'pyvenv-restart-python)
-  (add-hook 'elpy-mode-hook 'hl-line-mode))
+  (el-get-bundle pyvenv
+    (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python)))
 
-					; real-time syntax check
+                    ; real-time syntax check
 (el-get-bundle flycheck
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-  (add-hook 'elpy-mode-hook 'flycheck-mode))
+  (add-hook 'elpy-mode-hook #'flycheck-mode))
 
-					; format and correct any PEP8 erros on save (C-x C-s)
+                    ; format and correct any PEP8 erros on save (C-x C-s)
 (el-get-bundle py-autopep8
-  (add-hook 'python-mode-hook 'py-autopep8-enable-on-save))
+  (add-hook 'python-mode-hook #'py-autopep8-enable-on-save))
 
 (el-get-bundle magit
-  (global-set-key (kbd "C-c g") 'magit-status))
+  (global-set-key (kbd "C-c g") #'magit-status))
 
 (el-get-bundle smex
-  (global-set-key (kbd "M-x") 'smex)
-  (global-set-key (kbd "M-X") 'smex-major-mode-commands))
+  (global-set-key (kbd "M-x") #'smex)
+  (global-set-key (kbd "M-X") #'smex-major-mode-commands))
 
-(el-get-bundle flymake
-  (global-set-key [f3] 'flymake-display-err-menu-for-current-line)
-  (global-set-key [f4] 'flymake-goto-next-error))
-
-					; Navigate windows with S-<arrows>
+                    ; Navigate windows with S-<arrows>
 (windmove-default-keybindings 'super)
 (setq windmove-wrap-around t)
 
-					; uniquify buffers with the same name
-					; instead of buf<2>, etc it shows
+                    ; uniquify buffers with the same name
+                    ; instead of buf<2>, etc it shows
 (setq uniquify-buffer-name-style 'reverse)
 (setq uniquify-after-kill-buffer-p t)
 (setq uniquify-ignore-buffers-re "^\\*")
 
-					; enable recent files menu
+                    ; enable recent files menu
 
 (recentf-mode t)
 (setq recentf-max-saved-items 100)
@@ -336,8 +335,8 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (setq ido-use-virtual-buffers t)
 
 
-					; use 4 spaces instead of tabs for indentation
-					; http://stackoverflow.com/a/471916/
+                    ; use 4 spaces instead of tabs for indentation
+                    ; http://stackoverflow.com/a/471916/
 (setq tab-width 4)
 (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80))
 (setq indent-tabs-mode nil)
@@ -356,7 +355,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 ;; You should add registers here for the files you edit most often.
 (dolist (r `((?i (file . ,(expand-file-name "~/.emacs")))
              (?r (file . ,(expand-file-name "~/private/org/notes.org")))
-	     ))
+         ))
   (set-register (car r) (cadr r)))
 
 ;; Commands which ask for a destination directory, such as those which
@@ -370,66 +369,73 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 
 ;; [[~/src/emacs-starter-kit/starter-kit-bindings.el]]
 ;; . Indentation help
-(global-set-key (kbd "C-x ^") 'join-line)
-
-;; . Help should search more than just commands
-(global-set-key (kbd "C-h a") 'apropos)
+(global-set-key (kbd "C-x ^") #'join-line)
 
 ;; . Use regex searches by default.
-(global-set-key (kbd "C-s") 'isearch-forward-regexp)
-(global-set-key (kbd "\C-r") 'isearch-backward-regexp)
-(global-set-key (kbd "C-M-s") 'isearch-forward)
-(global-set-key (kbd "C-M-r") 'isearch-backward)
+(global-set-key (kbd "C-s") #'isearch-forward-regexp)
+(global-set-key (kbd "\C-r") #'isearch-backward-regexp)
+(global-set-key (kbd "C-M-s") #'isearch-forward)
+(global-set-key (kbd "C-M-r") #'isearch-backward)
 
-					; [[https://github.com/dimitri/emacs-kicker/blob/master/init.el]]
-					; If you do use M-x term, you will notice there's line mode that acts like
-					; emacs buffers, and there's the default char mode that will send your
-					; input char-by-char, so that curses application see each of your key
-					; strokes.
-					;
-					; The default way to toggle between them is C-c C-j and C-c C-k, let's
-					; better use just one key to do the same.
+                    ; [[https://github.com/dimitri/emacs-kicker/blob/master/init.el]]
+                    ; If you do use M-x term, you will notice there's line mode that acts like
+                    ; emacs buffers, and there's the default char mode that will send your
+                    ; input char-by-char, so that curses application see each of your key
+                    ; strokes.
+                    ;
+                    ; The default way to toggle between them is C-c C-j and C-c C-k, let's
+                    ; better use just one key to do the same.
 (require 'term)
-(define-key term-raw-map  (kbd "C-'") 'term-line-mode)
-(define-key term-mode-map (kbd "C-'") 'term-char-mode)
-					; Have C-y act as usual in term-mode, to avoid C-' C-y C-'
-					; Well the real default would be C-c C-j C-y C-c C-k.
-(define-key term-raw-map  (kbd "C-y") 'term-paste)
+(define-key term-raw-map  (kbd "C-'") #'term-line-mode)
+(define-key term-mode-map (kbd "C-'") #'term-char-mode)
+                    ; Have C-y act as usual in term-mode, to avoid C-' C-y C-'
+                    ; Well the real default would be C-c C-j C-y C-c C-k.
+(define-key term-raw-map  (kbd "C-y") #'term-paste)
 
 
-					; use ido for minibuffer completion
+                    ; use ido for minibuffer completion
 
 (ido-mode t)
 (setq ido-save-directory-list-file "~/.emacs.d/.ido.last")
 (setq ido-enable-flex-matching t)
 (setq ido-use-filename-at-point 'guess)
 (setq ido-show-dot-for-dired t)
-					; default key to switch buffer is C-x b, but that's not easy enough
-					;
-					; when you do that, to kill emacs either close its frame from the window
-					; manager or do M-x kill-emacs.  Don't need a nice shortcut for a once a
-					; week (or day) action.
-(global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
-(global-set-key (kbd "C-x C-c") 'save-buffers-kill-emacs)
-(global-set-key (kbd "C-x B") 'ibuffer)
+                    ; default key to switch buffer is C-x b, but that's not easy enough
+                    ;
+                    ; when you do that, to kill emacs either close its frame from the window
+                    ; manager or do M-x kill-emacs.  Don't need a nice shortcut for a once a
+                    ; week (or day) action.
+(global-set-key (kbd "C-x C-b") #'ido-switch-buffer)
+(global-set-key (kbd "C-x C-c") #'save-buffers-kill-emacs)
+(global-set-key (kbd "C-x B") #'ibuffer)
 
 
-					; C-x C-j opens dired with the cursor right on the file you're editing
+                    ; C-x C-j opens dired with the cursor right on the file you're editing
 (require 'dired-x)
 
-					; ripgrep -- https://github.com/dajva/rg.el
+                    ; ripgrep -- https://github.com/dajva/rg.el
 (el-get-bundle rg
-  (global-set-key (kbd "C-x C-r") 'rg))
+  (global-set-key (kbd "C-x C-r") #'rg))
 
 (el-get-bundle multiple-cursors
-  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-  (global-set-key (kbd "C-S-<mouse-1>") 'mc/add-cursor-on-click))
+  (global-set-key (kbd "C-c m") #'hydra-multiple-cursors/body)
+  (global-set-key (kbd "C-S-c C-S-c") #'mc/edit-lines)
+  (global-set-key (kbd "C->") #'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") #'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-c C-<") #'mc/mark-all-like-this)
+  (global-set-key (kbd "C-S-<mouse-1>") #'mc/add-cursor-on-click))
 
 (el-get-bundle which-key
   (which-key-mode))
+
+(el-get-bundle helm
+  ;; Help should search more than just commands
+  (global-set-key (kbd "C-h a") #'helm-apropos))
+
+(el-get-bundle helm-google
+  ;; If you want to keep the search open use C-z instead of RET.
+  (global-set-key (kbd "C-h C--") #'helm-google)
+  (setq browse-url-browser-function #'eww-browse-url))
 
 (el-get-bundle markdown-mode
   (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
@@ -447,41 +453,35 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (unless (file-directory-p el-get-recipe-path-elpa)
   (el-get-elpa-build-local-recipes))
 
-(setq my-packages
+(setq my:el-get-packages
       (append
        ;; list of packages we use straight from official recipes
-       '(el-get geiser helm dash deferred el-get elpy
-		yasnippet pyvenv highlight-indentation find-file-in-project
-		async epl flycheck let-alist package pkg-info fuzzy gh
-		marshal ht request logito pcache gist tabulated-list git-modes
-		google ein auto-complete popup cl-lib websocket helm-google
-		ido-vertical-mode company company-restclient know-your-http-well
-		restclient ac-geiser
-		names json-mode json-snatcher json-reformat
-		multiple-cursors rg py-autopep8 magit with-editor smex
-		; for org-store-link
-		skewer-mode)
-       (mapcar 'el-get-as-symbol (mapcar 'el-get-source-name el-get-sources))))
+       '(yasnippet		    ; interactive templates
+	 skewer-mode)		    ;  org-store-link fails without it
+       (mapcar #'el-get-as-symbol (mapcar #'el-get-source-name el-get-sources))))
+
 
 ;; https://github.com/dimitri/el-get/issues/2232
 (el-get-ensure-byte-compilable-autoload-file el-get-autoload-file)
-(el-get-cleanup my-packages)
-(el-get 'sync my-packages)
+(el-get-cleanup my:el-get-packages)
+(el-get 'sync my:el-get-packages)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 
 (load-theme 'tango-dark)
 
 (require 'saveplace)
 (setq-default save-place t)
 
-					; Configure gnus (mail lists, nntp news groups)
-					; http://www.xsteve.at/prg/gnus/
+                    ; Configure gnus (mail lists, nntp news groups)
+                    ; http://www.xsteve.at/prg/gnus/
 (setq gnus-select-method '(nnimap "gmail"
-				  (nnimap-address "imap.gmail.com")
-				  (nnimap-server-port 993)
-				  (nnimap-stream ssl)
-				  (nnimap-authinfo-file "~/.authinfo.gpg")))
+                  (nnimap-address "imap.gmail.com")
+                  (nnimap-server-port 993)
+                  (nnimap-stream ssl)
+                  (nnimap-authinfo-file "~/.authinfo.gpg")))
 (setq smtpmail-smtp-server "smtp.gmail.com")
 (setq user-full-name "Akira Li")
 (setq user-mail-address "4kir4.1i@gmail.com")
@@ -506,38 +506,38 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\”]\”[#’()]")
 (setq gnus-secondary-select-methods
       '((nnml "")
-	(nntp "news.gmane.org"
-	      (nntp-open-connection-function nntp-open-tls-stream)
-	      (nntp-port-number 563))
-	))
+    (nntp "news.gmane.org"
+          (nntp-open-connection-function nntp-open-tls-stream)
+          (nntp-port-number 563))
+    ))
 (setq nnmail-expiry-wait 35)
 ;;;;(setq mm-text-html-renderer 'w3m)
 (setq mm-discouraged-alternatives '("text/html" "text/richtext"))
 (setq gnus-message-archive-group
       '((if (message-news-p)
-	    "sent-news"
-	  "sent-mail")))
+        "sent-news"
+      "sent-mail")))
 (setq gnus-use-adaptive-scoring t)
 (setq gnus-score-expiry-days 14)
 (setq gnus-default-adaptive-score-alist
       '((gnus-unread-mark)
-	(gnus-ticked-mark (from 4))
-	(gnus-dormant-mark (from 5))
-	(gnus-saved-mark (from 20) (subject 5))
-	(gnus-del-mark (from -2) (subject -5))
-	(gnus-read-mark (from 2) (subject 1))
-	(gnus-killed-mark (from 0) (subject -3))))
-					;(gnus-killed-mark (from -1) (subject -3))))
-					;(gnus-kill-file-mark (from -9999)))
-					;(gnus-expirable-mark (from -1) (subject -1))
-					;(gnus-ancient-mark (subject -1))
-					;(gnus-low-score-mark (subject -1))
-					;(gnus-catchup-mark (subject -1))))
+    (gnus-ticked-mark (from 4))
+    (gnus-dormant-mark (from 5))
+    (gnus-saved-mark (from 20) (subject 5))
+    (gnus-del-mark (from -2) (subject -5))
+    (gnus-read-mark (from 2) (subject 1))
+    (gnus-killed-mark (from 0) (subject -3))))
+                    ;(gnus-killed-mark (from -1) (subject -3))))
+                    ;(gnus-kill-file-mark (from -9999)))
+                    ;(gnus-expirable-mark (from -1) (subject -1))
+                    ;(gnus-ancient-mark (subject -1))
+                    ;(gnus-low-score-mark (subject -1))
+                    ;(gnus-catchup-mark (subject -1))))
 
-(setq gnus-score-decay-constant 1)	;default = 3
-(setq gnus-score-decay-scale 0.03)	;default = 0.05
+(setq gnus-score-decay-constant 1)    ;default = 3
+(setq gnus-score-decay-scale 0.03)    ;default = 0.05
 
-(setq gnus-decay-scores t)		;(gnus-decay-score 1000)
+(setq gnus-decay-scores t)        ;(gnus-decay-score 1000)
 (setq gnus-global-score-files
       '("~/gnus/scores/all.SCORE"))
 
@@ -555,9 +555,9 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (setq gnus-sum-thread-tree-single-leaf "`-> ")
 (setq message-generate-headers-first t)
 (setq message-kill-buffer-on-exit t)
-(add-hook 'message-mode-hook 'turn-on-auto-fill)
-(add-hook 'message-sent-hook 'gnus-score-followup-article)
-(add-hook 'message-sent-hook 'gnus-score-followup-thread)
+(add-hook 'message-mode-hook #'turn-on-auto-fill)
+(add-hook 'message-sent-hook #'gnus-score-followup-article)
+(add-hook 'message-sent-hook #'gnus-score-followup-thread)
 (setq gnus-directory "~/gnus")
 (setq message-directory "~/gnus/mail")
 (setq nnml-directory "~/gnus/nnml-mail")
@@ -566,7 +566,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (setq gnus-cache-directory "~/gnus/cache")
 
 ;;;;(add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
-(add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
+(add-hook 'dired-mode-hook #'turn-on-gnus-dired-mode)
 
 (require 'gnus-registry)
 (gnus-registry-initialize)
@@ -575,99 +575,95 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 
 (setq gnus-sorted-header-list '("^From:" "^Subject:" "^Summary:" "^Keywords:" "^Newsgroups:" "^Followup-To:" "^To:" "^Cc:" "^Date:" "^User-Agent:" "^X-Mailer:" "^X-Newsreader:"))
 
-(add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+(add-hook 'gnus-group-mode-hook #'gnus-topic-mode)
 
-(define-key gnus-summary-mode-map [(meta up)] '(lambda() (interactive) (scroll-other-window -1)))
-(define-key gnus-summary-mode-map [(meta down)] '(lambda() (interactive) (scroll-other-window 1)))
-(define-key gnus-summary-mode-map [(control down)] 'gnus-summary-next-thread)
-(define-key gnus-summary-mode-map [(control up)] 'gnus-summary-prev-thread)
+(define-key gnus-summary-mode-map [(meta up)] (lambda() (interactive) (scroll-other-window -1)))
+(define-key gnus-summary-mode-map [(meta down)] (lambda() (interactive) (scroll-other-window 1)))
+(define-key gnus-summary-mode-map [(control down)] #'gnus-summary-next-thread)
+(define-key gnus-summary-mode-map [(control up)] #'gnus-summary-prev-thread)
 (setq spam-directory "~/gnus/spam/")
 
 (setq gnus-spam-process-newsgroups
       '(("^gmane\\."
-	 ((spam spam-use-gmane)))))
+     ((spam spam-use-gmane)))))
 
 (require 'spam)
 
-					; IRC client (*nix only)
+                    ; IRC client (*nix only)
 (require 'erc)
-					; . Make C-c RET (or C-c C-RET) send messages instead of RET.
+                    ; . Make C-c RET (or C-c C-RET) send messages instead of RET.
 (define-key erc-mode-map (kbd "RET") nil)
-(define-key erc-mode-map (kbd "C-c RET") 'erc-send-current-line)
-(define-key erc-mode-map (kbd "C-c C-RET") 'erc-send-current-line)
-					; Kill buffers for channels after /part
+(define-key erc-mode-map (kbd "C-c RET") #'erc-send-current-line)
+(define-key erc-mode-map (kbd "C-c C-RET") #'erc-send-current-line)
+                    ; Kill buffers for channels after /part
 (setq erc-kill-buffer-on-part t)
-					; Kill buffers for private queries after quitting the server
+                    ; Kill buffers for private queries after quitting the server
 (setq erc-kill-queries-on-quit t)
-					; Kill buffers for server messages after quitting the server
+                    ; Kill buffers for server messages after quitting the server
 (setq erc-kill-server-buffer-on-quit t)
-					; . hide server messages
+                    ; . hide server messages
 ;;(setq erc-hide-list '("JOIN" "PART" "QUIT"))
 
 (setq erc-auto-query 'buffer) ; add a whois when someone pms
 
-					; keep erc from eating ram by truncating chat logs
+                    ; keep erc from eating ram by truncating chat logs
 (setq erc-max-buffer-size 20000)
 (defvar erc-insert-post-hook)
-(add-hook 'erc-insert-post-hook 'erc-truncate-buffer)
+(add-hook 'erc-insert-post-hook #'erc-truncate-buffer)
 
 
-					; .
+                    ; .
 (defun irc-seen_ ()
   "Connect to IRC."
   (interactive)
   (erc-tls :server "me" :port 6697
-	   :nick "seen_"
-	   :full-name "D M"
-	   :password "seen_@erc/freenode:sweOwamAygIlcejIcVic"))
+       :nick "seen_"
+       :full-name "D M"
+       :password "seen_@erc/freenode:sweOwamAygIlcejIcVic"))
 
-					; Notify when someone mentions my nick.
-					; http://bbs.archlinux.org/viewtopic.php?id=40190
+                    ; Notify when someone mentions my nick.
+                    ; http://bbs.archlinux.org/viewtopic.php?id=40190
 (defun erc-global-notify (matched-type nick msg)
   (interactive)
   (when (and (eq matched-type 'current-nick)
-	     (not (string= (frame-parameter (selected-frame) 'name) "#python")))
+         (not (string= (frame-parameter (selected-frame) 'name) "#python")))
     (shell-command
      (concat "notify-send -t 4000 -c \"im.received\" \""
-	     (car (split-string nick "!"))
-	     " mentioned your nick\" \""
-	     msg
-	     "\""))))
-(add-hook 'erc-text-matched-hook 'erc-global-notify)
+         (car (split-string nick "!"))
+         " mentioned your nick\" \""
+         msg
+         "\""))))
+(add-hook 'erc-text-matched-hook #'erc-global-notify)
 
-					; * https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links
+                    ; * https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links
 (setq vc-follow-symlinks t)
 
 
-(add-hook 'after-init-hook 'global-company-mode)
-
-(setq gist-view-gist t)
-
-					; suppress Warning (mule): Invalid coding system `ascii' is specified
+                    ; suppress Warning (mule): Invalid coding system `ascii' is specified
 (define-coding-system-alias 'ascii 'us-ascii)
 
-					; run compile command on F5, change command with C-u F5
-(global-set-key [f5] 'compile)
+                    ; run compile command on F5, change command with C-u F5
+(global-set-key [f5] #'compile)
 
 
 (setq compilation-ask-about-save nil)
 (setq compilation-read-command nil)
 
-					; use 'y'/'n' instead of 'yes'/'no'
+                    ; use 'y'/'n' instead of 'yes'/'no'
 (fset 'yes-or-no-p 'y-or-n-p)
 
-					; whenever an external process changes a file underneath emacs, and there
-					; was no unsaved changes in the corresponding buffer, just revert its
-					; content to reflect what's on-disk.
+                    ; whenever an external process changes a file underneath emacs, and there
+                    ; was no unsaved changes in the corresponding buffer, just revert its
+                    ; content to reflect what's on-disk.
 (global-auto-revert-mode 1)
 
 ;; enable line numbers globally
 (global-linum-mode t)
 
-					;
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+                    ;
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
 
-					; copy/kill line on M-w, C-w
+                    ; copy/kill line on M-w, C-w
 (defadvice kill-ring-save (before slickcopy activate compile)
   "When called interactively with no active region, copy a single line instead."
   (interactive
@@ -681,7 +677,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
      (list (line-beginning-position)
            (line-beginning-position 2)))))
 
-					; http://www.emacswiki.org/emacs/BackupDirectory
+                    ; http://www.emacswiki.org/emacs/BackupDirectory
 (setq
  backup-by-copying t      ; don't clobber symlinks
  backup-directory-alist
@@ -691,39 +687,39 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
  kept-old-versions 2
  version-control t)       ; use versioned backups
 
-					; show column number
+                    ; show column number
 (column-number-mode t) ;;NOTE: it has a performance hit
 
-					; Open *.m in Octave-mode instead of ObjC
+                    ; Open *.m in Octave-mode instead of ObjC
 (setq auto-mode-alist
       (cons
        '("\\.m$" . octave-mode)
        auto-mode-alist))
 
-					; style I want to use in c++ mode
-					; from http://www.emacswiki.org/emacs/CPlusPlusMode
+                    ; style I want to use in c++ mode
+                    ; from http://www.emacswiki.org/emacs/CPlusPlusMode
 (c-add-style "my-style"
-	     '("python"
-	       (indent-tabs-mode . nil)        ; use spaces rather than tabs
-	       (c-basic-offset . 2)
-	       ))
+         '("python"
+           (indent-tabs-mode . nil)        ; use spaces rather than tabs
+           (c-basic-offset . 2)
+           ))
 (defun my-c-mode-common-hook ()
   (c-set-style "my-style")        ; use my-style defined above
   (auto-fill-mode)
   (c-toggle-auto-hungry-state 1))
 
-(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+(add-hook 'c-mode-common-hook #'my-c-mode-common-hook)
 
-					; список используемых нами словарей
-					; from https://habrahabr.ru/post/215055/
+                    ; список используемых нами словарей
+                    ; from https://habrahabr.ru/post/215055/
 (setq ispell-local-dictionary-alist
       '(("russian"
-	 "[АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯабвгдеёжзийклмнопрстуфхцчшщьыъэюя]"
-	 "[^АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯабвгдеёжзийклмнопрстуфхцчшщьыъэюя]"
-	 "[-]"  nil ("-d" "ru_RU") nil utf-8)
-	("english"
-	 "[A-Za-z]" "[^A-Za-z]"
-	 "[']"  nil ("-d" "en_US") nil iso-8859-1)))
+     "[АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯабвгдеёжзийклмнопрстуфхцчшщьыъэюя]"
+     "[^АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯабвгдеёжзийклмнопрстуфхцчшщьыъэюя]"
+     "[-]"  nil ("-d" "ru_RU") nil utf-8)
+    ("english"
+     "[A-Za-z]" "[^A-Za-z]"
+     "[']"  nil ("-d" "en_US") nil iso-8859-1)))
 
 ;; w3m setup
 ;; from http://beatofthegeek.com/2014/02/my-setup-for-using-emacs-as-web-browser.html
@@ -733,32 +729,35 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 ;;change w3m user-agent to android
 (setq w3m-user-agent "Mozilla/5.0 (Linux; U; Android 2.3.3; zh-tw; HTC_Pyramid Build/GRI40) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.")
 
-(global-set-key (kbd "C-c C-f") 'ido-recentf-open)
+(global-set-key (kbd "C-c C-f") #'ido-recentf-open)
 (setq flyspell-default-dictionary "ru")
 
 
 (require 'org)
-					; Set to the location of your Org files on your local system
+                    ; Set to the location of your Org files on your local system
 (setq org-directory "~/private/org")
-					; Set to the name of the file where new notes will be stored
+                    ; Set to the name of the file where new notes will be stored
 (setq org-mobile-inbox-for-pull "~/private/org/from-mobile.org")
-					; Set to <your Dropbox root directory>/MobileOrg.
+                    ; Set to <your Dropbox root directory>/MobileOrg.
 (setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
 (setq org-confirm-babel-evaluate nil)
-(global-set-key "\C-cl" 'org-store-link)
-(global-set-key "\C-ca" 'org-agenda)
-(global-set-key "\C-cc" 'org-capture)
-(global-set-key "\C-cb" 'org-iswitchb)
+(global-set-key "\C-cl" #'org-store-link)
+(global-set-key "\C-ca" #'org-agenda)
+(global-set-key "\C-cc" #'org-capture)
+(global-set-key "\C-cb" #'org-iswitchb)
 
-					; enable export to markdown in on C-c C-e
-(eval-after-load "org"
-  '(require 'ox-md nil t))
+;; resume the clock under the assumption that you have worked on this task while outside Emacs
+(setq org-clock-persist t)
+(org-clock-persistence-insinuate)
+
+
+;; enable export to markdown in on C-c C-e
+(require 'ox-md nil t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq canlock-password "58c566bd78ee9cbec1af9280ae463f8a0df16fbc"
       column-number-mode t
-      elpy-mode-hook (quote (flycheck-mode hl-line-mode))
       inhibit-startup-screen t
       nand2tetris-core-base-dir "~/prj/coursera/nand2tetris"
       org-agenda-files (quote ("~/private/org/notes.org"))
@@ -798,7 +797,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(magit-dispatch-arguments nil)
- '(package-selected-packages (quote (w3m rg company async))))
+ '(package-selected-packages (quote (w3m))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
