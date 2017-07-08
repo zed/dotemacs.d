@@ -3,7 +3,7 @@
 
 ;; * bootstrap el-get
 (setq load-prefer-newer t) ; suppress warning about .autoloads.el files
-(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+(add-to-list 'load-path  (concat user-emacs-directory "el-get/el-get"))
 
 ;; NOTE if you change it; update using M-x el-get-elpa-build-local-recipes
 (unless (require 'el-get nil 'noerror)
@@ -22,8 +22,8 @@
 
 ;; * install & configure packages
 (setq el-get-allow-insecure 'nil)
-(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
-;;(setq el-get-user-package-directory "~/.emacs.d/el-get-init-files/")
+(add-to-list 'el-get-recipe-path (concat user-emacs-directory "el-get-user/recipes"))
+
 
 (el-get-bundle! with-eval-after-load-feature) ; to suppress "free variable" warning
 
@@ -397,7 +397,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
                     ; use ido for minibuffer completion
 
 (ido-mode t)
-(setq ido-save-directory-list-file "~/.emacs.d/.ido.last")
+(setq ido-save-directory-list-file (concat user-emacs-directory ".ido.last"))
 (setq ido-enable-flex-matching t)
 (setq ido-use-filename-at-point 'guess)
 (setq ido-show-dot-for-dired t)
