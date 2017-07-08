@@ -1,5 +1,5 @@
 (message "Loading .emacs...")
-(setq load-prefer-newer t) ; suppress warning about .autoloads file
+(setq load-prefer-newer t) ; suppress warning about .autoloads.el files
 
 ;; * bootstrap el-get
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
@@ -17,7 +17,7 @@
   (package-refresh-contents)
   (package-install 'el-get)
   (require 'el-get))
-(el-get 'sync 'el-get)
+(el-get 'sync 'el-get) ; workaround "can't find \"package\" package"
 
 (setq el-get-allow-insecure 'nil)
 (add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
@@ -25,8 +25,9 @@
 
 (el-get-bundle! with-eval-after-load-feature)
 
-(el-get-bundle gist
-  (setq gist-view-gist t))
+(el-get-bundle gist)
+(with-eval-after-load-feature 'gist
+  (setq gist-view-gist t)) ; suppress "free variable warning
 
 (el-get-bundle company
   (add-hook 'after-init-hook #'global-company-mode))
@@ -467,173 +468,124 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (el-get 'sync my:el-get-packages)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; no new packages from here on out
 
-
+(defun my:load-secrets (orig-fun &rest args)
+  "Load secrets before calling `orig-fun`."
+  (require '.secrets "~/.secrets.el.gpg")
+  (apply orig-fun args))
 
 (load-theme 'tango-dark)
 
 (require 'saveplace)
-(setq-default save-place t)
+(setq-default save-place t) ; set global default value for buffer local variable
 
-                    ; Configure gnus (mail lists, nntp news groups)
-                    ; http://www.xsteve.at/prg/gnus/
-(setq gnus-select-method '(nnimap "gmail"
-                  (nnimap-address "imap.gmail.com")
-                  (nnimap-server-port 993)
-                  (nnimap-stream ssl)
-                  (nnimap-authinfo-file "~/.authinfo.gpg")))
-(setq smtpmail-smtp-server "smtp.gmail.com")
-(setq user-full-name "Akira Li")
-(setq user-mail-address "4kir4.1i@gmail.com")
+(with-eval-after-load "gnus"
+  (advice-add 'gnus :around #'my:load-secrets)
 
-;; Replace [ and ] with _ in ADAPT file names for due to Gnus 5.13 bug
-(setq nnheader-file-name-translation-alist '((?[ . ?_) (?] . ?_)) )
+  (setq mm-discouraged-alternatives '("text/html" "text/richtext"))
+  (setq gnus-message-archive-group
+	'((if (message-news-p)
+	      "sent-news"
+	    "sent-mail")))
+  (setq gnus-use-adaptive-scoring t)
+  (setq gnus-score-expiry-days 14)
+  (setq gnus-default-adaptive-score-alist
+	'((gnus-unread-mark)
+	  (gnus-ticked-mark (from 4))
+	  (gnus-dormant-mark (from 5))
+	  (gnus-saved-mark (from 20) (subject 5))
+	  (gnus-del-mark (from -2) (subject -5))
+	  (gnus-read-mark (from 2) (subject 1))
+	  (gnus-killed-mark (from 0) (subject -3))))
 
-(setq message-send-mail-function 'smtpmail-send-it
-      smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-      smtpmail-default-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-service 587
-      smtpmail-authinfo-file "~/.authinfo.gpg"
-      smtpmail-auth-credentials "~/.authinfo.gpg"
-      starttls-use-gnutls t)
+  (setq gnus-decay-scores t)
+  (setq gnus-global-score-files
+	'("~/gnus/scores/all.SCORE"))
 
-(eval-after-load "mail-source"
-  '(add-to-list 'mail-sources '(file :path "/var/spool/mail/den")))
+  ;; all.SCORE contains:
+  (setq gnus-summary-expunge-below -999)
+  (setq gnus-summary-line-format "%O%U%R%z%d %B%(%[%4L: %-22,22f%]%) %s\n")
+  (setq gnus-summary-mode-line-format "Gnus: %p [%A / Sc:%4z] %Z")
+  (setq gnus-summary-same-subject "")
+  (setq gnus-sum-thread-tree-root "")
+  (setq gnus-sum-thread-tree-single-indent "")
+  (setq gnus-sum-thread-tree-leaf-with-other "+-> ")
+  (setq gnus-sum-thread-tree-vertical "|")
+  (setq gnus-sum-thread-tree-single-leaf "`-> ")
+  (setq message-generate-headers-first t)
+  (setq message-kill-buffer-on-exit t)
+  (add-hook 'message-mode-hook #'turn-on-auto-fill)
+  (add-hook 'message-sent-hook #'gnus-score-followup-article)
+  (add-hook 'message-sent-hook #'gnus-score-followup-thread)
+  (setq gnus-directory "~/gnus")
+  (setq message-directory "~/gnus/mail")
+  (setq nnml-directory "~/gnus/nnml-mail")
+  (setq gnus-article-save-directory "~/gnus/saved")
+  (setq gnus-kill-files-directory "~/gnus/scores")
+  (setq gnus-cache-directory "~/gnus/cache")
 
-(setq read-mail-command 'gnus)
-(setq message-send-mail-real-function 'smtpmail-send-it)
-(setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\”]\”[#’()]")
-(setq gnus-secondary-select-methods
-      '((nnml "")
-    (nntp "news.gmane.org"
-          (nntp-open-connection-function nntp-open-tls-stream)
-          (nntp-port-number 563))
-    ))
-(setq nnmail-expiry-wait 35)
-;;;;(setq mm-text-html-renderer 'w3m)
-(setq mm-discouraged-alternatives '("text/html" "text/richtext"))
-(setq gnus-message-archive-group
-      '((if (message-news-p)
-        "sent-news"
-      "sent-mail")))
-(setq gnus-use-adaptive-scoring t)
-(setq gnus-score-expiry-days 14)
-(setq gnus-default-adaptive-score-alist
-      '((gnus-unread-mark)
-    (gnus-ticked-mark (from 4))
-    (gnus-dormant-mark (from 5))
-    (gnus-saved-mark (from 20) (subject 5))
-    (gnus-del-mark (from -2) (subject -5))
-    (gnus-read-mark (from 2) (subject 1))
-    (gnus-killed-mark (from 0) (subject -3))))
-                    ;(gnus-killed-mark (from -1) (subject -3))))
-                    ;(gnus-kill-file-mark (from -9999)))
-                    ;(gnus-expirable-mark (from -1) (subject -1))
-                    ;(gnus-ancient-mark (subject -1))
-                    ;(gnus-low-score-mark (subject -1))
-                    ;(gnus-catchup-mark (subject -1))))
+  (add-hook 'dired-mode-hook #'turn-on-gnus-dired-mode)
 
-(setq gnus-score-decay-constant 1)    ;default = 3
-(setq gnus-score-decay-scale 0.03)    ;default = 0.05
+  (require 'gnus-registry)
+  (gnus-registry-initialize)
 
-(setq gnus-decay-scores t)        ;(gnus-decay-score 1000)
-(setq gnus-global-score-files
-      '("~/gnus/scores/all.SCORE"))
+  (setq gnus-visible-headers "^From:\\|^Newsgroups:\\|^Subject:\\|^Date:\\|^Followup-To:\\|^Reply-To:\\|^Summary:\\|^Keywords:\\|^To:\\|^[BGF]?Cc:\\|^Posted-To:\\|^Mail-Copies-To:\\|^Mail-Followup-To:\\|^Apparently-To:\\|^Gnus-Warning:\\|^Resent-From:\\|^X-Sent:\\|^User-Agent:\\|^X-Mailer:\\|^X-Newsreader:")
 
-;; all.SCORE contains:
-;;(("xref"
-;;  ("gmane.spam.detected" -1000 nil s)))
-(setq gnus-summary-expunge-below -999)
-(setq gnus-summary-line-format "%O%U%R%z%d %B%(%[%4L: %-22,22f%]%) %s\n")
-(setq gnus-summary-mode-line-format "Gnus: %p [%A / Sc:%4z] %Z")
-(setq gnus-summary-same-subject "")
-(setq gnus-sum-thread-tree-root "")
-(setq gnus-sum-thread-tree-single-indent "")
-(setq gnus-sum-thread-tree-leaf-with-other "+-> ")
-(setq gnus-sum-thread-tree-vertical "|")
-(setq gnus-sum-thread-tree-single-leaf "`-> ")
-(setq message-generate-headers-first t)
-(setq message-kill-buffer-on-exit t)
-(add-hook 'message-mode-hook #'turn-on-auto-fill)
-(add-hook 'message-sent-hook #'gnus-score-followup-article)
-(add-hook 'message-sent-hook #'gnus-score-followup-thread)
-(setq gnus-directory "~/gnus")
-(setq message-directory "~/gnus/mail")
-(setq nnml-directory "~/gnus/nnml-mail")
-(setq gnus-article-save-directory "~/gnus/saved")
-(setq gnus-kill-files-directory "~/gnus/scores")
-(setq gnus-cache-directory "~/gnus/cache")
+  (setq gnus-sorted-header-list '("^From:" "^Subject:" "^Summary:" "^Keywords:" "^Newsgroups:" "^Followup-To:" "^To:" "^Cc:" "^Date:" "^User-Agent:" "^X-Mailer:" "^X-Newsreader:"))
 
-;;;;(add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
-(add-hook 'dired-mode-hook #'turn-on-gnus-dired-mode)
+  (add-hook 'gnus-group-mode-hook #'gnus-topic-mode)
 
-(require 'gnus-registry)
-(gnus-registry-initialize)
+  (define-key gnus-summary-mode-map [(meta up)] (lambda() (interactive) (scroll-other-window -1)))
+  (define-key gnus-summary-mode-map [(meta down)] (lambda() (interactive) (scroll-other-window 1)))
+  (define-key gnus-summary-mode-map [(control down)] #'gnus-summary-next-thread)
+  (define-key gnus-summary-mode-map [(control up)] #'gnus-summary-prev-thread)
+  (setq spam-directory "~/gnus/spam/")
 
-(setq gnus-visible-headers "^From:\\|^Newsgroups:\\|^Subject:\\|^Date:\\|^Followup-To:\\|^Reply-To:\\|^Summary:\\|^Keywords:\\|^To:\\|^[BGF]?Cc:\\|^Posted-To:\\|^Mail-Copies-To:\\|^Mail-Followup-To:\\|^Apparently-To:\\|^Gnus-Warning:\\|^Resent-From:\\|^X-Sent:\\|^User-Agent:\\|^X-Mailer:\\|^X-Newsreader:")
+  (setq gnus-spam-process-newsgroups
+	'(("^gmane\\."
+	   ((spam spam-use-gmane)))))
 
-(setq gnus-sorted-header-list '("^From:" "^Subject:" "^Summary:" "^Keywords:" "^Newsgroups:" "^Followup-To:" "^To:" "^Cc:" "^Date:" "^User-Agent:" "^X-Mailer:" "^X-Newsreader:"))
+  (require 'spam))
 
-(add-hook 'gnus-group-mode-hook #'gnus-topic-mode)
+(defun irc-start_ ()
+  (irc-start))
+(advice-add 'irc-start_ :around #'my:load-secrets)
 
-(define-key gnus-summary-mode-map [(meta up)] (lambda() (interactive) (scroll-other-window -1)))
-(define-key gnus-summary-mode-map [(meta down)] (lambda() (interactive) (scroll-other-window 1)))
-(define-key gnus-summary-mode-map [(control down)] #'gnus-summary-next-thread)
-(define-key gnus-summary-mode-map [(control up)] #'gnus-summary-prev-thread)
-(setq spam-directory "~/gnus/spam/")
-
-(setq gnus-spam-process-newsgroups
-      '(("^gmane\\."
-     ((spam spam-use-gmane)))))
-
-(require 'spam)
-
-                    ; IRC client (*nix only)
-(require 'erc)
-                    ; . Make C-c RET (or C-c C-RET) send messages instead of RET.
-(define-key erc-mode-map (kbd "RET") nil)
-(define-key erc-mode-map (kbd "C-c RET") #'erc-send-current-line)
-(define-key erc-mode-map (kbd "C-c C-RET") #'erc-send-current-line)
-                    ; Kill buffers for channels after /part
-(setq erc-kill-buffer-on-part t)
-                    ; Kill buffers for private queries after quitting the server
-(setq erc-kill-queries-on-quit t)
-                    ; Kill buffers for server messages after quitting the server
-(setq erc-kill-server-buffer-on-quit t)
-                    ; . hide server messages
-;;(setq erc-hide-list '("JOIN" "PART" "QUIT"))
-
-(setq erc-auto-query 'buffer) ; add a whois when someone pms
-
-                    ; keep erc from eating ram by truncating chat logs
-(setq erc-max-buffer-size 20000)
-(defvar erc-insert-post-hook)
-(add-hook 'erc-insert-post-hook #'erc-truncate-buffer)
+(with-eval-after-load "erc"
+					; IRC client (*nix only)
 
 
-                    ; .
-(defun irc-seen_ ()
-  "Connect to IRC."
-  (interactive)
-  (erc-tls :server "me" :port 6697
-       :nick "seen_"
-       :full-name "D M"
-       :password "seen_@erc/freenode:sweOwamAygIlcejIcVic"))
+					; . Make C-c RET (or C-c C-RET) send messages instead of RET.
+  (define-key erc-mode-map (kbd "RET") nil)
+  (define-key erc-mode-map (kbd "C-c RET") #'erc-send-current-line)
+  (define-key erc-mode-map (kbd "C-c C-RET") #'erc-send-current-line)
+					; Kill buffers for channels after /part
+  (setq erc-kill-buffer-on-part t)
+					; Kill buffers for private queries after quitting the server
+  (setq erc-kill-queries-on-quit t)
+					; Kill buffers for server messages after quitting the server
+  (setq erc-kill-server-buffer-on-quit t)
 
-                    ; Notify when someone mentions my nick.
-                    ; http://bbs.archlinux.org/viewtopic.php?id=40190
-(defun erc-global-notify (matched-type nick msg)
-  (interactive)
-  (when (and (eq matched-type 'current-nick)
-         (not (string= (frame-parameter (selected-frame) 'name) "#python")))
-    (shell-command
-     (concat "notify-send -t 4000 -c \"im.received\" \""
-         (car (split-string nick "!"))
-         " mentioned your nick\" \""
-         msg
-         "\""))))
-(add-hook 'erc-text-matched-hook #'erc-global-notify)
+  (setq erc-auto-query 'buffer)		; add a whois when someone pms
+
+					; keep erc from eating ram by truncating chat logs
+  (setq erc-max-buffer-size 20000)
+  (add-hook 'erc-insert-post-hook #'erc-truncate-buffer)
+
+
+					; Notify when someone mentions my nick.
+					; http://bbs.archlinux.org/viewtopic.php?id=40190
+  (defun erc-global-notify (matched-type nick msg)
+    (interactive)
+    (when (eq matched-type 'current-nick)
+      (shell-command
+       (concat "notify-send -t 4000 -c \"im.received\" \""
+	       (car (split-string nick "!"))
+	       " mentioned your nick\" \""
+	       msg
+	       "\""))))
+  (add-hook 'erc-text-matched-hook #'erc-global-notify))
 
                     ; * https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links
 (setq vc-follow-symlinks t)
