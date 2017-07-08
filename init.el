@@ -613,7 +613,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
                     ; content to reflect what's on-disk.
 (global-auto-revert-mode 1)
 
-(global-linum-mode)    ; enable line numbers globally 
+(global-linum-mode)    ; enable line numbers globally
 (setq linum-eager nil) ; improve performance
 (column-number-mode)   ; enable columns numbers globally
 
