@@ -415,9 +415,6 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (require 'dired-x)
 
                     ; ripgrep -- https://github.com/dajva/rg.el
-(el-get-bundle rg
-  (global-set-key (kbd "C-x C-r") #'rg))
-
 (el-get-bundle multiple-cursors
   (global-set-key (kbd "C-c m") #'hydra-multiple-cursors/body)
   (global-set-key (kbd "C-S-c C-S-c") #'mc/edit-lines)
@@ -447,6 +444,8 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
     "Major mode for editing GitHub Flavored Markdown files" t)
   (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode)))
 
+(el-get-bundle rg
+  (global-set-key (kbd "C-x C-r") #'rg))
 
 (require 'el-get-elpa) ; install melpa packages via el-get
 ; Build the El-Get copy of the package.el packages if we have not
@@ -687,6 +686,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (setq org-mobile-inbox-for-pull (getenv "ORG_MOBILE_INBOX_FOR_PULL"))
                     ; Set to <your Dropbox root directory>/MobileOrg.
 (setq org-mobile-directory (getenv "ORG_MOBILE_DIRECTORY"))
+
 (setq org-confirm-babel-evaluate nil)
 (global-set-key "\C-cl" #'org-store-link)
 (global-set-key "\C-ca" #'org-agenda)
@@ -696,7 +696,6 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 ;; resume the clock under the assumption that you have worked on this task while outside Emacs
 (setq org-clock-persist t)
 (org-clock-persistence-insinuate)
-
 (setq org-agenda-include-diary t)
 (org-babel-do-load-languages
  'org-babel-load-languages
