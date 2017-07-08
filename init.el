@@ -1,7 +1,8 @@
 (message "Loading .emacs...")
-(setq load-prefer-newer t) ; suppress warning about .autoloads.el files
+
 
 ;; * bootstrap el-get
+(setq load-prefer-newer t) ; suppress warning about .autoloads.el files
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 
 ;; NOTE if you change it; update using M-x el-get-elpa-build-local-recipes
@@ -19,19 +20,20 @@
   (require 'el-get))
 (el-get 'sync 'el-get) ; workaround "can't find \"package\" package"
 
+
+;; * install & configure packages
 (setq el-get-allow-insecure 'nil)
 (add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
 ;;(setq el-get-user-package-directory "~/.emacs.d/el-get-init-files/")
 
-(el-get-bundle! with-eval-after-load-feature)
+(el-get-bundle! with-eval-after-load-feature) ; to suppress "free variable" warning
 
 (el-get-bundle gist)
 (with-eval-after-load-feature 'gist
-  (setq gist-view-gist t)) ; suppress "free variable warning
+  (setq gist-view-gist t)) ; suppress "free variable" warning
 
 (el-get-bundle company
   (add-hook 'after-init-hook #'global-company-mode))
-
 
 (el-get-bundle hydra
   (defhydra hydra-zoom (global-map "C-c")
@@ -159,8 +161,6 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
        ("q" nil)))))
 (with-eval-after-load-feature 'hydra
   (setq hydra-look-for-remap t)) ; fix "free variable warning"
-
-
 
 (el-get-bundle ace-window
   (global-set-key (kbd "M-p") #'ace-window))
@@ -355,8 +355,9 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 ;; init.el) to jump to it.
 ;; You should add registers here for the files you edit most often.
 (dolist (r `((?i (file . ,(expand-file-name "~/.emacs")))
-             (?r (file . ,(expand-file-name "~/private/org/notes.org")))
-         ))
+             (?r (file . ,(expand-file-name (getenv "ORG_AGENDA_FILE"))))
+	     (?c (file . ,(expand-file-name "~/.custom.el")))
+	     ))
   (set-register (car r) (cadr r)))
 
 ;; Commands which ask for a destination directory, such as those which
@@ -427,6 +428,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
   (global-set-key (kbd "C-S-<mouse-1>") #'mc/add-cursor-on-click))
 
 (el-get-bundle which-key
+  ;; show commands for the current prefix after a delay
   (which-key-mode))
 
 (el-get-bundle helm
@@ -470,8 +472,10 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; no new packages from here on out
 
-(defun my:load-secrets (orig-fun &rest args)
-  "Load secrets before calling `orig-fun`."
+
+;; * configure builtin packages
+(defun my:with-secrets (orig-fun &rest args)
+  "Load secrets before calling `orig-fun'."
   (require '.secrets "~/.secrets.el.gpg")
   (apply orig-fun args))
 
@@ -481,7 +485,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (setq-default save-place t) ; set global default value for buffer local variable
 
 (with-eval-after-load "gnus"
-  (advice-add 'gnus :around #'my:load-secrets)
+  (advice-add 'gnus :around #'my:with-secrets)
 
   (setq mm-discouraged-alternatives '("text/html" "text/richtext"))
   (setq gnus-message-archive-group
@@ -549,8 +553,8 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
   (require 'spam))
 
 (defun irc-start_ ()
-  (irc-start))
-(advice-add 'irc-start_ :around #'my:load-secrets)
+  (.secrets-irc-start))
+(advice-add 'irc-start_ :around #'my:with-secrets)
 
 (with-eval-after-load "erc"
 					; IRC client (*nix only)
@@ -611,8 +615,8 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 
 ;; enable line numbers globally
 (global-linum-mode t)
+(column-number-mode)
 
-                    ;
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
 
                     ; copy/kill line on M-w, C-w
@@ -673,25 +677,17 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
      "[A-Za-z]" "[^A-Za-z]"
      "[']"  nil ("-d" "en_US") nil iso-8859-1)))
 
-;; w3m setup
-;; from http://beatofthegeek.com/2014/02/my-setup-for-using-emacs-as-web-browser.html
-;;change default browser for 'browse-url' to w3m
-;;;;(setq browse-url-browser-function 'w3m-goto-url-new-session)
-
-;;change w3m user-agent to android
-(setq w3m-user-agent "Mozilla/5.0 (Linux; U; Android 2.3.3; zh-tw; HTC_Pyramid Build/GRI40) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.")
-
 (global-set-key (kbd "C-c C-f") #'ido-recentf-open)
 (setq flyspell-default-dictionary "ru")
 
 
 (require 'org)
                     ; Set to the location of your Org files on your local system
-(setq org-directory "~/private/org")
+(setq org-directory (getenv "ORG_DIRECTORY"))
                     ; Set to the name of the file where new notes will be stored
-(setq org-mobile-inbox-for-pull "~/private/org/from-mobile.org")
+(setq org-mobile-inbox-for-pull (getenv "ORG_MOBILE_INBOX_FOR_PULL"))
                     ; Set to <your Dropbox root directory>/MobileOrg.
-(setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
+(setq org-mobile-directory (getenv "ORG_MOBILE_DIRECTORY"))
 (setq org-confirm-babel-evaluate nil)
 (global-set-key "\C-cl" #'org-store-link)
 (global-set-key "\C-ca" #'org-agenda)
@@ -702,20 +698,18 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (setq org-clock-persist t)
 (org-clock-persistence-insinuate)
 
+(setq org-agenda-include-diary t)
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)
+   (sh . t)))
 
 ;; enable export to markdown in on C-c C-e
 (require 'ox-md nil t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(setq canlock-password "58c566bd78ee9cbec1af9280ae463f8a0df16fbc"
-      column-number-mode t
-      inhibit-startup-screen t
-      nand2tetris-core-base-dir "~/prj/coursera/nand2tetris"
-      org-agenda-files (quote ("~/private/org/notes.org"))
-      org-agenda-include-diary t
-      org-babel-load-languages (quote ((python . t) (shell . t)))
-      safe-local-variable-values
+;;
+(setq nand2tetris-core-base-dir (getenv "NAND2TETRIS-CORE-BASE-DIR"))
+(setq safe-local-variable-values
       (quote
        ((encoding . utf-8)
         (whitespace-style face trailing lines-tail)
@@ -732,27 +726,14 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
               (whitespace-mode 1))
         (whitespace-line-column . 80)
         (whitespace-style face tabs trailing lines-tail)
-        (require-final-newline . t)))
-      show-paren-mode t)
+        (require-final-newline . t))))
 
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
-
 (put 'narrow-to-region 'disabled nil)
 (show-paren-mode)
 
+(setq custom-file "~/.custom.el")
+(load custom-file 'noerror)
 (message "Done .emacs")
 ;; end
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(magit-dispatch-arguments nil)
- '(package-selected-packages (quote (w3m))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
