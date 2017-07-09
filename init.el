@@ -234,7 +234,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
          ^^_G_^^
    --------------------------------------------------------------------------------
         "
-    ("\\" hydra-master/body "back")
+    ("\\" nil "back")
     ("<ESC>" nil "quit")
     ("al" pdf-annot-list-annotations)
     ("ad" pdf-annot-delete)
