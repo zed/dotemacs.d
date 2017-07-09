@@ -477,7 +477,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 
 
 ;; * configure builtin packages
-(defun my:with-secrets (orig-fun &rest args)
+(defun init:with-secrets (orig-fun &rest args)
   "Load secrets before calling `orig-fun'."
   (require '.secrets "~/.secrets.el.gpg")
   (apply orig-fun args))
@@ -488,7 +488,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (setq-default save-place t) ; set global default value for buffer local variable
 
 (with-eval-after-load "gnus"
-  (advice-add 'gnus :around #'my:with-secrets)
+  (advice-add 'gnus :around #'init:with-secrets)
 
   (setq mm-discouraged-alternatives '("text/html" "text/richtext"))
   (setq gnus-message-archive-group
@@ -555,9 +555,9 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 
   (require 'spam))
 
-(defun irc-start_ ()
+(defun init:irc-start ()
   (.secrets-irc-start))
-(advice-add 'irc-start_ :around #'my:with-secrets)
+(advice-add 'init:irc-start :around #'init:with-secrets)
 
 (with-eval-after-load "erc"
 					; IRC client (*nix only)
@@ -662,12 +662,12 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
            (indent-tabs-mode . nil)        ; use spaces rather than tabs
            (c-basic-offset . 2)
            ))
-(defun my-c-mode-common-hook ()
+(defun init:c-mode-common-hook ()
   (c-set-style "my-style")        ; use my-style defined above
   (auto-fill-mode)
   (c-toggle-auto-hungry-state 1))
 
-(add-hook 'c-mode-common-hook #'my-c-mode-common-hook)
+(add-hook 'c-mode-common-hook #'init:c-mode-common-hook)
 
                     ; список используемых нами словарей
                     ; from https://habrahabr.ru/post/215055/
