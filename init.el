@@ -691,7 +691,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (setq org-mobile-inbox-for-pull (getenv "ORG_MOBILE_INBOX_FOR_PULL"))
                     ; Set to <your Dropbox root directory>/MobileOrg.
 (setq org-mobile-directory (getenv "ORG_MOBILE_DIRECTORY"))
-(setq org-agenda-files '(((getenv "ORG_AGENDA_FILE"))))
+(customize-set-variable 'org-agenda-files (list (getenv "ORG_AGENDA_FILE")))
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline (getenv "ORG_AGENDA_FILE") "Tasks")
          "* TODO %?\n  %i\n  %a")
