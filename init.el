@@ -1,5 +1,9 @@
 (message "Loading .emacs...")
 
+;; * helper function
+(defun init:disable-linum-mode-in-local-buffer ()
+  (linum-mode -1)) ;; an alternative is to define #'linum-on
+
 
 ;; * bootstrap el-get
 (setq load-prefer-newer t) ; suppress warning about .autoloads.el files
@@ -213,7 +217,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
   (pdf-tools-install))
 (with-eval-after-load-feature 'pdf-tools
   (setq-default pdf-view-display-size #'fit-page)
-  (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
+  (add-hook 'pdf-view-mode-hook #'init:disable-linum-mode-in-local-buffer)
    (defhydra hydra-pdftools (:color blue :hint nil)
     "
                                                                       ╭───────────┐
@@ -613,7 +617,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
                     ; content to reflect what's on-disk.
 (global-auto-revert-mode 1)
 
-(global-linum-mode)    ; enable line numbers globally
+(global-linum-mode)    ; enable line numbers globally if #'linum-on would do it
 (setq linum-eager nil) ; improve performance
 (column-number-mode)   ; enable columns numbers globally
 
@@ -712,6 +716,10 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 
 ;; enable export to markdown in on C-c C-e
 (require 'ox-md nil t)
+
+;; drastically improve performance of org-capture for large org files
+(add-hook 'org-mode-hook #'init:disable-linum-mode-in-local-buffer)
+
 
 ;;
 (setq nand2tetris-core-base-dir (getenv "NAND2TETRIS-CORE-BASE-DIR"))
