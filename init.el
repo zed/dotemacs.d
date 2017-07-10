@@ -21,7 +21,7 @@
   (package-refresh-contents)
   (package-install 'el-get)
   (require 'el-get))
-(el-get 'sync 'el-get) ; workaround "can't find \"package\" package"
+(el-get-bundle! el-get) ; workaround "can't find \"package\" package"
 
 
 ;; * install & configure packages
@@ -764,5 +764,6 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 
 (setq custom-file "~/.custom.el")
 (load custom-file 'noerror)
+
 (message "Done .emacs")
 ;; end
