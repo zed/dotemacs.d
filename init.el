@@ -556,9 +556,10 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 
   (require 'spam))
 
-(defun init:irc-start ()
+(defun irc-start ()
+  (interactive)
   (.secrets-irc-start))
-(advice-add 'init:irc-start :around #'init:with-secrets)
+(advice-add 'irc-start :around #'init:with-secrets)
 
 (with-eval-after-load "erc"
 					; IRC client (*nix only)
