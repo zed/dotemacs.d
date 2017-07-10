@@ -433,7 +433,8 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 
 (el-get-bundle helm
   ;; Help should search more than just commands
-  (global-set-key (kbd "C-h a") #'helm-apropos))
+  (global-set-key (kbd "C-h a") #'helm-apropos)
+  (customize-set-variable 'helm-allow-mouse t))
 
 (el-get-bundle helm-google
   ;; If you want to keep the search open use C-z instead of RET.
