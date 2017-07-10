@@ -162,11 +162,10 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 	      (rectangle-mark-mode 1)))
        ("u" undo nil)
        ("q" nil)))))
-(with-eval-after-load-feature 'hydra
-  (setq hydra-look-for-remap t)) ; fix "free variable warning"
+(with-eval-after-load-feature 'hydra ; fix "free variable warning"
+  (setq hydra-look-for-remap t))
 
-(el-get-bundle ace-window
-  (global-set-key (kbd "M-p") #'ace-window))
+(el-get-bundle ace-window)
 (with-eval-after-load-feature 'ace-window
   (setq aw-background t)
   (defhydra hydra-window-stuff (:hint nil)
@@ -748,6 +747,20 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (put 'upcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 (show-paren-mode)
+
+;; https://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
+(defvar my-keys-minor-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "M-p") #'ace-window)
+    map)
+  "my-keys-minor-mode keymap.")
+
+(define-minor-mode my-keys-minor-mode
+  "A minor mode so that my key settings override annoying major modes."
+  :init-value t
+  :lighter " my-keys")
+
+(my-keys-minor-mode 1)
 
 (setq custom-file "~/.custom.el")
 (load custom-file 'noerror)
