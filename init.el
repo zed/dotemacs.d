@@ -1,3 +1,5 @@
+; -*- coding: utf-8 orgstruct-heading-prefix-regexp: ";; *"; -*-
+
 (message "Loading .emacs...")
 
 ;; * helper function
@@ -687,6 +689,11 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 
 
 (require 'org)
+
+;; From https://github.com/higham/dot-emacs/blob/master/.emacs
+;; fold with Tab/S-Tab on headers in org-mode
+(add-hook 'emacs-lisp-mode-hook #'turn-on-orgstruct++)
+
                     ; Set to the location of your Org files on your local system
 (setq org-directory (getenv "ORG_DIRECTORY"))
                     ; Set to the name of the file where new notes will be stored
