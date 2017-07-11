@@ -758,7 +758,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 ;; https://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
 (defvar my-keys-minor-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "M-p") #'ace-window)
+    (define-key map (kbd "<f4>") #'ace-window)
     map)
   "my-keys-minor-mode keymap.")
 
