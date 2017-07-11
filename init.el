@@ -455,6 +455,10 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (el-get-bundle rg
   (global-set-key (kbd "C-x C-r") #'rg))
 
+(el-get-bundle avy
+  (global-set-key (kbd "M-s") 'avy-goto-word-1)
+  (avy-setup-default))
+
 (require 'el-get-elpa) ; install melpa packages via el-get
 ; Build the El-Get copy of the package.el packages if we have not
 ; built it before.  Will have to look into updating later ...
