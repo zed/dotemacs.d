@@ -447,11 +447,11 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (el-get-bundle markdown-mode
   (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
   (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-
   (autoload 'gfm-mode "markdown-mode"
     "Major mode for editing GitHub Flavored Markdown files" t)
   (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode)))
 
+;; ripgrep
 (el-get-bundle rg
   (global-set-key (kbd "C-x C-r") #'rg))
 
