@@ -23,7 +23,7 @@
   (package-refresh-contents)
   (package-install 'el-get)
   (require 'el-get))
-(el-get-bundle! el-get) ; workaround "can't find \"package\" package"
+(el-get 'sync 'el-get) ; workaround "can't find \"package\" package"
 
 
 ;; * install & configure packages
