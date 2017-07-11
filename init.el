@@ -482,14 +482,17 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; no new packages from here on out
 
+(defadvice load-theme
+    (before disable-before-load (theme &optional no-confirm no-enable) activate)
+  (mapc 'disable-theme custom-enabled-themes))
+
+(load-theme 'tango-dark)
 
 ;; * configure builtin packages
 (defun init:with-secrets (orig-fun &rest args)
   "Load secrets before calling `orig-fun'."
   (require '.secrets "~/.secrets.el.gpg")
   (apply orig-fun args))
-
-(load-theme 'tango-dark)
 
 (require 'saveplace)
 (setq-default save-place t) ; set global default value for buffer local variable
