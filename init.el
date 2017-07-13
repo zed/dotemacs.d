@@ -772,10 +772,12 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 ;; resume the clock under the assumption that you have worked on this task while outside Emacs
 (setq org-clock-persist t)
 (org-clock-persistence-insinuate)
+(setq org-reverse-note-order t)
 (setq org-agenda-include-diary t)
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((python . t)
+   (emacs-lisp . t)
    (sh . t)))
 
 ;; enable export to markdown in on C-c C-e
