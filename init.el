@@ -392,6 +392,25 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
                     ; The default way to toggle between them is C-c C-j and C-c C-k, let's
                     ; better use just one key to do the same.
 (require 'term)
+
+; don't ask which shell to use
+(defvar init:term-shell "/bin/zsh")
+(defadvice ansi-term (before force-bash)
+  (interactive (list init:term-shell)))
+(ad-activate 'ansi-term)
+
+; kill the buffer when the shell exits
+; from http://echosa.github.io/blog/2012/06/06/improving-ansi-term/
+(defadvice term-sentinel (around init:advice-term-sentinel (proc msg))
+  (if (memq (process-status proc) '(signal exit))
+      (let ((buffer (process-buffer proc)))
+        ad-do-it
+        (kill-buffer buffer))
+    ad-do-it))
+(ad-activate 'term-sentinel)
+
+
+(add-hook 'term-mode-hook #'init:disable-linum-mode-in-local-buffer)
 (define-key term-raw-map  (kbd "C-'") #'term-line-mode)
 (define-key term-mode-map (kbd "C-'") #'term-char-mode)
                     ; Have C-y act as usual in term-mode, to avoid C-' C-y C-'
