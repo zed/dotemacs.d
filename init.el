@@ -716,6 +716,34 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 
 (require 'org)
 
+;; orgmobile
+(setq org-mobile-use-encryption t)
+(advice-add 'org-mobile-push :around #'init:with-secrets)
+(advice-add 'org-mobile-pull :around #'init:with-secrets)
+
+
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "|" "DONE(d)")
+	(sequence "|" "CANCELED(c)")))
+
+(setq org-tag-alist '((:startgroup . nil) ("home" . ?h) ("work" . ?w) (:endgroup . nil)
+		      ("idea" . nil) ("code" . nil) ("pythonista" . nil) ("org" . nil)
+		      ("so" . nil) ("birthday" . nil) ("buy" . nil) ("quick" . nil)
+		      ("tutorial" . nil) ("github" . nil) ("day" . nil) ("pyopenssl" . nil)
+		      ("iprim" . nil) ("cluster" . nil) ("read" . nil) ("book" . nil)
+		      ("feature" . nil) ("psutil" . nil) ("twisted" . nil) ("cpython" . nil)
+		      ("subprocess" . nil) ("bug" . nil) ("easy" . nil) ("stackoverflow" . ?s)
+		      ("wurlitzer" . nil) ("lrange" . nil) ("pythinsta" . nil) ("telegram" . nil)
+		      ("d0" . ?d) ("telethon" . nil) ("emacs" . ?e)))
+
+;; Effort and global properties
+(setq org-global-properties '(("Effort_ALL". "0 0:10 0:20 0:30 1:00 2:00 3:00 4:00 6:00 8:00")))
+
+;; Set global Column View format
+(setq org-columns-default-format '"%38ITEM(Details) %TAGS(Context) %7TODO(To Do) %5Effort(Time){:} %6CLOCKSUM(Clock)")
+
+
+
 ;; From https://github.com/higham/dot-emacs/blob/master/.emacs
 ;; fold with Tab/S-Tab on headers in org-mode
 (add-hook 'emacs-lisp-mode-hook #'turn-on-orgstruct++)
@@ -726,11 +754,13 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (setq org-mobile-inbox-for-pull (getenv "ORG_MOBILE_INBOX_FOR_PULL"))
                     ; Set to <your Dropbox root directory>/MobileOrg.
 (setq org-mobile-directory (getenv "ORG_MOBILE_DIRECTORY"))
-(customize-set-variable 'org-agenda-files (list (getenv "ORG_AGENDA_FILE")))
+(customize-set-variable 'org-agenda-files (list
+					   (getenv "ORG_AGENDA_FILE")
+					   (getenv "ORG_MOBILE_INBOX_FOR_PULL")))
 (setq org-capture-templates
-      '(("t" "Todo" entry (file+headline (getenv "ORG_AGENDA_FILE") "Tasks")
+      '(("t" "Todo" entry (file+headline (getenv "ORG_AGENDA_FILE") "Projects")
          "* TODO %?\n  %i\n  %a")
-        ("j" "Journal" entry (file+datetree "~/org/journal.org")
+        ("j" "Journal" entry (file+datetree (concat org-directory "journal.org"))
          "* %?\nEntered on %U\n  %i\n  %a")))
 
 (setq org-confirm-babel-evaluate nil)
