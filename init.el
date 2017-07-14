@@ -397,7 +397,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 
 ; don't ask which shell to use
 (defvar init:term-shell "/bin/zsh")
-(defadvice ansi-term (before force-bash)
+(defadvice ansi-term (before init:force-zsh)
   (interactive (list init:term-shell)))
 (ad-activate 'ansi-term)
 
