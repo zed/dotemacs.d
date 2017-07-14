@@ -476,9 +476,14 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (el-get-bundle rg
   (global-set-key (kbd "C-x C-r") #'rg))
 
+;; jump to visible input (use keyboard as a mouse)
 (el-get-bundle avy
   (global-set-key (kbd "M-s") 'avy-goto-word-1)
+  (global-set-key (kbd "s-j") 'avy-goto-char-timer)
+  (global-set-key (kbd "s-J") 'avy-pop-mark)
   (avy-setup-default))
+(with-eval-after-load-feature 'avy
+    (setq avy-background t))
 
 (require 'el-get-elpa) ; install melpa packages via el-get
 ; Build the El-Get copy of the package.el packages if we have not
