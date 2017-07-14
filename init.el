@@ -513,6 +513,11 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
   (require '.secrets "~/.secrets.el.gpg")
   (apply orig-fun args))
 
+;; return to a previous window configuration easily with C-c <left>
+(require 'winner)
+(winner-mode)
+
+
 (require 'saveplace)
 (setq-default save-place t) ; set global default value for buffer local variable
 
