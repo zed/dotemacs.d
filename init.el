@@ -537,6 +537,15 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (require 'winner)
 (winner-mode)
 
+(progn
+  (setq
+   browse-url-browser-function
+   '(
+     ("github" . browse-url-chromium)
+     ("stackoverflow" . browse-url-chromium)
+     ("." . eww-browse-url)))
+  (setq url-user-agent "User-Agent: Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_0 like Mac OS X; en-us) AppleWebKit/532.9 (KHTML, like Gecko) Version/4.0.5 Mobile/8A293 Safari/6531.22.7\r\n")
+  (add-hook 'eww-mode-hook #'init:disable-linum-mode-in-local-buffer))
 
 (require 'saveplace)
 (setq-default save-place t) ; set global default value for buffer local variable
