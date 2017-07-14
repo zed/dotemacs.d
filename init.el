@@ -485,6 +485,9 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (with-eval-after-load-feature 'avy
     (setq avy-background t))
 
+(el-get-bundle ace-link
+  (ace-link-setup-default))
+
 (el-get-bundle typing)
 ;; last el-get-bundle installed package
 
