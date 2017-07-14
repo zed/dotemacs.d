@@ -485,6 +485,9 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (with-eval-after-load-feature 'avy
     (setq avy-background t))
 
+(el-get-bundle typing)
+;; last el-get-bundle installed package
+
 (require 'el-get-elpa) ; install melpa packages via el-get
 ; Build the El-Get copy of the package.el packages if we have not
 ; built it before.  Will have to look into updating later ...
