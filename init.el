@@ -457,14 +457,20 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (el-get-bundle helm
   ;; Help should search more than just commands
   (global-set-key (kbd "C-h a") #'helm-apropos)
+  (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+	helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+	helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+	helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+	helm-ff-file-name-history-use-recentf t
+	helm-echo-input-in-header-line t)
+  (setq helm-autoresize-max-height 0)
+  (setq helm-autoresize-min-height 20)
+  (helm-autoresize-mode 1)
   (customize-set-variable 'helm-allow-mouse t))
 
 (el-get-bundle helm-google
   ;; If you want to keep the search open use C-z instead of RET.
-  (global-set-key (kbd "C-h C--") #'helm-google)
-  (setq browse-url-browser-function #'eww-browse-url)
-  (setq url-user-agent "User-Agent: Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_0 like Mac OS X; en-us) AppleWebKit/532.9 (KHTML, like Gecko) Version/4.0.5 Mobile/8A293 Safari/6531.22.7\r\n")
-  (add-hook 'eww-mode-hook #'init:disable-linum-mode-in-local-buffer))
+  (global-set-key (kbd "C-h C--") #'helm-google))
 
 (el-get-bundle markdown-mode
   (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
