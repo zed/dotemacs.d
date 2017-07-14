@@ -172,6 +172,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (el-get-bundle ace-window)
 (with-eval-after-load-feature 'ace-window
   (setq aw-background t)
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   (defhydra hydra-window-stuff (:hint nil)
     "
           Split: _v_ert  _s_:horz
