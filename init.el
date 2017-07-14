@@ -1,6 +1,8 @@
 ; -*- coding: utf-8 orgstruct-heading-prefix-regexp: ";; *"; -*-
+(defconst emacs-start-time (current-time))
 
-(message "Loading .emacs...")
+(unless noninteractive
+  (message "Loading %s..." load-file-name))
 
 ;; * helper function
 (defun init:disable-linum-mode-in-local-buffer ()
@@ -835,5 +837,15 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (setq custom-file "~/.custom.el")
 (load custom-file 'noerror)
 
-(message "Done .emacs")
+(let ((elapsed (float-time (time-subtract (current-time)
+					  emacs-start-time))))
+  (message "Loading %s...done (%.3fs)" load-file-name elapsed))
+
+(add-hook 'after-init-hook
+            `(lambda ()
+               (let ((elapsed (float-time (time-subtract (current-time)
+                                                         emacs-start-time))))
+                 (message "Loading %s...done (%.3fs) [after-init]"
+                          ,load-file-name elapsed)))
+            t)
 ;; end
