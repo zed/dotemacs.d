@@ -802,6 +802,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (global-set-key "\C-ca" #'org-agenda)
 (global-set-key "\C-cc" #'org-capture)
 (global-set-key "\C-cb" #'org-iswitchb)
+(define-key org-mode-map (kbd "M-o") 'ace-link-org)
 
 ;; resume the clock under the assumption that you have worked on this task while outside Emacs
 (setq org-clock-persist t)
