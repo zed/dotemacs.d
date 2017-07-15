@@ -848,7 +848,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (put 'narrow-to-region 'disabled nil)
 (show-paren-mode)
 
-;; https://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
+;; ** https://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
 (defvar my-keys-minor-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "<f4>") #'ace-window)
@@ -862,9 +862,11 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 
 (my-keys-minor-mode 1)
 
+;; ** load customizations (the file should be almost empty)
 (setq custom-file "~/.custom.el")
 (load custom-file 'noerror)
 
+;; ** measure how long it took to load .emacs
 (let ((elapsed (float-time (time-subtract (current-time)
 					  emacs-start-time))))
   (message "Loading %s...done (%.3fs)" load-file-name elapsed))
@@ -876,4 +878,4 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
                  (message "Loading %s...done (%.3fs) [after-init]"
                           ,load-file-name elapsed)))
             t)
-;; end
+;; * the end
