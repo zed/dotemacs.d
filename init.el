@@ -292,6 +292,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
     (define-key pdf-view-mode-map (kbd "b")  #'pdf-view-set-slice-from-bounding-box)
     (define-key pdf-view-mode-map (kbd "r")  #'pdf-view-reset-slice)))
 
+;; ** support for hacking python code
 (el-get-bundle tdd
   :description "Run recompile (or a customisable function) after saving a buffer"
   :type github
@@ -315,6 +316,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (el-get-bundle py-autopep8
   (add-hook 'python-mode-hook #'py-autopep8-enable-on-save))
 
+;; ** magit, ...
 (el-get-bundle magit
   (global-set-key (kbd "C-c g") #'magit-status))
 
@@ -445,7 +447,6 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
                     ; C-x C-j opens dired with the cursor right on the file you're editing
 (require 'dired-x)
 
-                    ; ripgrep -- https://github.com/dajva/rg.el
 (el-get-bundle multiple-cursors
   (global-set-key (kbd "C-c m") #'hydra-multiple-cursors/body)
   (global-set-key (kbd "C-S-c C-S-c") #'mc/edit-lines)
@@ -483,7 +484,8 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
     "Major mode for editing GitHub Flavored Markdown files" t)
   (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode)))
 
-;; ripgrep
+;; ripgrep https://github.com/dajva/rg.el
+
 (el-get-bundle rg
   (global-set-key (kbd "C-x C-r") #'rg))
 
@@ -496,6 +498,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (with-eval-after-load-feature 'avy
     (setq avy-background t))
 
+; jump to link in info, eww buffers: type O + appeared avy letters
 (el-get-bundle ace-link
   (ace-link-setup-default))
 
