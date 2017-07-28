@@ -302,6 +302,10 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
   (el-get-bundle pyvenv
     (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python)))
 
+; debugger, to enable: M-x realgud:reload-features
+; to start: M-x realgud:trepun3k
+(el-get-bundle realgud)
+
                     ; real-time syntax check
 (el-get-bundle flycheck
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
