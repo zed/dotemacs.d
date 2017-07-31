@@ -231,7 +231,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
          ^^^↑^^^      ^↑^    _H_    ^↑^  ↦ _W_ ↤   [_am_] markup  [_o_] outline   [_i_] info
          ^^_p_^^      ^ ^    ^↥^    _0_    ^ ^     [_at_] text    [_F_] link      [_d_] dark mode
          ^^^↑^^^      ^↓^  ╭─^─^─┐  ^↓^  ╭─^ ^─┐   [_ad_] delete  [_f_] search link
-    _h_ ←pag_e_→ _l_  _N_  │ _P_ │  _-_    _b_     [_aa_] dired
+    _h_ ←pag_e_→ _l_ _N_  │ _P_ │  _-_    _b_     [_aa_] dired
          ^^^↓^^^      ^ ^  ╰─^─^─╯  ^ ^  ╰─^ ^─╯   [_y_]  yank
          ^^_n_^^      ^ ^  _r_eset slice box
          ^^^↓^^^
