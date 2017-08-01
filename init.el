@@ -475,7 +475,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 
 					; https://www.emacswiki.org/emacs/HelmSwoop
 					; Cursor follows the selected occurence
-  (defmethod helm-setup-user-source ((source helm-source-multi-occur))
+  (cl-defmethod helm-setup-user-source ((source helm-source-multi-occur))
     (setf (slot-value source 'follow) 1))
 					; Invoke `helm-occur' from `isearch'
   (define-key isearch-mode-map (kbd "M-s o") 'helm-occur-from-isearch))
