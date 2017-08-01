@@ -29,7 +29,7 @@
 
 
 ;; * install & configure packages
-(setq el-get-allow-insecure 'nil)
+(customize-set-variable 'el-get-allow-insecure nil)
 (add-to-list 'el-get-recipe-path (concat user-emacs-directory "el-get-user/recipes"))
 
 
