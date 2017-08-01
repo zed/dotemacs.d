@@ -510,6 +510,19 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
   (ace-link-setup-default))
 
 (el-get-bundle typing)
+
+;; ** restclient
+(el-get-bundle restclient)
+; NOTE: avoid "recursive load" error from el-get
+(el-get-bundle company-restclient)
+;					ob-restclient is included in a new org-babel but install it manually for now
+(el-get-bundle ob-restclient :type github :pkgname "alf/ob-restclient.el")
+
+(el-get-bundle company-mode
+  (add-hook 'after-init-hook 'global-company-mode))
+(with-eval-after-load-feature 'company-mode
+  (add-to-list 'company-backends 'company-restclient))
+
 ;; last el-get-bundle installed package
 
 (require 'el-get-elpa) ; install melpa packages via el-get
@@ -827,7 +840,8 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
  'org-babel-load-languages
  '((python . t)
    (emacs-lisp . t)
-   (sh . t)))
+   (sh . t)
+   (restclient . t)))
 
 ;; enable export to markdown in on C-c C-e
 (require 'ox-md nil t)
