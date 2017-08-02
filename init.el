@@ -523,7 +523,14 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (with-eval-after-load-feature 'company-mode
   (add-to-list 'company-backends 'company-restclient))
 
-;; last el-get-bundle installed package
+;; ** Drag and drop images to Emacs org-mode Firefox works,
+;; Chrome/Yandex don't. Use org-download-yank to paste a picture if
+;; its url is in the kill-ring ("0 w" in dired copies the absolute
+;; path)
+(el-get-bundle org-download (org-download-enable))
+(setq-default org-download-image-dir "~/Pictures/org")
+
+;; ** ^^^last el-get-bundle installed package
 
 (require 'el-get-elpa) ; install melpa packages via el-get
 ; Build the El-Get copy of the package.el packages if we have not
