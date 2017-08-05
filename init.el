@@ -491,10 +491,11 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
     "Major mode for editing GitHub Flavored Markdown files" t)
   (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode)))
 
+(el-get-bundle! use-package)
 ;; ripgrep https://github.com/dajva/rg.el
-
-(el-get-bundle rg
-  (global-set-key (kbd "C-x C-r") #'rg))
+(el-get-bundle rg)
+(use-package rg
+  :bind ("C-x C-r" . rg))
 
 ;; jump to visible input (use keyboard as a mouse)
 (el-get-bundle avy
