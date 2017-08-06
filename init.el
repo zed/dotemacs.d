@@ -484,6 +484,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
   (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode)))
 
 (el-get-bundle! use-package)
+(setq use-package-verbose t)
 ;; ripgrep https://github.com/dajva/rg.el
 (el-get-bundle rg)
 (use-package rg
