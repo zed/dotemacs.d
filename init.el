@@ -532,8 +532,23 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (el-get-bundle org-download (org-download-enable))
 (setq-default org-download-image-dir "~/Pictures/org")
 
+; reset old theme settings while loading a new theme
+(defadvice load-theme
+    (before disable-before-load (theme &optional no-confirm no-enable) activate)
+  (mapc 'disable-theme custom-enabled-themes))
+
+; use dark theme after sunset
+(el-get-bundle! theme-changer)
+(use-package theme-changer
+  :config
+  (customize-set-variable 'calendar-latitude 55.8) ; solar package
+  (customize-set-variable 'calendar-longitude 37.6)
+  (change-theme 'tango 'tango-dark))
 ;; ** ^^^last el-get-bundle installed package
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; no new packages from here on out
 (require 'el-get-elpa) ; install melpa packages via el-get
 ; Build the El-Get copy of the package.el packages if we have not
 ; built it before.  Will have to look into updating later ...
@@ -554,14 +569,6 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (el-get-cleanup my:el-get-packages)
 (el-get 'sync my:el-get-packages)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; no new packages from here on out
-
-(defadvice load-theme
-    (before disable-before-load (theme &optional no-confirm no-enable) activate)
-  (mapc 'disable-theme custom-enabled-themes))
-
-(load-theme 'tango-dark)
 
 ;; * configure builtin packages
 (defun init:with-secrets (orig-fun &rest args)
