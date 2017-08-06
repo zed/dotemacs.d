@@ -497,6 +497,15 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (use-package rg
   :bind ("C-x C-r" . rg))
 
+(el-get-bundle geiser)
+(with-eval-after-load-feature 'geiser
+  (setq geiser-active-implementations '(racket)))
+(el-get-bundle paredit)
+
+(el-get-bundle rainbow-delimiters
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+
+
 ;; jump to visible input (use keyboard as a mouse)
 (el-get-bundle avy
   (global-set-key (kbd "M-s") 'avy-goto-word-1)
