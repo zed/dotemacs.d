@@ -63,7 +63,7 @@
      ("V" scroll-down-command)
      ("l" recenter-top-bottom)))
 
-  (defhydra hydra-multiple-cursors (:hint nil)
+  (global-set-key (kbd "C-c m")  (defhydra hydra-multiple-cursors (:hint nil)
     "
      ^Up^            ^Down^          ^Mark^                ^Edit^            ^Other^
 --------------------------------------------------------------------------------------
@@ -89,7 +89,7 @@
     ("s" mc/sort-regions)
     ("q" nil)
     ("C-a" mc/edit-beginnings-of-lines :exit t)
-    ("C-e" mc/edit-ends-of-lines :exit t))
+    ("C-e" mc/edit-ends-of-lines :exit t)))
 
   ;; https://github.com/abo-abo/hydra/wiki/Dired
   (with-eval-after-load-feature 'dired
@@ -447,8 +447,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
                     ; C-x C-j opens dired with the cursor right on the file you're editing
 (require 'dired-x)
 
-(el-get-bundle multiple-cursors
-  (global-set-key (kbd "C-c m") #'hydra-multiple-cursors/body)
+(el-get-bundle multiple-cursors ;; see also hydra-multiple-cursors
   (global-set-key (kbd "C-S-c C-S-c") #'mc/edit-lines)
   (global-set-key (kbd "C->") #'mc/mark-next-like-this)
   (global-set-key (kbd "C-<") #'mc/mark-previous-like-this)
