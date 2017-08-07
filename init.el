@@ -35,9 +35,8 @@
 
 (el-get-bundle! with-eval-after-load-feature) ; to suppress "free variable" warning
 
-(el-get-bundle gist)
-(with-eval-after-load-feature 'gist
-  (setq gist-view-gist t)) ; suppress "free variable" warning
+(el-get-bundle gist
+  (customize-set-variable 'gist-view-gist t))
 
 (el-get-bundle company
   (add-hook 'after-init-hook #'global-company-mode))
