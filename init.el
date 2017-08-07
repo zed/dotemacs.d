@@ -41,6 +41,9 @@
 (el-get-bundle company
   (add-hook 'after-init-hook #'global-company-mode))
 
+(el-get-bundle hydra-move-splitter
+  :url "https://raw.githubusercontent.com/erreina/.emacs.d/master/elisp/hydra-move-splitter.el")
+
 (el-get-bundle hydra
   (defhydra hydra-zoom (global-map "C-c")
     "zoom"
@@ -164,7 +167,81 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 		(deactivate-mark)
 	      (rectangle-mark-mode 1)))
        ("u" undo nil)
-       ("q" nil)))))
+       ("q" nil))))
+
+  (progn
+;; return to a previous window configuration easily with C-c <left>
+(require 'winner)
+(winner-mode)
+                   ; Navigate windows with S-<arrows>
+(windmove-default-keybindings 'super)
+(customize-set-variable 'windmove-wrap-around t)
+
+
+;; https://github.com/erreina/.emacs.d/blob/master/init.d/init-keybindings.el
+(require 'hydra-move-splitter)
+(global-set-key (kbd "C-c w") (defhydra hydra-window (:hint nil)
+  "
+Movement^^        ^Split^         ^Switch^      ^Resize^
+----------------------------------------------------------------
+_j_ ←          _v_ertical       _b_uffer         _J_ X←
+_k_ ↓          _h_ horizontal   _f_ind files     _K_ X↓
+_i_ ↑          _u_ undo         _a_ce 1          _I_ X↑
+_k_ →         _r_ reset        _s_ave           _L_ X→
+_q_ cancel     _D_lt Other      _S_wap           _m_aximize
+^ ^            _o_nly this      _d_elete
+"
+  ("j" windmove-left )
+  ("k" windmove-down )
+  ("i" windmove-up )
+  ("l" windmove-right )
+  ("J" hydra-move-splitter-left)
+  ("K" hydra-move-splitter-down)
+  ("I" hydra-move-splitter-up)
+  ("L" hydra-move-splitter-right)
+  ("b" ido-switch-buffer :color blue)
+  ("B" ido-switch-buffer)
+  ("f" ido-find-file :color blue)
+  ("F" ido-find-file)
+  ("a" (lambda ()
+	 (interactive)
+	 (ace-window 1)
+	 (add-hook 'ace-window-end-once-hook
+		   'hydra-window/body))
+   )
+  ("h" (lambda ()
+	 (interactive)
+	 (split-window-right)
+	 (windmove-right))
+   )
+  ("v" (lambda ()
+	 (interactive)
+	 (split-window-below)
+	 (windmove-down))
+   )
+  ("S" (lambda ()
+	 (interactive)
+	 (ace-window 4)
+	 (add-hook 'ace-window-end-once-hook
+		   'hydra-window/body)))
+  ("s" save-buffer :color blue)
+  ("d" delete-window :color blue)
+  ("D" (lambda ()
+	 (interactive)
+	 (ace-window 16)
+	 (add-hook 'ace-window-end-once-hook
+		   'hydra-window/body))
+   )
+  ("o" delete-other-windows :color blue)
+  ("O" delete-other-windows)
+  ("m" ace-delete-other-windows :color blue)
+  ("M" ace-delete-other-windows)
+  ("u" (progn
+	 (winner-undo)
+	 (setq this-command 'winner-undo))
+   )
+  ("r" winner-redo)
+  ("q" nil)))))
 (with-eval-after-load-feature 'hydra ; fix "free variable warning"
   (setq hydra-look-for-remap t))
 
@@ -172,48 +249,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (with-eval-after-load-feature 'ace-window
   (setq aw-background t)
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-  (defhydra hydra-window-stuff (:hint nil)
-    "
-          Split: _v_ert  _s_:horz
-         Delete: _c_lose  _o_nly
-  Switch Window: _h_:left  _j_:down  _k_:up  _l_:right
-        Buffers: _p_revious  _n_ext  _b_:select  _f_ind-file  _F_projectile
-         Winner: _u_ndo  _r_edo
-         Resize: _H_:splitter left  _J_:splitter down  _K_:splitter up  _L_:splitter right
-           Move: _a_:up  _z_:down  _i_menu"
-
-
-    ("z" scroll-up-line)
-    ("a" scroll-down-line)
-    ("i" idomenu)
-
-    ("u" winner-undo)
-    ("r" winner-redo)
-
-    ("h" windmove-left)
-    ("j" windmove-down)
-    ("k" windmove-up)
-    ("l" windmove-right)
-
-    ("p" previous-buffer)
-    ("n" next-buffer)
-    ("b" ido-switch-buffer)
-    ("f" ido-find-file)
-    ("F" projectile-find-file)
-
-    ("s" split-window-below)
-    ("v" split-window-right)
-
-    ("c" delete-window)
-    ("o" delete-other-windows)
-
-    ("H" hydra-move-splitter-left)
-    ("J" hydra-move-splitter-down)
-    ("K" hydra-move-splitter-up)
-    ("L" hydra-move-splitter-right)
-
-    ("q" nil))
-  (add-to-list 'aw-dispatch-alist '(?\\ hydra-window-stuff/body) t))
+  (add-to-list 'aw-dispatch-alist '(?\\ hydra-window/body) t))
 
 ;; PDF Tools https://github.com/abo-abo/hydra/wiki/PDF-Tools
 (el-get-bundle pdf-tools
@@ -322,10 +358,6 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (el-get-bundle smex
   (global-set-key (kbd "M-x") #'smex)
   (global-set-key (kbd "M-X") #'smex-major-mode-commands))
-
-                    ; Navigate windows with S-<arrows>
-(windmove-default-keybindings 'super)
-(setq windmove-wrap-around t)
 
                     ; uniquify buffers with the same name
                     ; instead of buf<2>, etc it shows
@@ -574,10 +606,6 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
   "Load secrets before calling `orig-fun'."
   (require '.secrets "~/.secrets.el.gpg")
   (apply orig-fun args))
-
-;; return to a previous window configuration easily with C-c <left>
-(require 'winner)
-(winner-mode)
 
 (progn
   (setq
