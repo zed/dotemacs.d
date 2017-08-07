@@ -907,20 +907,30 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 
 (my-keys-minor-mode 1)
 
-;; ** load customizations (the file should be almost empty)
-(setq custom-file "~/.custom.el")
-(load custom-file 'noerror)
+;; ** load customizations
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
 
 ;; ** measure how long it took to load .emacs
-(let ((elapsed (float-time (time-subtract (current-time)
-					  emacs-start-time))))
-  (message "Loading %s...done (%.3fs)" load-file-name elapsed))
+(progn (let ((elapsed (float-time (time-subtract (current-time)
+						 emacs-start-time))))
+	 (message "Loading %s...done (%.3fs)" load-file-name elapsed))
 
-(add-hook 'after-init-hook
-            `(lambda ()
-               (let ((elapsed (float-time (time-subtract (current-time)
-                                                         emacs-start-time))))
-                 (message "Loading %s...done (%.3fs) [after-init]"
-                          ,load-file-name elapsed)))
-            t)
+       (add-hook 'after-init-hook
+		 `(lambda ()
+		    (let ((elapsed (float-time (time-subtract (current-time)
+							      emacs-start-time))))
+		      (message "Loading %s...done (%.3fs) [after-init]"
+			       ,load-file-name elapsed)))
+		 t))
 ;; * the end
