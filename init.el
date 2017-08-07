@@ -575,6 +575,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (customize-set-variable 'calendar-latitude 55.8) ; solar package
   (customize-set-variable 'calendar-longitude 37.6)
   (change-theme 'tango 'tango-dark))
+
+;; Increase selection by semantic units
+(el-get-bundle expand-region
+  (global-set-key (kbd "C-=") 'er/expand-region))
+
 ;; ** ^^^last el-get-bundle installed package
 
 
@@ -612,7 +617,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
    browse-url-browser-function
    '(
      ("github" . browse-url-chromium)
-     ("stackoverflow" . browse-url-chromium)
      ("." . eww-browse-url)))
   (setq url-user-agent "User-Agent: Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_0 like Mac OS X; en-us) AppleWebKit/532.9 (KHTML, like Gecko) Version/4.0.5 Mobile/8A293 Safari/6531.22.7\r\n")
   (add-hook 'eww-mode-hook #'init:disable-linum-mode-in-local-buffer))
