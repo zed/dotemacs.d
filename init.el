@@ -29,7 +29,7 @@
 
 
 ;; * install & configure packages
-(customize-set-variable 'el-get-allow-insecure nil)
+(customize-set-variable 'el-get-allow-insecure t)
 (add-to-list 'el-get-recipe-path (concat user-emacs-directory "el-get-user/recipes"))
 
 
@@ -538,6 +538,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (with-eval-after-load-feature 'avy
     (setq avy-background t))
 
+(el-get-bundle! key-chord
+  (key-chord-define-global "jj" 'avy-goto-word-1)
+  (key-chord-mode +1))
+
+
 ; jump to link in info, eww buffers: type O + appeared avy letters
 (el-get-bundle ace-link
   (ace-link-setup-default))
@@ -621,8 +626,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq url-user-agent "User-Agent: Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_0 like Mac OS X; en-us) AppleWebKit/532.9 (KHTML, like Gecko) Version/4.0.5 Mobile/8A293 Safari/6531.22.7\r\n")
   (add-hook 'eww-mode-hook #'init:disable-linum-mode-in-local-buffer))
 
+;; Save point position between sessions
 (require 'saveplace)
 (setq-default save-place t) ; set global default value for buffer local variable
+(setq save-place-file (expand-file-name ".places" user-emacs-directory))
 
 (with-eval-after-load "gnus"
   (advice-add 'gnus :around #'init:with-secrets)
@@ -782,6 +789,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
  delete-old-versions t
  kept-new-versions 6
  kept-old-versions 2
+ vc-make-backup-files t   ; make backups of files, even when they're in version control
  version-control t)       ; use versioned backups
 
                     ; show column number
