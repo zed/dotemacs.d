@@ -874,6 +874,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (customize-set-variable 'org-agenda-files (list
 					   (getenv "ORG_AGENDA_FILE")
 					   (getenv "ORG_MOBILE_INBOX_FOR_PULL")))
+(customize-set-variable 'org-refile-targets
+			'((nil :maxlevel . 2)
+			  (org-agenda-files :maxlevel . 2)))
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline (getenv "ORG_AGENDA_FILE") "Projects")
          "* TODO %?\n  %i\n  %a")
