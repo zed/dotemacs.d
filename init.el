@@ -477,6 +477,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
                     ; C-x C-j opens dired with the cursor right on the file you're editing
 (require 'dired-x)
+(add-hook 'dired-mode-hook #'init:disable-linum-mode-in-local-buffer)
 
 (el-get-bundle multiple-cursors ;; see also hydra-multiple-cursors
   (global-set-key (kbd "C-S-c C-S-c") #'mc/edit-lines)
