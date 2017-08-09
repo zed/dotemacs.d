@@ -41,6 +41,7 @@
 (el-get-bundle company
   (add-hook 'after-init-hook #'global-company-mode))
 
+;; ** Hydra
 (el-get-bundle hydra-move-splitter
   :url "https://raw.githubusercontent.com/erreina/.emacs.d/master/elisp/hydra-move-splitter.el")
 
@@ -51,7 +52,7 @@
     ("+" text-scale-increase "in")
     ("-" text-scale-decrease "out"))
 
-  ;; https://github.com/abo-abo/hydra/wiki/Compilation
+;; *** https://github.com/abo-abo/hydra/wiki/Compilation
   (defhydra hydra-next-error
     (global-map "C-x")
     "
@@ -70,7 +71,7 @@ _k_: previous error    _l_: last error
      nil :bind nil)
     ("q" nil            nil :color blue))
 
-  ;; Movement (from The Internets)
+;; *** Movement (from The Internets)
   (global-set-key (kbd "C-n")  (defhydra hydra-move
      (:body-pre (forward-line))
      "move"
@@ -85,7 +86,7 @@ _k_: previous error    _l_: last error
      ("V" scroll-down-command)
      ("l" recenter-top-bottom)))
 
-  ;; https://github.com/abo-abo/hydra/wiki/multiple-cursors
+;; *** https://github.com/abo-abo/hydra/wiki/multiple-cursors
   (global-set-key (kbd "C-c m")  (defhydra hydra-multiple-cursors (:hint nil)
     "
      ^Up^            ^Down^          ^Mark^                ^Edit^            ^Other^
@@ -114,7 +115,7 @@ _k_: previous error    _l_: last error
     ("C-a" mc/edit-beginnings-of-lines :exit t)
     ("C-e" mc/edit-ends-of-lines :exit t)))
 
-  ;; https://github.com/abo-abo/hydra/wiki/Dired
+;; *** https://github.com/abo-abo/hydra/wiki/Dired
   (with-eval-after-load-feature 'dired
     (define-key dired-mode-map "."
       (defhydra hydra-dired (:hint nil :color pink)
@@ -159,7 +160,7 @@ T - tag prefix
     ("q" nil :color blue)
     ("." nil :color blue))))
 
-  ;; https://github.com/abo-abo/hydra/wiki/Rectangle-Operations
+;; *** https://github.com/abo-abo/hydra/wiki/Rectangle-Operations
   (with-eval-after-load-feature 'rect
     (global-set-key
      (kbd "C-c r")
@@ -191,6 +192,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
        ("u" undo nil)
        ("q" nil))))
 
+;; *** Windows management
   (progn
 ;; return to a previous window configuration easily with C-c <left>
 (require 'winner)
@@ -273,7 +275,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   (add-to-list 'aw-dispatch-alist '(?\\ hydra-window/body) t))
 
-;; PDF Tools https://github.com/abo-abo/hydra/wiki/PDF-Tools
+;; *** PDF Tools https://github.com/abo-abo/hydra/wiki/PDF-Tools
 (el-get-bundle pdf-tools
   (pdf-tools-install))
 (with-eval-after-load-feature 'pdf-tools
@@ -349,7 +351,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
     (define-key pdf-view-mode-map (kbd "b")  #'pdf-view-set-slice-from-bounding-box)
     (define-key pdf-view-mode-map (kbd "r")  #'pdf-view-reset-slice)))
 
-;; ** support for hacking python code
+;; ** Support for hacking python code
 (el-get-bundle tdd
   :description "Run recompile (or a customisable function) after saving a buffer"
   :type github
@@ -373,7 +375,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (el-get-bundle py-autopep8
   (add-hook 'python-mode-hook #'py-autopep8-enable-on-save))
 
-;; ** magit, ...
+;; ** magit + misc
 (el-get-bundle magit
   (global-set-key (kbd "C-c g") #'magit-status))
 
@@ -630,7 +632,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; https://github.com/dimitri/el-get/issues/2232
 (el-get-ensure-byte-compilable-autoload-file el-get-autoload-file)
-(el-get-cleanup my:el-get-packages)
+(el-get-cleanup my:el-get-packages) ; uninstall packages that are not mentioned
 (el-get 'sync my:el-get-packages)
 
 
@@ -640,20 +642,21 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (require '.secrets "~/.secrets.el.gpg")
   (apply orig-fun args))
 
+;; ** eww
 (progn
   (setq
    browse-url-browser-function
    '(
      ("github" . browse-url-chromium)
      ("." . eww-browse-url)))
-  (setq url-user-agent "User-Agent: Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_0 like Mac OS X; en-us) AppleWebKit/532.9 (KHTML, like Gecko) Version/4.0.5 Mobile/8A293 Safari/6531.22.7\r\n")
   (add-hook 'eww-mode-hook #'init:disable-linum-mode-in-local-buffer))
 
-;; Save point position between sessions
+;; ** Save point position between sessions
 (require 'saveplace)
 (setq-default save-place t) ; set global default value for buffer local variable
 (setq save-place-file (expand-file-name ".places" user-emacs-directory))
 
+;; ** gnus
 (with-eval-after-load "gnus"
   (advice-add 'gnus :around #'init:with-secrets)
 
@@ -722,6 +725,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
   (require 'spam))
 
+;; ** irc
 (defun irc-start ()
   (interactive)
   (.secrets-irc-start))
@@ -762,6 +766,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 	       "\""))))
   (add-hook 'erc-text-matched-hook #'erc-global-notify))
 
+;; ** misc
                     ; * https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links
 (setq vc-follow-symlinks t)
 
