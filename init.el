@@ -45,12 +45,12 @@
   :url "https://raw.githubusercontent.com/erreina/.emacs.d/master/elisp/hydra-move-splitter.el")
 
 (el-get-bundle hydra
+  ;; https://github.com/abo-abo/hydra/wiki/Basics
   (defhydra hydra-zoom (global-map "C-c")
     "zoom"
     ("+" text-scale-increase "in")
     ("-" text-scale-decrease "out"))
 
-  ;; Movement
   ;; https://github.com/abo-abo/hydra/wiki/Compilation
   (defhydra hydra-next-error
     (global-map "C-x")
@@ -69,6 +69,8 @@ _k_: previous error    _l_: last error
            (user-error nil))
      nil :bind nil)
     ("q" nil            nil :color blue))
+
+  ;; Movement (from The Internets)
   (global-set-key (kbd "C-n")  (defhydra hydra-move
      (:body-pre (forward-line))
      "move"
@@ -83,6 +85,7 @@ _k_: previous error    _l_: last error
      ("V" scroll-down-command)
      ("l" recenter-top-bottom)))
 
+  ;; https://github.com/abo-abo/hydra/wiki/multiple-cursors
   (global-set-key (kbd "C-c m")  (defhydra hydra-multiple-cursors (:hint nil)
     "
      ^Up^            ^Down^          ^Mark^                ^Edit^            ^Other^
@@ -156,6 +159,7 @@ T - tag prefix
     ("q" nil :color blue)
     ("." nil :color blue))))
 
+  ;; https://github.com/abo-abo/hydra/wiki/Rectangle-Operations
   (with-eval-after-load-feature 'rect
     (global-set-key
      (kbd "C-c r")
