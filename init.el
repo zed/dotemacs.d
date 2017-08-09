@@ -976,6 +976,8 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 (my-keys-minor-mode 1)
 
+(setq ad-redefinition-action 'accept) ;; suppress "got redefined" warning
+
 ;; ** load customizations
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
