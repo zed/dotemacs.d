@@ -563,11 +563,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (with-eval-after-load-feature 'avy
     (setq avy-background t))
 
-(el-get-bundle! key-chord
-  (key-chord-define-global "jj" 'avy-goto-word-1)
-  (key-chord-mode +1))
-
-
 ; jump to link in info, eww buffers: type O + appeared avy letters
 (el-get-bundle ace-link
   (ace-link-setup-default))
