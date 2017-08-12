@@ -647,7 +647,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq
    browse-url-browser-function
    '(
-     ("github" . browse-url-chromium)
+     ("github.com" . browse-url-chromium)
      ("." . eww-browse-url)))
   (add-hook 'eww-mode-hook #'init:disable-linum-mode-in-local-buffer))
 
