@@ -557,13 +557,17 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (ivy-mode 1))  ; turn on ivy for default functions
 (add-hook 'after-init-hook (lambda () (helm-mode -1))) ; turn off helm for default functions
 
+; for ivy-regex-fuzzy sorting of large lists
+(el-get-bundle flx)
+
 ; https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
 (use-package ivy :demand
   :config
   ; https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/
   (setq ivy-re-builders-alist
 	;; allow input not in order
-        '((t   . ivy--regex-ignore-order)))
+        '((t   . ivy--regex-ignore-order))) ; "C-o m" toggles the current regexp builder
+  (setq ivy-height 20)
   (setq ivy-use-virtual-buffers t
 	ivy-count-format "%d/%d")
   ; https://oremacs.com/2017/08/04/ripgrep/
