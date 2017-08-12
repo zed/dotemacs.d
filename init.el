@@ -360,6 +360,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (el-get-bundle elpy
   (elpy-enable)
   (el-get-bundle pyvenv
+    (pyvenv-workon "py3.6")
     (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python)))
 
 ; debugger, to enable: M-x realgud:reload-features
