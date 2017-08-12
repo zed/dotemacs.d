@@ -4,6 +4,23 @@
 (unless noninteractive
   (message "Loading %s..." load-file-name))
 
+;; * load customizations
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(menu-bar-mode nil)
+ '(scroll-bar-mode nil)
+ '(tool-bar-mode nil)
+)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+)
+
 ;; * helper function
 (defun init:disable-linum-mode-in-local-buffer ()
   (linum-mode -1)) ;; an alternative is to define #'linum-on
@@ -949,20 +966,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (my-keys-minor-mode 1)
 
 (setq ad-redefinition-action 'accept) ;; suppress "got redefined" warning
-
-;; ** load customizations
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
-)
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 
 ;; ** measure how long it took to load .emacs
 (progn (let ((elapsed (float-time (time-subtract (current-time)
