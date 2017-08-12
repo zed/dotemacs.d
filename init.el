@@ -223,10 +223,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ("K" hydra-move-splitter-down)
   ("I" hydra-move-splitter-up)
   ("L" hydra-move-splitter-right)
-  ("b" ido-switch-buffer :color blue)
-  ("B" ido-switch-buffer)
-  ("f" ido-find-file :color blue)
-  ("F" ido-find-file)
+  ("b" ivy-switch-buffer :color blue)
+  ("B" ivy-switch-buffer)
+  ("f" counsel-find-file :color blue)
+  ("F" counsel-find-file)
   ("a" (lambda ()
 	 (interactive)
 	 (ace-window 1)
@@ -378,10 +378,8 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; ** magit + misc
 (el-get-bundle magit
   (global-set-key (kbd "C-c g") #'magit-status))
-
-(el-get-bundle smex
-  (global-set-key (kbd "M-x") #'smex)
-  (global-set-key (kbd "M-X") #'smex-major-mode-commands))
+(with-eval-after-load-feature 'magit
+  (setq magit-completing-read-function 'ivy-completing-read))
 
                     ; uniquify buffers with the same name
                     ; instead of buf<2>, etc it shows
@@ -394,28 +392,12 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (recentf-mode t)
 (setq recentf-max-saved-items 100)
 
-(defun ido-recentf-open ()
-  "Use `ido-completing-read' to \\[find-file] a recent file"
-  (interactive)
-  (if (find-file (ido-completing-read "Find recent file: " recentf-list))
-      (message "Opening file...")
-    (message "Aborting")))
-;; http://emacs.stackexchange.com/questions/3063/recently-opened-files-in-ido-mode
-(setq ido-use-virtual-buffers t)
-
-
                     ; use 4 spaces instead of tabs for indentation
                     ; http://stackoverflow.com/a/471916/
 (setq tab-width 4)
 (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80))
 (setq indent-tabs-mode nil)
 
-
-;; Activate occur easily inside isearch
-(define-key isearch-mode-map (kbd "C-o")
-  (lambda () (interactive)
-    (let ((case-fold-search isearch-case-fold-search))
-      (occur (if isearch-regexp isearch-string (regexp-quote isearch-string))))))
 
 ;; Part of the Emacs Starter Kit
 ;; Registers allow you to jump to a file or other location
@@ -440,12 +422,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; [[~/src/emacs-starter-kit/starter-kit-bindings.el]]
 ;; . Indentation help
 (global-set-key (kbd "C-x ^") #'join-line)
-
-;; . Use regex searches by default.
-(global-set-key (kbd "C-s") #'isearch-forward-regexp)
-(global-set-key (kbd "\C-r") #'isearch-backward-regexp)
-(global-set-key (kbd "C-M-s") #'isearch-forward)
-(global-set-key (kbd "C-M-r") #'isearch-backward)
 
                     ; [[https://github.com/dimitri/emacs-kicker/blob/master/init.el]]
                     ; If you do use M-x term, you will notice there's line mode that acts like
@@ -482,22 +458,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (define-key term-raw-map  (kbd "C-y") #'term-paste)
 
 
-                    ; use ido for minibuffer completion
-
-(ido-mode t)
-(setq ido-save-directory-list-file (concat user-emacs-directory ".ido.last"))
-(setq ido-enable-flex-matching t)
-(setq ido-use-filename-at-point 'guess)
-(setq ido-show-dot-for-dired t)
-                    ; default key to switch buffer is C-x b, but that's not easy enough
-                    ;
-                    ; when you do that, to kill emacs either close its frame from the window
-                    ; manager or do M-x kill-emacs.  Don't need a nice shortcut for a once a
-                    ; week (or day) action.
-(global-set-key (kbd "C-x C-b") #'ido-switch-buffer)
 (global-set-key (kbd "C-x C-c") #'save-buffers-kill-emacs)
-(global-set-key (kbd "C-x B") #'ibuffer)
-
 
                     ; C-x C-j opens dired with the cursor right on the file you're editing
 (require 'dired-x)
@@ -514,22 +475,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ;; show commands for the current prefix after a delay
   (which-key-mode))
 
-(el-get-bundle helm
-  ;; Help should search more than just commands
-  (global-set-key (kbd "C-h a") #'helm-apropos)
-  (helm-autoresize-mode t)
-  (customize-set-variable 'helm-allow-mouse t)
-
-					; https://www.emacswiki.org/emacs/HelmSwoop
-					; Cursor follows the selected occurence
-  (cl-defmethod helm-setup-user-source ((source helm-source-multi-occur))
-    (setf (slot-value source 'follow) 1))
-					; Invoke `helm-occur' from `isearch'
-  (define-key isearch-mode-map (kbd "M-s o") 'helm-occur-from-isearch))
-
 (el-get-bundle helm-google
   ;; If you want to keep the search open use C-z instead of RET.
-  (global-set-key (kbd "C-h C--") #'helm-google))
+  (global-set-key (kbd "C-c s") #'helm-google))
 
 (el-get-bundle markdown-mode
   (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
@@ -588,12 +536,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (el-get-bundle org-download (org-download-enable))
 (setq-default org-download-image-dir "~/Pictures/org")
 
+; ** use dark theme after sunset
 ; reset old theme settings while loading a new theme
 (defadvice load-theme
     (before disable-before-load (theme &optional no-confirm no-enable) activate)
   (mapc 'disable-theme custom-enabled-themes))
-
-; use dark theme after sunset
 (el-get-bundle! theme-changer)
 (use-package theme-changer
   :config
@@ -601,10 +548,36 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (customize-set-variable 'calendar-longitude 37.6)
   (change-theme 'tango 'tango-dark))
 
-;; Increase selection by semantic units
+;; ** Increase selection by semantic units
 (el-get-bundle expand-region
   (global-set-key (kbd "C-=") 'er/expand-region))
 
+;; ** Navigation (buffers, files, search, help, M-x)
+(el-get-bundle counsel
+  (ivy-mode 1))  ; turn on ivy for default functions
+(add-hook 'after-init-hook (lambda () (helm-mode -1))) ; turn off helm for default functions
+
+; https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
+(use-package ivy :demand
+  :config
+  ; https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/
+  (setq ivy-re-builders-alist
+	;; allow input not in order
+        '((t   . ivy--regex-ignore-order)))
+  (setq ivy-use-virtual-buffers t
+	ivy-count-format "%d/%d")
+  ; https://oremacs.com/2017/08/04/ripgrep/
+  (setq counsel-grep-base-command
+	"rg -i -M 120 --no-heading --line-number --color never '%s' %s")
+  (global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
+  (global-set-key (kbd "C-c C-r") 'ivy-resume)
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (global-set-key (kbd "C-h f") 'counsel-describe-function)
+  (global-set-key (kbd "C-h v") 'counsel-describe-variable)
+  (global-set-key (kbd "C-h a") 'counsel-apropos))
+
+(el-get-bundle wgrep)
 ;; ** ^^^last el-get-bundle installed package
 
 
@@ -849,7 +822,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
      "[A-Za-z]" "[^A-Za-z]"
      "[']"  nil ("-d" "en_US") nil iso-8859-1)))
 
-(global-set-key (kbd "C-c C-f") #'ido-recentf-open)
 (setq flyspell-default-dictionary "ru")
 
 
