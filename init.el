@@ -424,7 +424,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; You should add registers here for the files you edit most often.
 (dolist (r `((?i (file . ,(expand-file-name "~/.emacs")))
              (?r (file . ,(expand-file-name (getenv "ORG_AGENDA_FILE"))))
-	     (?c (file . ,(expand-file-name "~/.custom.el")))
 	     ))
   (set-register (car r) (cadr r)))
 
@@ -781,7 +780,8 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 (global-linum-mode)    ; enable line numbers globally if #'linum-on would do it
 (setq linum-eager nil) ; improve performance
-(column-number-mode)   ; enable columns numbers globally
+(column-number-mode)   ; enable columns numbers globally, it has a performance hit
+
 
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
 
@@ -809,9 +809,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
  kept-old-versions 2
  vc-make-backup-files t   ; make backups of files, even when they're in version control
  version-control t)       ; use versioned backups
-
-                    ; show column number
-(column-number-mode t) ;;NOTE: it has a performance hit
 
                     ; Open *.m in Octave-mode instead of ObjC
 (setq auto-mode-alist
@@ -863,10 +860,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 		      ("idea" . nil) ("code" . nil) ("pythonista" . nil) ("org" . nil)
 		      ("so" . nil) ("birthday" . nil) ("buy" . nil) ("quick" . nil)
 		      ("tutorial" . nil) ("github" . nil) ("day" . nil) ("pyopenssl" . nil)
-		      ("iprim" . nil) ("cluster" . nil) ("read" . nil) ("book" . nil)
+		      ("cluster" . nil) ("read" . nil) ("book" . nil)
 		      ("feature" . nil) ("psutil" . nil) ("twisted" . nil) ("cpython" . nil)
 		      ("subprocess" . nil) ("bug" . nil) ("easy" . nil) ("stackoverflow" . ?s)
-		      ("wurlitzer" . nil) ("lrange" . nil) ("pythinsta" . nil) ("telegram" . nil)
+		      ("wurlitzer" . nil) ("lrange" . nil) ("telegram" . nil)
 		      ("d0" . ?d) ("telethon" . nil) ("emacs" . ?e)))
 
 ;; Effort and global properties
