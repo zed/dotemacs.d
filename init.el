@@ -598,7 +598,8 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (global-set-key (kbd "C-h v") 'counsel-describe-variable)
   (global-set-key (kbd "C-h a") 'counsel-apropos))
 
-(el-get-bundle wgrep)
+(el-get-bundle wgrep) ; support writing in grep/rg results
+
 					; Select a Makefile target with helm.
 (el-get-bundle helm-make
   (customize-set-variable 'helm-make-list-target-method 'qp))
