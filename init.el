@@ -599,6 +599,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (global-set-key (kbd "C-h a") 'counsel-apropos))
 
 (el-get-bundle wgrep)
+					; Select a Makefile target with helm.
+(el-get-bundle helm-make
+  (customize-set-variable 'helm-make-list-target-method 'qp))
 ;; ** ^^^last el-get-bundle installed package
 
 
