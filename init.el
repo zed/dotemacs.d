@@ -553,6 +553,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (el-get-bundle org-download (org-download-enable))
 (setq-default org-download-image-dir "~/Pictures/org")
 
+;; ** pretty bullets in org-mode
+(el-get-bundle 'org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
 ; ** use dark theme after sunset
 ; reset old theme settings while loading a new theme
 (defadvice load-theme
