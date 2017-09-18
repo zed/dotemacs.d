@@ -840,6 +840,28 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 (add-hook 'c-mode-common-hook #'init:c-mode-common-hook)
 
+;; from https://emacs.stackexchange.com/questions/508/how-to-configure-specific-java-indentation
+;; by @Sigma
+(c-add-style "my-java-style"
+	       '((c-basic-offset . 4)
+		 (c-offsets-alist . ((inline-open . 0)
+				     (topmost-intro-cont    . +)
+				     (statement-block-intro . +)
+				     (knr-argdecl-intro     . 5)
+				     (substatement-open     . +)
+				     (substatement-label    . +)
+				     (label                 . +)
+				     (statement-case-open   . +)
+				     (statement-cont        . ++)
+				     (arglist-intro  . c-lineup-arglist-intro-after-paren)
+				     (arglist-close  . c-lineup-arglist)
+				     (access-label   . 0)
+				     (inher-cont     . ++)
+                      (func-decl-cont . ++)))))
+(defun init:java-mode-hook ()
+  (c-set-style "my-java-style"))
+(add-hook 'java-mode-hook #'init:java-mode-hook)
+
                     ; список используемых нами словарей
                     ; from https://habrahabr.ru/post/215055/
 (setq ispell-local-dictionary-alist
