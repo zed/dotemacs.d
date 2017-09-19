@@ -1,4 +1,11 @@
 ; -*- coding: utf-8 orgstruct-heading-prefix-regexp: ";; *"; -*-
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
 (defconst emacs-start-time (current-time))
 
 (unless noninteractive
@@ -10,18 +17,23 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(calendar-latitude 55.8)
+ '(calendar-longitude 37.6)
+ '(el-get-allow-insecure t) ; for git:/orgmode.org
+ '(gist-view-gist t t)
  '(menu-bar-mode nil)
+ '(package-selected-packages (quote (org theme-changer rg helm-make counsel)))
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
-)
+ '(windmove-wrap-around t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-)
+ )
 
-;; * helper function
+;; helper function
 (defun init:disable-linum-mode-in-local-buffer ()
   (linum-mode -1)) ;; an alternative is to define #'linum-on
 
@@ -31,32 +43,33 @@
 (add-to-list 'load-path  (concat user-emacs-directory "el-get/el-get"))
 
 ;; NOTE if you change it; update using M-x el-get-elpa-build-local-recipes
+(setq package-archives
+ (quote
+  (("gnu" . "https://elpa.gnu.org/packages/")
+   ("melpa" . "https://melpa.org/packages/")
+   ("elpy" . "https://jorgenschaefer.github.io/packages/"))))
 (unless (require 'el-get nil 'noerror)
   (require 'package)
-  (setq package-archives
-    (quote
-     (("gnu" . "https://elpa.gnu.org/packages/")
-      ("melpa" . "https://melpa.org/packages/")
-      ("elpy" . "https://jorgenschaefer.github.io/packages/"))))
-  (package-initialize)
   (package-refresh-contents)
+  (package-initialize)
   (package-install 'el-get)
   (require 'el-get))
-(el-get 'sync 'el-get) ; workaround "can't find \"package\" package"
+(el-get 'sync 'el-get) ;; suppress can't find package package
+;; * install packages
+(require 'el-get-elpa) ; install melpa packages via el-get
 
-
-;; * install & configure packages
-(customize-set-variable 'el-get-allow-insecure t)
 (add-to-list 'el-get-recipe-path (concat user-emacs-directory "el-get-user/recipes"))
 
-
 (el-get-bundle! with-eval-after-load-feature) ; to suppress "free variable" warning
+(el-get-bundle use-package) ; to fix rg keybindings, theme-changer
+(setq use-package-verbose t)
 
-(el-get-bundle gist
-  (customize-set-variable 'gist-view-gist t))
-
-(el-get-bundle company
-  (add-hook 'after-init-hook #'global-company-mode))
+; ** use dark theme after sunset
+; reset old theme settings while loading a new theme
+(defadvice load-theme
+    (before disable-before-load (theme &optional no-confirm no-enable) activate)
+  (mapc 'disable-theme custom-enabled-themes))
+(el-get-bundle theme-changer)
 
 ;; ** Hydra
 (el-get-bundle hydra-move-splitter
@@ -374,20 +387,16 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :type github
   :pkgname "jorgenschaefer/emacs-tdd")
 
-(el-get-bundle elpy
-  (elpy-enable)
-  (el-get-bundle pyvenv
-    (pyvenv-workon "py3.6")
-    (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python)))
+(el-get-bundle pyvenv
+  (pyvenv-workon "py3.6")
+  (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python))
 
 ; debugger, to enable: M-x realgud:reload-features
 ; to start: M-x realgud:trepun3k
 (el-get-bundle realgud)
 
                     ; real-time syntax check
-(el-get-bundle flycheck
-  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-  (add-hook 'elpy-mode-hook #'flycheck-mode))
+(el-get-bundle flycheck)
 
                     ; format and correct any PEP8 erros on save (C-x C-s)
 (el-get-bundle py-autopep8
@@ -399,8 +408,176 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (with-eval-after-load-feature 'magit
   (setq magit-completing-read-function 'ivy-completing-read))
 
-                    ; uniquify buffers with the same name
-                    ; instead of buf<2>, etc it shows
+(el-get-bundle multiple-cursors ;; see also hydra-multiple-cursors
+  (global-set-key (kbd "C-S-c C-S-c") #'mc/edit-lines)
+  (global-set-key (kbd "C->") #'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") #'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-c C-<") #'mc/mark-all-like-this)
+  (global-set-key (kbd "C-S-<mouse-1>") #'mc/add-cursor-on-click))
+
+(el-get-bundle which-key
+  ;; show commands for the current prefix after a delay
+  (which-key-mode))
+
+(el-get-bundle helm-google
+  ;; If you want to keep the search open use C-z instead of RET.
+  (global-set-key (kbd "C-c s") #'helm-google))
+
+(el-get-bundle markdown-mode
+  (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+  (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+  (autoload 'gfm-mode "markdown-mode"
+    "Major mode for editing GitHub Flavored Markdown files" t)
+  (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode)))
+
+;; ripgrep https://github.com/dajva/rg.el
+(el-get-bundle rg)
+
+(el-get-bundle geiser)
+(with-eval-after-load-feature 'geiser
+  (setq geiser-active-implementations '(racket)))
+(el-get-bundle paredit)
+
+(el-get-bundle rainbow-delimiters
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+
+
+;; jump to visible input (use keyboard as a mouse)
+(el-get-bundle avy
+  (global-set-key (kbd "M-s") 'avy-goto-word-1)
+  (global-set-key (kbd "s-j") 'avy-goto-char-timer)
+  (global-set-key (kbd "s-J") 'avy-pop-mark)
+  (avy-setup-default))
+(with-eval-after-load-feature 'avy
+    (setq avy-background t))
+
+; jump to link in info, eww buffers: type O + appeared avy letters
+(el-get-bundle ace-link
+  (ace-link-setup-default))
+
+(el-get-bundle typing)
+
+;; ** company
+(el-get-bundle company
+  (global-company-mode))
+(with-eval-after-load-feature 'company
+  (add-to-list 'company-backends 'company-restclient))
+
+;; ** restclient
+(el-get-bundle restclient)
+; NOTE: avoid "recursive load" error from el-get
+(el-get-bundle company-restclient)
+; ob-restclient is included in a new org-babel but install it manually for now
+(el-get-bundle ob-restclient :type github :pkgname "alf/ob-restclient.el")
+
+;; ** Drag and drop images to Emacs org-mode Firefox works,
+;; Chrome/Yandex don't. Use org-download-yank to paste a picture if
+;; its url is in the kill-ring ("0 w" in dired copies the absolute
+;; path)
+(el-get-bundle org-download)
+
+;; ** pretty bullets in org-mode
+(el-get-bundle org-bullets)
+
+;; ** Increase selection by semantic units
+(el-get-bundle expand-region
+  (global-set-key (kbd "C-=") 'er/expand-region))
+
+;; ** Navigation (buffers, files, search, help, M-x)
+(el-get-bundle counsel)
+
+; for ivy-regex-fuzzy sorting of large lists
+(el-get-bundle flx)
+
+(el-get-bundle wgrep) ; support writing in grep/rg results
+
+;; ** install org
+(el-get-bundle org)
+
+;; *** ido/ivy/helm imenu tag selection across buffers with the same mode/project etc
+(el-get-bundle imenu-anywhere)
+					; Select a Makefile target with helm.
+(el-get-bundle helm-make
+  (customize-set-variable 'helm-make-list-target-method 'qp))
+(add-hook 'after-init-hook (lambda () (helm-mode -1))) ; turn off helm for default functions
+;; ** ^^^last el-get-bundle installed package
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; no new packages from here on out
+; Build the El-Get copy of the package.el packages if we have not
+; built it before.  Will have to look into updating later ...
+; M-x el-get-elpa-build-local-recipes
+(unless (file-directory-p el-get-recipe-path-elpa)
+  (el-get-elpa-build-local-recipes))
+
+(setq my:el-get-packages
+      (append
+       ;; list of packages we use straight from official recipes
+       '(yasnippet			; interactive templates
+	 gist
+	 elpy
+	 skewer-mode)		    ;  org-store-link fails without it
+       (mapcar #'el-get-as-symbol (mapcar #'el-get-source-name el-get-sources))))
+
+
+;; https://github.com/dimitri/el-get/issues/2232
+(el-get-ensure-byte-compilable-autoload-file el-get-autoload-file)
+(el-get-cleanup my:el-get-packages) ; uninstall packages that are not mentioned
+(el-get 'sync my:el-get-packages)
+
+;; * configure packages
+(defun init:with-secrets (orig-fun &rest args)
+  "Load secrets before calling `orig-fun'."
+  (require '.secrets "~/.secrets.el.gpg")
+  (apply orig-fun args))
+
+;; ** rg
+(use-package rg
+  :bind ("C-x C-r" . rg))
+
+;; ** theme-changer
+(use-package theme-changer :demand
+  :config
+  (customize-set-variable 'calendar-latitude 55.8) ; solar package
+  (customize-set-variable 'calendar-longitude 37.6)
+  (change-theme 'tango 'tango-dark))
+
+;; ** ivy
+; https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
+(use-package ivy :demand
+  :config
+  (ivy-mode 1)  ; turn on ivy for default functions
+  ; https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/
+  (setq ivy-re-builders-alist
+	;; allow input not in order
+        '((t   . ivy--regex-ignore-order))) ; "C-o m" toggles the current regexp builder
+  (setq ivy-height 20)
+  (setq ivy-use-virtual-buffers t
+	ivy-count-format "%d/%d")
+  ; https://oremacs.com/2017/08/04/ripgrep/
+  (setq counsel-grep-base-command
+	"rg -i -M 120 --no-heading --line-number --color never '%s' %s")
+  (global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
+  (global-set-key (kbd "C-c C-r") 'ivy-resume)
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (global-set-key (kbd "C-h f") 'counsel-describe-function)
+  (global-set-key (kbd "C-h v") 'counsel-describe-variable)
+  (global-set-key (kbd "C-h a") 'counsel-apropos))
+
+;; ** elpy
+(use-package elpy
+  :config
+  (elpy-enable)
+  ;; flycheck
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  (add-hook 'elpy-mode-hook #'flycheck-mode))
+
+;; ** misc
+(progn
+					; uniquify buffers with the same name
+					; instead of buf<2>, etc it shows
 (setq uniquify-buffer-name-style 'reverse)
 (setq uniquify-after-kill-buffer-p t)
 (setq uniquify-ignore-buffers-re "^\\*")
@@ -479,168 +656,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
                     ; C-x C-j opens dired with the cursor right on the file you're editing
 (require 'dired-x)
-(add-hook 'dired-mode-hook #'init:disable-linum-mode-in-local-buffer)
-
-(el-get-bundle multiple-cursors ;; see also hydra-multiple-cursors
-  (global-set-key (kbd "C-S-c C-S-c") #'mc/edit-lines)
-  (global-set-key (kbd "C->") #'mc/mark-next-like-this)
-  (global-set-key (kbd "C-<") #'mc/mark-previous-like-this)
-  (global-set-key (kbd "C-c C-<") #'mc/mark-all-like-this)
-  (global-set-key (kbd "C-S-<mouse-1>") #'mc/add-cursor-on-click))
-
-(el-get-bundle which-key
-  ;; show commands for the current prefix after a delay
-  (which-key-mode))
-
-(el-get-bundle helm-google
-  ;; If you want to keep the search open use C-z instead of RET.
-  (global-set-key (kbd "C-c s") #'helm-google))
-
-(el-get-bundle markdown-mode
-  (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-  (autoload 'gfm-mode "markdown-mode"
-    "Major mode for editing GitHub Flavored Markdown files" t)
-  (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode)))
-
-(el-get-bundle! use-package)
-(setq use-package-verbose t)
-;; ripgrep https://github.com/dajva/rg.el
-(el-get-bundle rg)
-(use-package rg
-  :bind ("C-x C-r" . rg))
-
-(el-get-bundle geiser)
-(with-eval-after-load-feature 'geiser
-  (setq geiser-active-implementations '(racket)))
-(el-get-bundle paredit)
-
-(el-get-bundle rainbow-delimiters
-  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
-
-
-;; jump to visible input (use keyboard as a mouse)
-(el-get-bundle avy
-  (global-set-key (kbd "M-s") 'avy-goto-word-1)
-  (global-set-key (kbd "s-j") 'avy-goto-char-timer)
-  (global-set-key (kbd "s-J") 'avy-pop-mark)
-  (avy-setup-default))
-(with-eval-after-load-feature 'avy
-    (setq avy-background t))
-
-; jump to link in info, eww buffers: type O + appeared avy letters
-(el-get-bundle ace-link
-  (ace-link-setup-default))
-
-(el-get-bundle typing)
-
-;; ** restclient
-(el-get-bundle restclient)
-; NOTE: avoid "recursive load" error from el-get
-(el-get-bundle company-restclient)
-;					ob-restclient is included in a new org-babel but install it manually for now
-(el-get-bundle ob-restclient :type github :pkgname "alf/ob-restclient.el")
-
-(el-get-bundle company-mode
-  (add-hook 'after-init-hook 'global-company-mode))
-(with-eval-after-load-feature 'company-mode
-  (add-to-list 'company-backends 'company-restclient))
-
-;; ** Drag and drop images to Emacs org-mode Firefox works,
-;; Chrome/Yandex don't. Use org-download-yank to paste a picture if
-;; its url is in the kill-ring ("0 w" in dired copies the absolute
-;; path)
-(el-get-bundle org-download (org-download-enable))
-(setq-default org-download-image-dir "~/Pictures/org")
-
-;; ** pretty bullets in org-mode
-(el-get-bundle 'org-bullets)
-(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-
-; ** use dark theme after sunset
-; reset old theme settings while loading a new theme
-(defadvice load-theme
-    (before disable-before-load (theme &optional no-confirm no-enable) activate)
-  (mapc 'disable-theme custom-enabled-themes))
-(el-get-bundle! theme-changer)
-(use-package theme-changer
-  :config
-  (customize-set-variable 'calendar-latitude 55.8) ; solar package
-  (customize-set-variable 'calendar-longitude 37.6)
-  (change-theme 'tango 'tango-dark))
-
-;; ** Increase selection by semantic units
-(el-get-bundle expand-region
-  (global-set-key (kbd "C-=") 'er/expand-region))
-
-;; ** Navigation (buffers, files, search, help, M-x)
-(el-get-bundle counsel
-  (ivy-mode 1))  ; turn on ivy for default functions
-(add-hook 'after-init-hook (lambda () (helm-mode -1))) ; turn off helm for default functions
-
-; for ivy-regex-fuzzy sorting of large lists
-(el-get-bundle flx)
-
-; https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
-(use-package ivy :demand
-  :config
-  ; https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/
-  (setq ivy-re-builders-alist
-	;; allow input not in order
-        '((t   . ivy--regex-ignore-order))) ; "C-o m" toggles the current regexp builder
-  (setq ivy-height 20)
-  (setq ivy-use-virtual-buffers t
-	ivy-count-format "%d/%d")
-  ; https://oremacs.com/2017/08/04/ripgrep/
-  (setq counsel-grep-base-command
-	"rg -i -M 120 --no-heading --line-number --color never '%s' %s")
-  (global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
-  (global-set-key (kbd "C-c C-r") 'ivy-resume)
-  (global-set-key (kbd "M-x") 'counsel-M-x)
-  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  (global-set-key (kbd "C-h f") 'counsel-describe-function)
-  (global-set-key (kbd "C-h v") 'counsel-describe-variable)
-  (global-set-key (kbd "C-h a") 'counsel-apropos))
-
-(el-get-bundle wgrep) ; support writing in grep/rg results
-
-;; *** ido/ivy/helm imenu tag selection across buffers with the same mode/project etc
-(el-get-bundle imenu-anywhere)
-					; Select a Makefile target with helm.
-(el-get-bundle helm-make
-  (customize-set-variable 'helm-make-list-target-method 'qp))
-;; ** ^^^last el-get-bundle installed package
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; no new packages from here on out
-(require 'el-get-elpa) ; install melpa packages via el-get
-; Build the El-Get copy of the package.el packages if we have not
-; built it before.  Will have to look into updating later ...
-; M-x el-get-elpa-build-local-recipes
-(unless (file-directory-p el-get-recipe-path-elpa)
-  (el-get-elpa-build-local-recipes))
-
-(setq my:el-get-packages
-      (append
-       ;; list of packages we use straight from official recipes
-       '(yasnippet		    ; interactive templates
-	 skewer-mode)		    ;  org-store-link fails without it
-       (mapcar #'el-get-as-symbol (mapcar #'el-get-source-name el-get-sources))))
-
-
-;; https://github.com/dimitri/el-get/issues/2232
-(el-get-ensure-byte-compilable-autoload-file el-get-autoload-file)
-(el-get-cleanup my:el-get-packages) ; uninstall packages that are not mentioned
-(el-get 'sync my:el-get-packages)
-
-
-;; * configure builtin packages
-(defun init:with-secrets (orig-fun &rest args)
-  "Load secrets before calling `orig-fun'."
-  (require '.secrets "~/.secrets.el.gpg")
-  (apply orig-fun args))
-
+(add-hook 'dired-mode-hook #'init:disable-linum-mode-in-local-buffer))
 ;; ** eww
 (progn
   (setq
@@ -875,86 +891,91 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 (setq flyspell-default-dictionary "ru")
 
-
-(require 'org)
-
-;; orgmobile
-(setq org-mobile-use-encryption t)
-(advice-add 'org-mobile-push :around #'init:with-secrets)
-(advice-add 'org-mobile-pull :around #'init:with-secrets)
-
-
-(setq org-todo-keywords
-      '((sequence "TODO(t)" "|" "DONE(d)")
-	(sequence "|" "CANCELED(c)")))
-
-(setq org-tag-alist '((:startgroup . nil) ("home" . ?h) ("work" . ?w) (:endgroup . nil)
-		      ("idea" . nil) ("code" . nil) ("pythonista" . nil) ("org" . nil)
-		      ("so" . nil) ("birthday" . nil) ("buy" . nil) ("quick" . nil)
-		      ("tutorial" . nil) ("github" . nil) ("day" . nil) ("pyopenssl" . nil)
-		      ("cluster" . nil) ("read" . nil) ("book" . nil)
-		      ("feature" . nil) ("psutil" . nil) ("twisted" . nil) ("cpython" . nil)
-		      ("subprocess" . nil) ("bug" . nil) ("easy" . nil) ("stackoverflow" . ?s)
-		      ("wurlitzer" . nil) ("lrange" . nil) ("telegram" . nil)
-		      ("d0" . ?d) ("telethon" . nil) ("emacs" . ?e)))
-
-;; Effort and global properties
-(setq org-global-properties '(("Effort_ALL". "0 0:10 0:20 0:30 1:00 2:00 3:00 4:00 6:00 8:00")))
-
-;; Set global Column View format
-(setq org-columns-default-format '"%38ITEM(Details) %TAGS(Context) %7TODO(To Do) %5Effort(Time){:} %6CLOCKSUM(Clock)")
+;; ** configure org
+(use-package org
+  :defer t
+  :config
+  ;; orgmobile
+  (setq org-mobile-use-encryption t)
+  (advice-add 'org-mobile-push :around #'init:with-secrets)
+  (advice-add 'org-mobile-pull :around #'init:with-secrets)
 
 
+  (setq org-todo-keywords
+	'((sequence "TODO(t)" "|" "DONE(d)")
+	  (sequence "|" "CANCELED(c)")))
 
-;; From https://github.com/higham/dot-emacs/blob/master/.emacs
-;; fold with Tab/S-Tab on headers in org-mode
-(add-hook 'emacs-lisp-mode-hook #'turn-on-orgstruct++)
+  (setq org-tag-alist '((:startgroup . nil) ("home" . ?h) ("work" . ?w) (:endgroup . nil)
+			("idea" . nil) ("code" . nil) ("pythonista" . nil) ("org" . nil)
+			("so" . nil) ("birthday" . nil) ("buy" . nil) ("quick" . nil)
+			("tutorial" . nil) ("github" . nil) ("day" . nil) ("pyopenssl" . nil)
+			("cluster" . nil) ("read" . nil) ("book" . nil)
+			("feature" . nil) ("psutil" . nil) ("twisted" . nil) ("cpython" . nil)
+			("subprocess" . nil) ("bug" . nil) ("easy" . nil) ("stackoverflow" . ?s)
+			("wurlitzer" . nil) ("lrange" . nil) ("telegram" . nil)
+			("d0" . ?d) ("telethon" . nil) ("emacs" . ?e)))
 
-                    ; Set to the location of your Org files on your local system
-(setq org-directory (getenv "ORG_DIRECTORY"))
-                    ; Set to the name of the file where new notes will be stored
-(setq org-mobile-inbox-for-pull (getenv "ORG_MOBILE_INBOX_FOR_PULL"))
-                    ; Set to <your Dropbox root directory>/MobileOrg.
-(setq org-mobile-directory (getenv "ORG_MOBILE_DIRECTORY"))
-(customize-set-variable 'org-agenda-files (list
-					   (getenv "ORG_AGENDA_FILE")
-					   (getenv "ORG_MOBILE_INBOX_FOR_PULL")))
-(customize-set-variable 'org-refile-targets
-			'((nil :maxlevel . 2)
-			  (org-agenda-files :maxlevel . 2)))
-(setq org-capture-templates
-      '(("t" "Todo" entry (file+headline (getenv "ORG_AGENDA_FILE") "Projects")
-         "* TODO %?\n  %i\n  %a")
-        ("j" "Journal" entry (file+datetree (concat org-directory "journal.org"))
-         "* %?\nEntered on %U\n  %i\n  %a")))
+  ;; Effort and global properties
+  (setq org-global-properties '(("Effort_ALL". "0 0:10 0:20 0:30 1:00 2:00 3:00 4:00 6:00 8:00")))
 
-(setq org-confirm-babel-evaluate nil)
-(global-set-key "\C-cl" #'org-store-link)
-(global-set-key "\C-ca" #'org-agenda)
-(global-set-key "\C-cc" #'org-capture)
-(global-set-key "\C-cb" #'org-iswitchb)
-(define-key org-mode-map (kbd "M-o") 'ace-link-org)
-
-;; resume the clock under the assumption that you have worked on this task while outside Emacs
-(setq org-clock-persist t)
-(org-clock-persistence-insinuate)
-(setq org-reverse-note-order t)
-(setq org-agenda-include-diary t)
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((python . t)
-   (emacs-lisp . t)
-   (sh . t)
-   (restclient . t)))
-
-;; enable export to markdown in on C-c C-e
-(require 'ox-md nil t)
-
-;; drastically improve performance of org-capture for large org files
-(add-hook 'org-mode-hook #'init:disable-linum-mode-in-local-buffer)
+  ;; Set global Column View format
+  (setq org-columns-default-format '"%38ITEM(Details) %TAGS(Context) %7TODO(To Do) %5Effort(Time){:} %6CLOCKSUM(Clock)")
 
 
-;;
+
+  ;; From https://github.com/higham/dot-emacs/blob/master/.emacs
+  ;; fold with Tab/S-Tab on headers in org-mode
+  (add-hook 'emacs-lisp-mode-hook #'turn-on-orgstruct++)
+
+					; Set to the location of your Org files on your local system
+  (setq org-directory (getenv "ORG_DIRECTORY"))
+					; Set to the name of the file where new notes will be stored
+  (setq org-mobile-inbox-for-pull (getenv "ORG_MOBILE_INBOX_FOR_PULL"))
+					; Set to <your Dropbox root directory>/MobileOrg.
+  (setq org-mobile-directory (getenv "ORG_MOBILE_DIRECTORY"))
+  (customize-set-variable 'org-agenda-files (list
+					     (getenv "ORG_AGENDA_FILE")
+					     (getenv "ORG_MOBILE_INBOX_FOR_PULL")))
+  (customize-set-variable 'org-refile-targets
+			  '((nil :maxlevel . 2)
+			    (org-agenda-files :maxlevel . 2)))
+  (setq org-capture-templates
+	'(("t" "Todo" entry (file+headline (getenv "ORG_AGENDA_FILE") "Projects")
+	   "* TODO %?\n  %i\n  %a")
+	  ("j" "Journal" entry (file+datetree (concat org-directory "journal.org"))
+	   "* %?\nEntered on %U\n  %i\n  %a")))
+
+  (setq org-confirm-babel-evaluate nil)
+  (global-set-key "\C-cl" #'org-store-link)
+  (global-set-key "\C-ca" #'org-agenda)
+  (global-set-key "\C-cc" #'org-capture)
+  (global-set-key "\C-cb" #'org-iswitchb)
+  (define-key org-mode-map (kbd "M-o") 'ace-link-org)
+
+  ;; resume the clock under the assumption that you have worked on this task while outside Emacs
+  (setq org-clock-persist t)
+  (org-clock-persistence-insinuate)
+  (setq org-reverse-note-order t)
+  (setq org-agenda-include-diary t)
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)
+     (emacs-lisp . t)
+     (sh . t)
+     (restclient . t)))
+
+  ;; enable export to markdown in on C-c C-e
+  (add-hook 'org-mode-hook (lambda () (require 'ox-md nil t)))
+  ;; drastically improve performance of org-capture for large org files
+  (add-hook 'org-mode-hook #'init:disable-linum-mode-in-local-buffer))
+(use-package org-download
+  :init
+  (setq-default org-download-image-dir "~/Pictures/org"))
+(use-package org-bullets
+  :init
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+;; ** nand2tetris
 (setq nand2tetris-core-base-dir (getenv "NAND2TETRIS-CORE-BASE-DIR"))
 (setq safe-local-variable-values
       (quote
