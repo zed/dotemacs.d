@@ -4,7 +4,8 @@
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
-(package-initialize)
+(package-initialize nil) ; fix void org-link-types
+(setq package-enable-at-startup nil) ; leave it to el-get-elpa to initialize the packages
 
 (defconst emacs-start-time (current-time))
 
@@ -19,10 +20,9 @@
  ;; If there is more than one, they won't work right.
  '(calendar-latitude 55.8)
  '(calendar-longitude 37.6)
- '(el-get-allow-insecure t) ; for git:/orgmode.org
+ '(el-get-allow-insecure nil)
  '(gist-view-gist t t)
  '(menu-bar-mode nil)
- '(package-selected-packages (quote (org theme-changer rg helm-make counsel)))
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
  '(windmove-wrap-around t))
@@ -55,11 +55,20 @@
   (package-install 'el-get)
   (require 'el-get))
 (el-get 'sync 'el-get) ;; suppress can't find package package
+
 ;; * install packages
-(require 'el-get-elpa) ; install melpa packages via el-get
 
 (add-to-list 'el-get-recipe-path (concat user-emacs-directory "el-get-user/recipes"))
+(require 'el-get-elpa) ; install melpa packages via el-get
+; Build the El-Get copy of the package.el packages if we have not
+; built it before.  Will have to look into updating later ...
+; M-x el-get-elpa-build-local-recipes
+(unless (file-directory-p el-get-recipe-path-elpa)
+  (el-get-elpa-build-local-recipes))
 
+(el-get-bundle elpa:s) ; fix warning on double loading by package.el and el-get
+(el-get-bundle elpa:epl)
+(el-get-bundle elpa:pkg-info)
 (el-get-bundle! with-eval-after-load-feature) ; to suppress "free variable" warning
 (el-get-bundle use-package) ; to fix rg keybindings, theme-changer
 (setq use-package-verbose t)
@@ -419,6 +428,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ;; show commands for the current prefix after a delay
   (which-key-mode))
 
+(el-get-bundle elpa:helm) ; fix warning on double loading by package.el and el-get
 (el-get-bundle helm-google
   ;; If you want to keep the search open use C-z instead of RET.
   (global-set-key (kbd "C-c s") #'helm-google))
@@ -431,7 +441,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode)))
 
 ;; ripgrep https://github.com/dajva/rg.el
-(el-get-bundle rg)
+(el-get-bundle elpa:rg) ; depends on s, seq (builtin)
 
 (el-get-bundle geiser)
 (with-eval-after-load-feature 'geiser
@@ -452,8 +462,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
     (setq avy-background t))
 
 ; jump to link in info, eww buffers: type O + appeared avy letters
-(el-get-bundle ace-link
-  (ace-link-setup-default))
+(el-get-bundle ace-link)
 
 (el-get-bundle typing)
 
@@ -463,12 +472,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (with-eval-after-load-feature 'company
   (add-to-list 'company-backends 'company-restclient))
 
-;; ** restclient
-(el-get-bundle restclient)
-; NOTE: avoid "recursive load" error from el-get
-(el-get-bundle company-restclient)
-; ob-restclient is included in a new org-babel but install it manually for now
-(el-get-bundle ob-restclient :type github :pkgname "alf/ob-restclient.el")
+;; ** Increase selection by semantic units
+(el-get-bundle expand-region
+  (global-set-key (kbd "C-=") 'er/expand-region))
 
 ;; ** Drag and drop images to Emacs org-mode Firefox works,
 ;; Chrome/Yandex don't. Use org-download-yank to paste a picture if
@@ -479,12 +485,17 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; ** pretty bullets in org-mode
 (el-get-bundle org-bullets)
 
-;; ** Increase selection by semantic units
-(el-get-bundle expand-region
-  (global-set-key (kbd "C-=") 'er/expand-region))
+;; ** restclient
+(el-get-bundle restclient)
+; NOTE: avoid "recursive load" error from el-get
+(el-get-bundle company-restclient)
+; ob-restclient is included in a new org-babel but install it manually for now
+(el-get-bundle ob-restclient :type github :pkgname "alf/ob-restclient.el")
 
 ;; ** Navigation (buffers, files, search, help, M-x)
-(el-get-bundle counsel)
+(el-get-bundle elpa:ivy)
+(el-get-bundle elpa:swiper)
+(el-get-bundle elpa:counsel) ;; swiper, ivy
 
 ; for ivy-regex-fuzzy sorting of large lists
 (el-get-bundle flx)
@@ -492,25 +503,20 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (el-get-bundle wgrep) ; support writing in grep/rg results
 
 ;; ** install org
-(el-get-bundle org)
+(el-get-bundle elpa:org)
 
 ;; *** ido/ivy/helm imenu tag selection across buffers with the same mode/project etc
 (el-get-bundle imenu-anywhere)
 					; Select a Makefile target with helm.
-(el-get-bundle helm-make
-  (customize-set-variable 'helm-make-list-target-method 'qp))
+;; (el-get-bundle helm) ; it is not installed automatically
+;; (el-get-bundle helm-make
+;;   (customize-set-variable 'helm-make-list-target-method 'qp))
 (add-hook 'after-init-hook (lambda () (helm-mode -1))) ; turn off helm for default functions
 ;; ** ^^^last el-get-bundle installed package
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; no new packages from here on out
-; Build the El-Get copy of the package.el packages if we have not
-; built it before.  Will have to look into updating later ...
-; M-x el-get-elpa-build-local-recipes
-(unless (file-directory-p el-get-recipe-path-elpa)
-  (el-get-elpa-build-local-recipes))
-
 (setq my:el-get-packages
       (append
        ;; list of packages we use straight from official recipes
@@ -532,16 +538,21 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (require '.secrets "~/.secrets.el.gpg")
   (apply orig-fun args))
 
-;; ** rg
-(use-package rg
-  :bind ("C-x C-r" . rg))
-
 ;; ** theme-changer
 (use-package theme-changer :demand
   :config
   (customize-set-variable 'calendar-latitude 55.8) ; solar package
   (customize-set-variable 'calendar-longitude 37.6)
   (change-theme 'tango 'tango-dark))
+
+;; ** rg
+(use-package rg
+  :bind ("C-x C-r" . rg))
+
+;; ** ace-link
+;; (use-package ace-link
+;;   :config
+;;   (ace-link-setup-default))
 
 ;; ** ivy
 ; https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
