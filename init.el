@@ -74,10 +74,6 @@
 (setq use-package-verbose t)
 
 ; ** use dark theme after sunset
-; reset old theme settings while loading a new theme
-(defadvice load-theme
-    (before disable-before-load (theme &optional no-confirm no-enable) activate)
-  (mapc 'disable-theme custom-enabled-themes))
 (el-get-bundle theme-changer)
 
 ;; ** Hydra
@@ -540,6 +536,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; ** theme-changer
 (use-package theme-changer :demand
+  :init
+  ; reset old theme settings while loading a new theme
+  (defadvice load-theme
+      (before disable-before-load (theme &optional no-confirm no-enable) activate)
+    (mapc 'disable-theme custom-enabled-themes))
   :config
   (customize-set-variable 'calendar-latitude 55.8) ; solar package
   (customize-set-variable 'calendar-longitude 37.6)
