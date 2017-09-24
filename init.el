@@ -5,7 +5,7 @@
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
 (package-initialize nil) ; fix void org-link-types
-(setq package-enable-at-startup nil) ; leave it to el-get-elpa to initialize the packages
+(setq package-enable-at-startup nil) ; leave it to el-get to initialize the packages
 
 (defconst emacs-start-time (current-time))
 
@@ -57,7 +57,7 @@
 (el-get 'sync 'el-get) ;; suppress can't find package package
 
 ;; * install packages
-
+;; ** install helper packages to install & configure packages
 (add-to-list 'el-get-recipe-path (concat user-emacs-directory "el-get-user/recipes"))
 (require 'el-get-elpa) ; install melpa packages via el-get
 ; Build the El-Get copy of the package.el packages if we have not
@@ -440,7 +440,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
     "Major mode for editing GitHub Flavored Markdown files" t)
   (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode)))
 
-;; ripgrep https://github.com/dajva/rg.el
+;; ** ripgrep https://github.com/dajva/rg.el
 (el-get-bundle elpa:rg) ; depends on s, seq (builtin)
 
 (el-get-bundle geiser)
@@ -452,7 +452,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 
-;; jump to visible input (use keyboard as a mouse)
+;; ** jump to visible input (use keyboard as a mouse)
 (el-get-bundle avy
   (global-set-key (kbd "M-s") 'avy-goto-word-1)
   (global-set-key (kbd "s-j") 'avy-goto-char-timer)
@@ -461,7 +461,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (with-eval-after-load-feature 'avy
     (setq avy-background t))
 
-; jump to link in info, eww buffers: type O + appeared avy letters
+; *** jump to link in info, eww buffers: type O + appeared avy letters
 (el-get-bundle ace-link)
 
 (el-get-bundle typing)
