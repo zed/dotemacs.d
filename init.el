@@ -458,7 +458,8 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
     (setq avy-background t))
 
 ; *** jump to link in info, eww buffers: type O + appeared avy letters
-(el-get-bundle ace-link)
+(el-get-bundle ace-link
+  (ace-link-setup-default))
 
 (el-get-bundle typing)
 
@@ -548,11 +549,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; ** rg
 (use-package rg
   :bind ("C-x C-r" . rg))
-
-;; ** ace-link
-;; (use-package ace-link
-;;   :config
-;;   (ace-link-setup-default))
 
 ;; ** ivy
 ; https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
