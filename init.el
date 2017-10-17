@@ -650,7 +650,8 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
     ad-do-it))
 (ad-activate 'term-sentinel)
 
-
+(add-hook 'comint-mode-hook #'init:disable-linum-mode-in-local-buffer)
+(add-hook 'compilation-mode-hook #'init:disable-linum-mode-in-local-buffer)
 (add-hook 'term-mode-hook #'init:disable-linum-mode-in-local-buffer)
 (define-key term-raw-map  (kbd "C-'") #'term-line-mode)
 (define-key term-mode-map (kbd "C-'") #'term-char-mode)
