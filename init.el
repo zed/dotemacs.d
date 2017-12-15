@@ -429,6 +429,22 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ;; If you want to keep the search open use C-z instead of RET.
   (global-set-key (kbd "C-c s") #'helm-google))
 
+(el-get-bundle helm-dash
+  (global-set-key (kbd "C-c d") #'helm-dash))
+
+(defun python3-doc ()
+  (interactive)
+  (setq-local helm-dash-docsets '("Python 3")))
+(add-hook 'python-mode-hook 'python3-doc)
+(defun c++-doc ()
+  (interactive)
+  (setq-local helm-dash-docsets '("C++")))
+(add-hook 'c++-mode-hook 'c++-doc)
+(defun bash-doc ()
+  (interactive)
+  (setq-local helm-dash-docsets '("Bash")))
+(add-hook 'sh-mode-hook 'bash-doc)
+
 (el-get-bundle markdown-mode
   (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
   (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
