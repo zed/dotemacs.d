@@ -509,6 +509,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ; ob-restclient is included in a new org-babel but install it manually for now
 (el-get-bundle ob-restclient :type github :pkgname "alf/ob-restclient.el")
 
+;; ** install org
+(el-get-bundle elpa:org)
+
 ;; ** Navigation (buffers, files, search, help, M-x)
 (el-get-bundle elpa:ivy)
 (el-get-bundle elpa:swiper)
@@ -519,15 +522,13 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 (el-get-bundle wgrep) ; support writing in grep/rg results
 
-;; ** install org
-(el-get-bundle elpa:org)
-
 ;; *** ido/ivy/helm imenu tag selection across buffers with the same mode/project etc
 (el-get-bundle imenu-anywhere)
 					; Select a Makefile target with helm.
 (el-get-bundle helm-make
    (customize-set-variable 'helm-make-list-target-method 'qp))
 (add-hook 'after-init-hook (lambda () (helm-mode -1))) ; turn off helm for default functions
+
 ;; ** ^^^last el-get-bundle installed package
 
 
