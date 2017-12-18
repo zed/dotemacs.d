@@ -22,6 +22,7 @@
  '(calendar-longitude 37.6)
  '(el-get-allow-insecure nil)
  '(gist-view-gist t t)
+ '(helm-make-list-target-method (quote qp) t)
  '(menu-bar-mode nil)
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
