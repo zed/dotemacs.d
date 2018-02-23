@@ -521,7 +521,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; *** ido/ivy/helm imenu tag selection across buffers with the same mode/project etc
 (el-get-bundle imenu-anywhere)
-					; Select a Makefile target with helm.
+
+(el-get-bundle yasnippet)			; interactive templates
+(el-get-bundle yasnippet-snippets)
+
 (add-hook 'after-init-hook (lambda () (helm-mode -1))) ; turn off helm for default functions
 
 ;; ** ^^^last el-get-bundle installed package
@@ -532,8 +535,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (setq my:el-get-packages
       (append
        ;; list of packages we use straight from official recipes
-       '(yasnippet			; interactive templates
-	 gist
+       '(gist
 	 elpy
 	 skewer-mode)		    ;  org-store-link fails without it
        (mapcar #'el-get-as-symbol (mapcar #'el-get-source-name el-get-sources))))
