@@ -23,6 +23,7 @@
  '(el-get-allow-insecure nil)
  '(gist-view-gist t t)
  '(menu-bar-mode nil)
+ '(package-selected-packages (quote (theme-changer rg org counsel company)))
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
  '(windmove-wrap-around t))
