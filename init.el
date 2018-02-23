@@ -431,7 +431,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 (defun python3-doc ()
   (interactive)
-  (setq-local helm-dash-docsets '("Python 3")))
+  (setq-local helm-dash-docsets '("Python 3" "NumPy")))
 (add-hook 'python-mode-hook 'python3-doc)
 (defun c++-doc ()
   (interactive)
