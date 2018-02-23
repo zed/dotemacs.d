@@ -70,7 +70,7 @@
 (el-get-bundle elpa:epl)
 (el-get-bundle elpa:pkg-info)
 (el-get-bundle! with-eval-after-load-feature) ; to suppress "free variable" warning
-(el-get-bundle use-package) ; to fix rg keybindings, theme-changer
+(el-get-bundle use-package) ; to fix rg, magit keybindings, theme-changer
 (setq use-package-verbose t)
 
 ; ** use dark theme after sunset
@@ -408,10 +408,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (add-hook 'python-mode-hook #'py-autopep8-enable-on-save))
 
 ;; ** magit + misc
-(el-get-bundle magit
-  (global-set-key (kbd "C-c g") #'magit-status))
-(with-eval-after-load-feature 'magit
-  (setq magit-completing-read-function 'ivy-completing-read))
+(el-get-bundle magit)
 
 (el-get-bundle multiple-cursors ;; see also hydra-multiple-cursors
   (global-set-key (kbd "C-S-c C-S-c") #'mc/edit-lines)
@@ -591,6 +588,13 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (global-set-key (kbd "C-h f") 'counsel-describe-function)
   (global-set-key (kbd "C-h v") 'counsel-describe-variable)
   (global-set-key (kbd "C-h a") 'counsel-apropos))
+
+;; ** magit
+(use-package magit
+  :bind ("C-c g" . magit-status)
+  :config
+  (setq magit-completing-read-function 'ivy-completing-read))
+
 
 ;; ** elpy
 (use-package elpy
