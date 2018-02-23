@@ -22,7 +22,6 @@
  '(calendar-longitude 37.6)
  '(el-get-allow-insecure nil)
  '(gist-view-gist t t)
- '(helm-make-list-target-method (quote qp) t)
  '(menu-bar-mode nil)
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
@@ -526,8 +525,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; *** ido/ivy/helm imenu tag selection across buffers with the same mode/project etc
 (el-get-bundle imenu-anywhere)
 					; Select a Makefile target with helm.
-(el-get-bundle helm-make
-   (customize-set-variable 'helm-make-list-target-method 'qp))
 (add-hook 'after-init-hook (lambda () (helm-mode -1))) ; turn off helm for default functions
 
 ;; ** ^^^last el-get-bundle installed package
