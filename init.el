@@ -528,6 +528,8 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 (add-hook 'after-init-hook (lambda () (helm-mode -1))) ; turn off helm for default functions
 
+;; ** web-mode
+(el-get-bundle web-mode)
 ;; ** ^^^last el-get-bundle installed package
 
 
@@ -606,6 +608,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ;; flycheck
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
   (add-hook 'elpy-mode-hook #'flycheck-mode))
+
+;; ** web-mode
+(use-package web-mode
+  :mode "\\.html?\\'")
 
 ;; ** misc
 (progn
