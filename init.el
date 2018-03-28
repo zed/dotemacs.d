@@ -24,6 +24,25 @@
  '(gist-view-gist t t)
  '(menu-bar-mode nil)
  '(package-selected-packages (quote (theme-changer rg org counsel company)))
+ '(safe-local-variable-values
+   (quote
+    ((pyvenv-workon . py3\.5)
+     (encoding . utf-8)
+     (whitespace-style face trailing lines-tail)
+     (eval ignore-errors "Write-contents-functions is a buffer-local alternative to before-save-hook"
+	   (add-hook
+	    (quote write-contents-functions)
+	    (lambda nil
+	      (delete-trailing-whitespace)
+	      nil))
+	   (require
+	    (quote whitespace))
+	   "Sometimes the mode needs to be toggled off and on."
+	   (whitespace-mode 0)
+	   (whitespace-mode 1))
+     (whitespace-line-column . 80)
+     (whitespace-style face tabs trailing lines-tail)
+     (require-final-newline . t))))
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
  '(windmove-wrap-around t))
