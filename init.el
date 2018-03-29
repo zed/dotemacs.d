@@ -549,6 +549,14 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; ** web-mode
 (el-get-bundle web-mode)
+;; ** yaml-mode
+(el-get-bundle yaml-mode)
+;; ** try
+(el-get-bundle try
+  :url "https://raw.githubusercontent.com/larstvei/Try/master/try.el")
+
+;; ** sr-speedbar
+(el-get-bundle sr-speedbar)
 ;; ** ^^^last el-get-bundle installed package
 
 
@@ -631,7 +639,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; ** web-mode
 (use-package web-mode
   :mode "\\.html?\\'")
-
+;; ** yaml-mode
+(use-package yaml-mode
+  :mode "\\.yml\\'"
+  :bind ("C-m" . newline-and-indent))
 ;; ** misc
 (progn
 					; uniquify buffers with the same name
