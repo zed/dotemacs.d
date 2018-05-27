@@ -1017,6 +1017,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
   (setq org-confirm-babel-evaluate nil)
   (global-set-key "\C-cl" #'org-store-link)
+  (global-set-key "\C-co" 'org-open-at-point-global)
   (global-set-key "\C-ca" #'org-agenda)
   (global-set-key "\C-cc" #'org-capture)
   (global-set-key "\C-cb" #'org-iswitchb)
