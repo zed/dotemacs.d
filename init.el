@@ -1015,6 +1015,15 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 	  ("j" "Journal" entry (file+datetree (concat org-directory "journal.org"))
 	   "* %?\nEntered on %U\n  %i\n  %a")))
 
+  ;; start agenda view relative to current day, show given number of days
+  (setq org-agenda-span 14
+	org-agenda-start-on-weekday nil
+	org-agenda-start-day "-3d")
+
+  (customize-set-variable 'org-modules '(org-habit habits))
+
+  ;; if non-nill, only show habits in today’s agenda view
+  (setq org-habit-show-habits-only-for-today nil)
   (setq org-confirm-babel-evaluate nil)
   (global-set-key "\C-cl" #'org-store-link)
   (global-set-key "\C-co" 'org-open-at-point-global)
