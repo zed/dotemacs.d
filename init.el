@@ -1032,7 +1032,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (define-key org-mode-map (kbd "M-o") 'ace-link-org)
 
   ;; resume the clock under the assumption that you have worked on this task while outside Emacs
-  (setq org-clock-persist t)
+  (setq org-clock-persist 'history)
   (org-clock-persistence-insinuate)
   (setq org-reverse-note-order t)
   (setq org-agenda-include-diary t)
