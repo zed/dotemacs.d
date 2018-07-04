@@ -26,7 +26,7 @@
  '(package-selected-packages (quote (theme-changer rg org counsel company)))
  '(safe-local-variable-values
    (quote
-    ((pyvenv-workon . py3\.5)
+    (
      (encoding . utf-8)
      (whitespace-style face trailing lines-tail)
      (eval ignore-errors "Write-contents-functions is a buffer-local alternative to before-save-hook"
