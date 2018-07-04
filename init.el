@@ -972,8 +972,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 
   (setq org-todo-keywords
-	'((sequence "TODO(t)" "|" "DONE(d)")
-	  (sequence "|" "CANCELED(c)")))
+	'((sequence "TODO(t)" "WAIT(w@/!)" "|" "DONE(d!)" "CANCELED(c@)")))
 
   (setq org-tag-alist '((:startgroup . nil) ("home" . ?h) ("work" . ?w) (:endgroup . nil)
 			("idea" . nil) ("code" . nil) ("pythonista" . nil) ("org" . nil)
