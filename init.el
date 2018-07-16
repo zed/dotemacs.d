@@ -423,9 +423,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
                     ; real-time syntax check
 (el-get-bundle flycheck)
 
-                    ; format and correct any PEP8 erros on save (C-x C-s)
-(el-get-bundle py-autopep8
-  (add-hook 'python-mode-hook #'py-autopep8-enable-on-save))
+                    ; format Python code on save (C-x C-s)
+(el-get-bundle blacken
+  :description "Reformat python buffers using the 'black' formatter"
+  :type github
+  :pkgname "proofit404/blacken")
 
 ;; ** magit + misc
 (el-get-bundle magit)
@@ -635,6 +637,14 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ;; flycheck
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
   (add-hook 'elpy-mode-hook #'flycheck-mode))
+
+(use-package blacken
+  :config
+  ; PEP-8 Maximum Line Length
+  (customize-set-variable 'blacken-line-length 79)
+  ; format on save
+  (add-hook 'python-mode-hook #'blacken-mode))
+
 
 ;; ** web-mode
 (use-package web-mode
