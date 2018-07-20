@@ -13,45 +13,8 @@
   (message "Loading %s..." load-file-name))
 
 ;; * load customizations
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(calendar-latitude 55.8)
- '(calendar-longitude 37.6)
- '(el-get-allow-insecure nil)
- '(gist-view-gist t t)
- '(menu-bar-mode nil)
- '(package-selected-packages (quote (theme-changer rg org counsel company)))
- '(safe-local-variable-values
-   (quote
-    (
-     (encoding . utf-8)
-     (whitespace-style face trailing lines-tail)
-     (eval ignore-errors "Write-contents-functions is a buffer-local alternative to before-save-hook"
-	   (add-hook
-	    (quote write-contents-functions)
-	    (lambda nil
-	      (delete-trailing-whitespace)
-	      nil))
-	   (require
-	    (quote whitespace))
-	   "Sometimes the mode needs to be toggled off and on."
-	   (whitespace-mode 0)
-	   (whitespace-mode 1))
-     (whitespace-line-column . 80)
-     (whitespace-style face tabs trailing lines-tail)
-     (require-final-newline . t))))
- '(scroll-bar-mode nil)
- '(tool-bar-mode nil)
- '(windmove-wrap-around t))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(setq custom-file "~/.custom.el")
+(load custom-file)
 
 ;; helper function
 (defun init:disable-linum-mode-in-local-buffer ()
