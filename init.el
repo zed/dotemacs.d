@@ -559,6 +559,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; ** sr-speedbar
 (el-get-bundle sr-speedbar)
+
+;; ** idle-highlight
+(el-get-bundle idle-highlight-mode)
 ;; ** ^^^last el-get-bundle installed package
 
 
@@ -644,6 +647,13 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (customize-set-variable 'blacken-line-length 79)
   ; format on save
   (add-hook 'python-mode-hook #'blacken-mode))
+
+(use-package idle-highlight-mode
+  :hook (python-mode . #'init:enable-idle-highlight-mode)
+  :hook (emacs-lisp-mode . #'init:enable-idle-highlight-mode)
+  :config
+  (defun init:enable-idle-highlight-mode ()
+    (idle-highlight-mode t)))
 
 
 ;; ** web-mode
