@@ -1060,7 +1060,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
    'org-babel-load-languages
    '((python . t)
      (emacs-lisp . t)
-     (sh . t)
+     (shell . t) ; https://emacs.stackexchange.com/questions/37692/how-to-fix-symbols-function-definition-is-void-org-babel-get-header
      (restclient . t)))
 
   ;; enable export to markdown in on C-c C-e
