@@ -50,13 +50,16 @@
 (unless (file-directory-p el-get-recipe-path-elpa)
   (el-get-elpa-build-local-recipes))
 
+;; ** elpa packages
 (el-get-bundle elpa:s) ; fix warning on double loading by package.el and el-get
 (el-get-bundle elpa:epl)
 (el-get-bundle elpa:pkg-info)
-(el-get-bundle elpa:dash)  ; ob-async dependency
 (el-get-bundle elpa:async) ; ob-async dependency
 ;; *** Run code blocks asynchroniously in org mode
+;;  install dash via package-install
 (el-get-bundle elpa:ob-async)
+(el-get-bundle elpa:org)
+;; *** installation order is based on who depends on what
 (el-get-bundle elpa:popup) ; helm dependency
 (el-get-bundle elpa:helm-core) ; helm dependency
 (el-get-bundle elpa:helm) ; fix warning on double loading by package.el and el-get
@@ -65,10 +68,9 @@
   ;; If you want to keep the search open use C-z instead of RET.
   (global-set-key (kbd "C-c s") #'helm-google))
 
-;; ** ripgrep https://github.com/dajva/rg.el
+;; *** ripgrep https://github.com/dajva/rg.el
 (el-get-bundle elpa:rg) ; depends on s, seq (builtin)
-(el-get-bundle elpa:org)
-;; ** Navigation (buffers, files, search, help, M-x)
+;; *** Navigation (buffers, files, search, help, M-x)
 (el-get-bundle elpa:ivy)
 (el-get-bundle elpa:swiper)
 (el-get-bundle elpa:counsel) ;; swiper, ivy
@@ -1034,6 +1036,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (org-clock-persistence-insinuate)
   (setq org-reverse-note-order t)
   (setq org-agenda-include-diary t)
+  (require 'ob-async)
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
