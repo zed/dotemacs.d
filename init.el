@@ -4,7 +4,8 @@
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
-(package-initialize nil) ; fix void org-link-types
+;; enable on the first start
+;;;;(package-initialize nil) ; fix void org-link-types
 (setq package-enable-at-startup nil) ; leave it to el-get to initialize the packages
 
 (defconst emacs-start-time (current-time))
@@ -52,6 +53,26 @@
 (el-get-bundle elpa:s) ; fix warning on double loading by package.el and el-get
 (el-get-bundle elpa:epl)
 (el-get-bundle elpa:pkg-info)
+(el-get-bundle elpa:dash)  ; ob-async dependency
+(el-get-bundle elpa:async) ; ob-async dependency
+;; *** Run code blocks asynchroniously in org mode
+(el-get-bundle elpa:ob-async)
+(el-get-bundle elpa:popup) ; helm dependency
+(el-get-bundle elpa:helm-core) ; helm dependency
+(el-get-bundle elpa:helm) ; fix warning on double loading by package.el and el-get
+(el-get-bundle elpa:google) ; helm dependency
+(el-get-bundle elpa:helm-google
+  ;; If you want to keep the search open use C-z instead of RET.
+  (global-set-key (kbd "C-c s") #'helm-google))
+
+;; ** ripgrep https://github.com/dajva/rg.el
+(el-get-bundle elpa:rg) ; depends on s, seq (builtin)
+(el-get-bundle elpa:org)
+;; ** Navigation (buffers, files, search, help, M-x)
+(el-get-bundle elpa:ivy)
+(el-get-bundle elpa:swiper)
+(el-get-bundle elpa:counsel) ;; swiper, ivy
+
 (el-get-bundle! with-eval-after-load-feature) ; to suppress "free variable" warning
 (el-get-bundle use-package) ; to fix rg, magit keybindings, theme-changer
 (setq use-package-verbose t)
@@ -61,7 +82,7 @@
 
 ;; ** Hydra
 (el-get-bundle hydra-move-splitter
-  :url "https://raw.githubusercontent.com/erreina/.emacs.d/master/elisp/hydra-move-splitter.el")
+  :url "https://raw.githubusercontent.com/erreina/dotfiles/master/emacs/elisp/hydra-move-splitter.el")
 
 (el-get-bundle hydra
   ;; https://github.com/abo-abo/hydra/wiki/Basics
@@ -376,7 +397,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :pkgname "jorgenschaefer/emacs-tdd")
 
 (el-get-bundle pyvenv
-  (pyvenv-workon "py3.6")
   (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python))
 
 ; debugger, to enable: M-x realgud:reload-features
@@ -406,10 +426,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ;; show commands for the current prefix after a delay
   (which-key-mode))
 
-(el-get-bundle elpa:helm) ; fix warning on double loading by package.el and el-get
-(el-get-bundle helm-google
-  ;; If you want to keep the search open use C-z instead of RET.
-  (global-set-key (kbd "C-c s") #'helm-google))
 
 (el-get-bundle helm-dash
   (global-set-key (kbd "C-c d") #'helm-dash))
@@ -438,10 +454,12 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
     "Major mode for editing GitHub Flavored Markdown files" t)
   (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode)))
 
-;; ** ripgrep https://github.com/dajva/rg.el
-(el-get-bundle elpa:rg) ; depends on s, seq (builtin)
-
+;; ** insecure
+(setq el-get-allow-insecure t)
 (el-get-bundle geiser)
+(el-get-bundle sr-speedbar)
+(setq el-get-allow-insecure nil)
+
 (with-eval-after-load-feature 'geiser
   (setq geiser-active-implementations '(racket)))
 (el-get-bundle paredit)
@@ -460,8 +478,8 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
     (setq avy-background t))
 
 ; *** jump to link in info, eww buffers: type O + appeared avy letters
-(el-get-bundle ace-link
-  (ace-link-setup-default))
+(el-get-bundle ace-link)
+
 
 (el-get-bundle typing)
 
@@ -475,15 +493,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (el-get-bundle expand-region
   (global-set-key (kbd "C-=") 'er/expand-region))
 
-;; ** Drag and drop images to Emacs org-mode Firefox works,
-;; Chrome/Yandex don't. Use org-download-yank to paste a picture if
-;; its url is in the kill-ring ("0 w" in dired copies the absolute
-;; path)
-(el-get-bundle org-download)
-
-;; ** pretty bullets in org-mode
-(el-get-bundle org-bullets)
-
 ;; ** restclient
 (el-get-bundle restclient)
 ; NOTE: avoid "recursive load" error from el-get
@@ -492,12 +501,14 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (el-get-bundle ob-restclient :type github :pkgname "alf/ob-restclient.el")
 
 ;; ** install org
-(el-get-bundle elpa:org)
+;; *** Drag and drop images to Emacs org-mode Firefox works,
+;; Chrome/Yandex don't. Use org-download-yank to paste a picture if
+;; its url is in the kill-ring ("0 w" in dired copies the absolute
+;; path)
+(el-get-bundle org-download)
 
-;; ** Navigation (buffers, files, search, help, M-x)
-(el-get-bundle elpa:ivy)
-(el-get-bundle elpa:swiper)
-(el-get-bundle elpa:counsel) ;; swiper, ivy
+;; *** pretty bullets in org-mode
+(el-get-bundle org-bullets)
 
 ; for ivy-regex-fuzzy sorting of large lists
 (el-get-bundle flx)
@@ -519,9 +530,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; ** try
 (el-get-bundle try
   :url "https://raw.githubusercontent.com/larstvei/Try/master/try.el")
-
-;; ** sr-speedbar
-(el-get-bundle sr-speedbar)
 
 ;; ** idle-highlight
 (el-get-bundle idle-highlight-mode)
@@ -589,6 +597,12 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (global-set-key (kbd "C-h v") 'counsel-describe-variable)
   (global-set-key (kbd "C-h a") 'counsel-apropos))
 
+;; ** ace-link
+(use-package ace-link
+  :config
+  (require 'info)
+  (ace-link-setup-default))
+
 ;; ** magit
 (use-package magit
   :bind ("C-c g" . magit-status)
@@ -609,7 +623,8 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ; PEP-8 Maximum Line Length
   (customize-set-variable 'blacken-line-length 79)
   ; format on save
-  (add-hook 'python-mode-hook #'blacken-mode))
+;;;;XXX  (add-hook 'python-mode-hook #'blacken-mode)
+  )
 
 (use-package idle-highlight-mode
   :hook (python-mode . #'init:enable-idle-highlight-mode)
