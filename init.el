@@ -1,13 +1,4 @@
 ; -*- coding: utf-8 orgstruct-heading-prefix-regexp: ";; *"; -*-
-
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-;; enable on the first start
-;;;;(package-initialize nil) ; fix void org-link-types
-(setq package-enable-at-startup nil) ; leave it to el-get to initialize the packages
-
 (defconst emacs-start-time (current-time))
 
 (unless noninteractive
@@ -23,64 +14,20 @@
 
 
 ;; * bootstrap el-get
-(setq load-prefer-newer t) ; suppress warning about .autoloads.el files
 (add-to-list 'load-path  (concat user-emacs-directory "el-get/el-get"))
-
-;; NOTE if you change it; update using M-x el-get-elpa-build-local-recipes
-(setq package-archives
- (quote
-  (("gnu" . "https://elpa.gnu.org/packages/")
-   ("melpa" . "https://melpa.org/packages/")
-   ("elpy" . "https://jorgenschaefer.github.io/packages/"))))
 (unless (require 'el-get nil 'noerror)
-  (require 'package)
-  (package-refresh-contents)
-  (package-initialize)
-  (package-install 'el-get)
-  (require 'el-get))
-(el-get 'sync 'el-get) ;; suppress can't find package package
+  (with-current-buffer
+      (url-retrieve-synchronously
+       "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
+    (goto-char (point-max))
+    (eval-print-last-sexp)))
+(add-to-list 'el-get-recipe-path (concat user-emacs-directory "el-get-user/recipes"))
 
 ;; * install packages
-;; ** install helper packages to install & configure packages
-(add-to-list 'el-get-recipe-path (concat user-emacs-directory "el-get-user/recipes"))
-(require 'el-get-elpa) ; install melpa packages via el-get
-; Build the El-Get copy of the package.el packages if we have not
-; built it before.  Will have to look into updating later ...
-; M-x el-get-elpa-build-local-recipes
-(unless (file-directory-p el-get-recipe-path-elpa)
-  (el-get-elpa-build-local-recipes))
-
-;; ** elpa packages
-(el-get-bundle elpa:s) ; fix warning on double loading by package.el and el-get
-(el-get-bundle elpa:epl)
-(el-get-bundle elpa:pkg-info)
-(el-get-bundle elpa:async) ; ob-async dependency
-;; *** Run code blocks asynchroniously in org mode
-;;  install dash via package-install
-(el-get-bundle elpa:ob-async)
-(el-get-bundle elpa:org)
-;; *** installation order is based on who depends on what
-(el-get-bundle elpa:popup) ; helm dependency
-(el-get-bundle elpa:helm-core) ; helm dependency
-(el-get-bundle elpa:helm) ; fix warning on double loading by package.el and el-get
-(el-get-bundle elpa:google) ; helm dependency
-(el-get-bundle elpa:helm-google
-  ;; If you want to keep the search open use C-z instead of RET.
-  (global-set-key (kbd "C-c s") #'helm-google))
-
-;; *** ripgrep https://github.com/dajva/rg.el
-(el-get-bundle elpa:rg) ; depends on s, seq (builtin)
-;; *** Navigation (buffers, files, search, help, M-x)
-(el-get-bundle elpa:ivy)
-(el-get-bundle elpa:swiper)
-(el-get-bundle elpa:counsel) ;; swiper, ivy
-
+(setq load-prefer-newer t) ; suppress warning about .autoloads.el files
 (el-get-bundle! with-eval-after-load-feature) ; to suppress "free variable" warning
-(el-get-bundle use-package) ; to fix rg, magit keybindings, theme-changer
+(el-get-bundle! use-package)
 (setq use-package-verbose t)
-
-; ** use dark theme after sunset
-(el-get-bundle theme-changer)
 
 ;; ** Hydra
 (el-get-bundle hydra-move-splitter
@@ -398,56 +345,19 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :type github
   :pkgname "jorgenschaefer/emacs-tdd")
 
-(el-get-bundle pyvenv
-  (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python))
-
-; debugger, to enable: M-x realgud:reload-features
-; to start: M-x realgud:trepun3k
-(el-get-bundle realgud)
-
-                    ; real-time syntax check
-(el-get-bundle flycheck)
-
                     ; format Python code on save (C-x C-s)
 (el-get-bundle blacken
   :description "Reformat python buffers using the 'black' formatter"
   :type github
   :pkgname "proofit404/blacken")
 
-;; ** magit + misc
-(el-get-bundle magit)
-
+;; ** misc
 (el-get-bundle multiple-cursors ;; see also hydra-multiple-cursors
   (global-set-key (kbd "C-S-c C-S-c") #'mc/edit-lines)
   (global-set-key (kbd "C->") #'mc/mark-next-like-this)
   (global-set-key (kbd "C-<") #'mc/mark-previous-like-this)
   (global-set-key (kbd "C-c C-<") #'mc/mark-all-like-this)
   (global-set-key (kbd "C-S-<mouse-1>") #'mc/add-cursor-on-click))
-
-(el-get-bundle which-key
-  ;; show commands for the current prefix after a delay
-  (which-key-mode))
-
-
-(el-get-bundle helm-dash
-  (global-set-key (kbd "C-c d") #'helm-dash))
-
-(defun python3-doc ()
-  (interactive)
-  (setq-local helm-dash-docsets '("Python 3" "NumPy")))
-(add-hook 'python-mode-hook 'python3-doc)
-(defun c++-doc ()
-  (interactive)
-  (setq-local helm-dash-docsets '("C++")))
-(add-hook 'c++-mode-hook 'c++-doc)
-(defun c-doc ()
-  (interactive)
-  (setq-local helm-dash-docsets '("C")))
-(add-hook 'c-mode-hook 'c-doc)
-(defun bash-doc ()
-  (interactive)
-  (setq-local helm-dash-docsets '("Bash")))
-(add-hook 'sh-mode-hook 'bash-doc)
 
 (el-get-bundle markdown-mode
   (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
@@ -499,18 +409,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (el-get-bundle restclient)
 ; NOTE: avoid "recursive load" error from el-get
 (el-get-bundle company-restclient)
-; ob-restclient is included in a new org-babel but install it manually for now
-(el-get-bundle ob-restclient :type github :pkgname "alf/ob-restclient.el")
-
-;; ** install org
-;; *** Drag and drop images to Emacs org-mode Firefox works,
-;; Chrome/Yandex don't. Use org-download-yank to paste a picture if
-;; its url is in the kill-ring ("0 w" in dired copies the absolute
-;; path)
-(el-get-bundle org-download)
-
-;; *** pretty bullets in org-mode
-(el-get-bundle org-bullets)
 
 ; for ivy-regex-fuzzy sorting of large lists
 (el-get-bundle flx)
@@ -519,11 +417,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; *** ido/ivy/helm imenu tag selection across buffers with the same mode/project etc
 (el-get-bundle imenu-anywhere)
-
-(el-get-bundle yasnippet)			; interactive templates
-(el-get-bundle yasnippet-snippets)
-
-(add-hook 'after-init-hook (lambda () (helm-mode -1))) ; turn off helm for default functions
 
 ;; ** web-mode
 (el-get-bundle web-mode)
@@ -536,17 +429,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; ** idle-highlight
 (el-get-bundle idle-highlight-mode)
 ;; ** ^^^last el-get-bundle installed package
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; no new packages from here on out
 (setq my:el-get-packages
-      (append
        ;; list of packages we use straight from official recipes
-       '(gist
-	 elpy
-	 skewer-mode)		    ;  org-store-link fails without it
-       (mapcar #'el-get-as-symbol (mapcar #'el-get-source-name el-get-sources))))
+       (mapcar #'el-get-as-symbol (mapcar #'el-get-source-name el-get-sources)))
 
 
 ;; https://github.com/dimitri/el-get/issues/2232
@@ -555,13 +442,22 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (el-get 'sync my:el-get-packages)
 
 ;; * configure packages
+(package-initialize)
+
 (defun init:with-secrets (orig-fun &rest args)
   "Load secrets before calling `orig-fun'."
   (require '.secrets "~/.secrets.el.gpg")
   (apply orig-fun args))
 
-;; ** theme-changer
+;; ** which-key: show commands for the current prefix after a delay
+(use-package which-key :demand
+  :ensure t
+  :config
+  (which-key-mode))
+
+;; ** theme-changer: use dark theme after sunset
 (use-package theme-changer :demand
+  :ensure t
   :init
   ; reset old theme settings while loading a new theme
   (defadvice load-theme
@@ -572,15 +468,13 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (customize-set-variable 'calendar-longitude 37.6)
   (change-theme 'tango 'tango-dark))
 
-;; ** rg
-(use-package rg
-  :bind ("C-x C-r" . rg))
-
-;; ** ivy
+;; ** navigating,searching,selecting lists ivy, swiper, counsel
+;; *** ivy
 ; https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
 (use-package ivy :demand
+  :ensure t
+  :bind ("C-c C-r" . ivy-resume)
   :config
-  (ivy-mode 1)  ; turn on ivy for default functions
   ; https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/
   (setq ivy-re-builders-alist
 	;; allow input not in order
@@ -588,16 +482,29 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq ivy-height 20)
   (setq ivy-use-virtual-buffers t
 	ivy-count-format "%d/%d")
-  ; https://oremacs.com/2017/08/04/ripgrep/
+  (ivy-mode 1)  ; turn on ivy for default functions
+  )
+(use-package swiper
+  :requires ivy
+  :ensure t)
+(use-package counsel
+  :requires swiper
+  :ensure t
+  :init
+					; https://oremacs.com/2017/08/04/ripgrep/
   (setq counsel-grep-base-command
 	"rg -i -M 120 --no-heading --line-number --color never '%s' %s")
-  (global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
-  (global-set-key (kbd "C-c C-r") 'ivy-resume)
-  (global-set-key (kbd "M-x") 'counsel-M-x)
-  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  (global-set-key (kbd "C-h f") 'counsel-describe-function)
-  (global-set-key (kbd "C-h v") 'counsel-describe-variable)
-  (global-set-key (kbd "C-h a") 'counsel-apropos))
+  :bind (("C-s" . counsel-grep-or-swiper)
+         ("M-x" . counsel-M-x)
+         ("C-x C-f" . counsel-find-file)
+         ("C-h f" . counsel-describe-function)
+         ("C-h v" . counsel-describe-variable)
+         ("C-h a" . counsel-apropos)))
+
+;; ** rg
+(use-package rg
+  :ensure t
+  :bind ("C-x C-r" . rg))
 
 ;; ** ace-link
 (use-package ace-link
@@ -607,18 +514,30 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; ** magit
 (use-package magit
+  :ensure t
   :bind ("C-c g" . magit-status)
   :config
   (setq magit-completing-read-function 'ivy-completing-read))
 
+;; ** real-time syntax check
+(use-package flycheck
+  :ensure t)
 
 ;; ** elpy
 (use-package elpy
+  :ensure t
   :config
   (elpy-enable)
   ;; flycheck
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
   (add-hook 'elpy-mode-hook #'flycheck-mode))
+
+(use-package pyvenv
+  :ensure t
+  :init
+  (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python)
+  :config
+  (pyvenv-workon "py3.7"))
 
 (use-package blacken
   :config
@@ -635,6 +554,8 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (defun init:enable-idle-highlight-mode ()
     (idle-highlight-mode t)))
 
+(use-package gist
+  :ensure t)
 
 ;; ** web-mode
 (use-package web-mode
@@ -962,9 +883,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (setq flyspell-default-dictionary "ru")
 
 ;; ** configure org
-(use-package org
-  :defer t
-  :config
+(use-package org :demand
+  :ensure t
+  :pin manual
+  :init
   ;; orgmobile
   (setq org-mobile-use-encryption t)
   (advice-add 'org-mobile-push :around #'init:with-secrets)
@@ -1019,11 +941,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 	org-agenda-start-on-weekday nil
 	org-agenda-start-day "-3d")
 
-  (customize-set-variable 'org-modules '(org-habit habits))
-
   ;; if non-nill, only show habits in today’s agenda view
   (setq org-habit-show-habits-only-for-today nil)
   (setq org-confirm-babel-evaluate nil)
+  :config
   (global-set-key "\C-cl" #'org-store-link)
   (global-set-key "\C-co" 'org-open-at-point-global)
   (global-set-key "\C-ca" #'org-agenda)
@@ -1036,22 +957,23 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (org-clock-persistence-insinuate)
   (setq org-reverse-note-order t)
   (setq org-agenda-include-diary t)
-  (require 'ob-async)
+
+  ;; enable export to markdown in on C-c C-e
+  (add-hook 'org-mode-hook (lambda () (require 'ox-md nil t)))
+  ;; drastically improve performance of org-capture for large org files
+  (add-hook 'org-mode-hook #'init:disable-linum-mode-in-local-buffer)
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
      (emacs-lisp . t)
      (shell . t) ; https://emacs.stackexchange.com/questions/37692/how-to-fix-symbols-function-definition-is-void-org-babel-get-header
-     (restclient . t)))
+     ))
+  (customize-set-variable 'org-modules '(org-habit habits))
+  )
 
-  ;; enable export to markdown in on C-c C-e
-  (add-hook 'org-mode-hook (lambda () (require 'ox-md nil t)))
-  ;; drastically improve performance of org-capture for large org files
-  (add-hook 'org-mode-hook #'init:disable-linum-mode-in-local-buffer))
-(use-package org-download
-  :init
-  (setq-default org-download-image-dir "~/Pictures/org"))
 (use-package org-bullets
+  :after org
+  :ensure t
   :init
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
