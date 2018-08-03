@@ -468,6 +468,12 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (customize-set-variable 'calendar-longitude 37.6)
   (change-theme 'tango 'tango-dark))
 
+;; ** helm google
+(use-package helm-google
+  :ensure t
+  ;; If you want to keep the search open use C-z instead of RET.
+  :bind ("C-c s" . helm-google))
+
 ;; ** navigating,searching,selecting lists ivy, swiper, counsel
 ;; *** ivy
 ; https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
