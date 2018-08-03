@@ -547,6 +547,17 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :config
   (setq magit-completing-read-function 'ivy-completing-read))
 
+;; ***
+(use-package git-gutter
+  :ensure t
+  :custom
+  (git-gutter:window-width 2)
+  (git-gutter:modified-sign "☁")
+  (git-gutter:added-sign "☀")
+  (git-gutter:deleted-sign "☂")
+  :config
+  (global-git-gutter-mode t))
+
 ;; ** real-time syntax check
 (use-package flycheck
   :ensure t)
