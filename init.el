@@ -938,6 +938,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :pin manual
   :custom
   (org-export-use-babel nil "disable evaluation of babel code blocks on export")
+  (org-log-into-drawer t "hide State DONE. Useful for repeating tasks")
   :init
   ;; orgmobile
   (setq org-mobile-use-encryption t)
