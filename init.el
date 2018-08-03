@@ -8,11 +8,6 @@
 (setq custom-file "~/.custom.el")
 (load custom-file)
 
-;; helper function
-(defun init:disable-linum-mode-in-local-buffer ()
-  (linum-mode -1)) ;; an alternative is to define #'linum-on
-
-
 ;; * bootstrap el-get
 (add-to-list 'load-path  (concat user-emacs-directory "el-get/el-get"))
 (unless (require 'el-get nil 'noerror)
@@ -268,7 +263,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (pdf-tools-install))
 (with-eval-after-load-feature 'pdf-tools
   (setq-default pdf-view-display-size #'fit-page)
-  (add-hook 'pdf-view-mode-hook #'init:disable-linum-mode-in-local-buffer)
    (defhydra hydra-pdftools (:color blue :hint nil)
     "
                                                                       ╭───────────┐
@@ -684,9 +678,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
     ad-do-it))
 (ad-activate 'term-sentinel)
 
-(add-hook 'comint-mode-hook #'init:disable-linum-mode-in-local-buffer)
-(add-hook 'compilation-mode-hook #'init:disable-linum-mode-in-local-buffer)
-(add-hook 'term-mode-hook #'init:disable-linum-mode-in-local-buffer)
 (define-key term-raw-map  (kbd "C-'") #'term-line-mode)
 (define-key term-mode-map (kbd "C-'") #'term-char-mode)
                     ; Have C-y act as usual in term-mode, to avoid C-' C-y C-'
@@ -697,16 +688,14 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (global-set-key (kbd "C-x C-c") #'save-buffers-kill-emacs)
 
                     ; C-x C-j opens dired with the cursor right on the file you're editing
-(require 'dired-x)
-(add-hook 'dired-mode-hook #'init:disable-linum-mode-in-local-buffer))
+(require 'dired-x))
 ;; ** eww
 (progn
   (setq
    browse-url-browser-function
    '(
      ("github.com" . browse-url-chromium)
-     ("." . eww-browse-url)))
-  (add-hook 'eww-mode-hook #'init:disable-linum-mode-in-local-buffer))
+     ("." . eww-browse-url))))
 
 ;; ** Save point position between sessions
 (require 'saveplace)
@@ -846,8 +835,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
                     ; content to reflect what's on-disk.
 (global-auto-revert-mode 1)
 
-(global-linum-mode)    ; enable line numbers globally if #'linum-on would do it
-(setq linum-eager nil) ; improve performance
+(global-display-line-numbers-mode t)    ; enable line numbers globally
 (column-number-mode)   ; enable columns numbers globally, it has a performance hit
 
 
@@ -1016,7 +1004,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ;; enable export to markdown in on C-c C-e
   (add-hook 'org-mode-hook (lambda () (require 'ox-md nil t)))
   ;; drastically improve performance of org-capture for large org files
-  (add-hook 'org-mode-hook #'init:disable-linum-mode-in-local-buffer)
   )
 
 (use-package ob-async
