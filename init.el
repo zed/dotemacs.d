@@ -949,6 +949,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (customize-set-variable 'org-refile-targets
 			  '((nil :maxlevel . 2)
 			    (org-agenda-files :maxlevel . 2)))
+  (customize-set-variable 'org-modules '(org-habit habits))
   (setq org-capture-templates
 	'(("t" "Todo" entry (file+headline (getenv "ORG_AGENDA_FILE") "Projects")
 	   "* TODO %?\n  %i\n  %a")
@@ -981,14 +982,18 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (add-hook 'org-mode-hook (lambda () (require 'ox-md nil t)))
   ;; drastically improve performance of org-capture for large org files
   (add-hook 'org-mode-hook #'init:disable-linum-mode-in-local-buffer)
+  )
+
+(use-package ob-async
+  :after org
+  :ensure t
+  :config
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
      (emacs-lisp . t)
      (shell . t) ; https://emacs.stackexchange.com/questions/37692/how-to-fix-symbols-function-definition-is-void-org-babel-get-header
-     ))
-  (customize-set-variable 'org-modules '(org-habit habits))
-  )
+     )))
 
 (use-package org-bullets
   :after org
