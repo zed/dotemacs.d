@@ -985,9 +985,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 			    (org-agenda-files :maxlevel . 2)))
   (customize-set-variable 'org-modules '(org-habit habits))
   (setq org-capture-templates
-	'(("t" "Todo" entry (file+headline (getenv "ORG_AGENDA_FILE") "Projects")
+	'(("t" "Todo" entry (file+headline "inbox.org" "Tasks")
 	   "* TODO %?\n  %i\n  %a")
-	  ("j" "Journal" entry (file+datetree (concat org-directory "/journal.org"))
+	  ("j" "Journal" entry (file+datetree "journal.org")
 	   "* %?\nEntered on %U\n  %i\n  %a")))
 
   ;; start agenda view relative to current day, show given number of days
