@@ -523,6 +523,23 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package flycheck
   :ensure t)
 
+;; ** yasnippet
+;; from https://github.com/Schnouki/dotfiles/blob/master/emacs/init-30-yasnippet.el
+(use-package yasnippet
+  :ensure t
+  :defer 15
+  :config
+  (use-package yasnippet-snippets
+    :ensure t)
+  (progn
+    ;; Snippets dir:
+    ;; - make sure the local one (~/.emacs.d/snippets) comes first
+    (setq yas-snippet-dirs
+          (cons "~/.emacs.d/snippets"
+                (cl-remove-if (lambda (item) (string-equal "~/.emacs.d/snippets" item))
+                              yas-snippet-dirs)))
+    (yas-global-mode 1)))
+
 ;; ** elpy
 (use-package elpy
   :ensure t
@@ -886,6 +903,8 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package org :demand
   :ensure t
   :pin manual
+  :custom
+  (org-export-use-babel nil "disable evaluation of babel code blocks on export")
   :init
   ;; orgmobile
   (setq org-mobile-use-encryption t)
