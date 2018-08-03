@@ -458,14 +458,15 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; ** theme-changer: use dark theme after sunset
 (use-package theme-changer :demand
   :ensure t
+  :custom
+  (calendar-latitude 55.8) ; for solar package
+  (calendar-longitude 37.6)
   :init
   ; reset old theme settings while loading a new theme
   (defadvice load-theme
       (before disable-before-load (theme &optional no-confirm no-enable) activate)
     (mapc 'disable-theme custom-enabled-themes))
   :config
-  (customize-set-variable 'calendar-latitude 55.8) ; solar package
-  (customize-set-variable 'calendar-longitude 37.6)
   (change-theme 'tango 'tango-dark))
 
 ;; ** helm google
