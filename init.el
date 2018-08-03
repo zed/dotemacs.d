@@ -507,6 +507,33 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
          ("C-h v" . counsel-describe-variable)
          ("C-h a" . counsel-apropos)))
 
+;; counsel-dash
+(use-package counsel-dash
+  :ensure t
+  :bind ("C-c d" . counsel-dash)
+  :config
+  (progn
+    (defun python3-doc ()
+      (interactive)
+      (setq-local counsel-dash-docsets
+		  '("Python 3" "NumPy")))
+    (add-hook 'python-mode-hook 'python3-doc)
+
+    (defun c++-doc ()
+      (interactive)
+      (setq-local counsel-dash-docsets
+		  '("C++")))
+    (add-hook 'c++-mode-hook 'c++-doc)
+    (defun c-doc ()
+      (interactive) (setq-local counsel-dash-docsets '("C")))
+    (add-hook
+     'c-mode-hook 'c-doc)
+    (defun bash-doc ()
+      (interactive)
+      (setq-local
+       counsel-dash-docsets '("Bash")))
+    (add-hook 'sh-mode-hook 'bash-doc)))
+
 ;; ** rg
 (use-package rg
   :ensure t
