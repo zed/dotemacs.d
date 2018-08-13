@@ -856,7 +856,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
                     ; content to reflect what's on-disk.
 (global-auto-revert-mode 1)
 
-(global-display-line-numbers-mode t)    ; enable line numbers globally
 (column-number-mode)   ; enable columns numbers globally, it has a performance hit
 
 
