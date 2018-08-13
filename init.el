@@ -620,6 +620,16 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package yaml-mode
   :mode "\\.yml\\'"
   :bind ("C-m" . newline-and-indent))
+
+;; ** typescript
+(use-package typescript
+  :ensure t)
+(use-package tide
+  :ensure t
+  :after (typescript-mode company flycheck)
+  :hook ((typescript-mode . tide-setup)
+         (typescript-mode . tide-hl-identifier-mode)))
+
 ;; ** misc
 (progn
 					; uniquify buffers with the same name
