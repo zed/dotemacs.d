@@ -362,7 +362,7 @@
                               yas-snippet-dirs)))
     (yas-global-mode 1)))
 
-;; ** elpy
+;; ** elpy (python)
 (use-package elpy
   :ensure t
   :config
