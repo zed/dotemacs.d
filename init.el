@@ -975,6 +975,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 			("subprocess" . nil) ("bug" . nil) ("easy" . nil) ("stackoverflow" . ?s)
 			("wurlitzer" . nil) ("lrange" . nil) ("telegram" . nil)
 			("d0" . ?d) ("telethon" . nil) ("emacs" . ?e)))
+  (setq org-agenda-log-mode-items '(closed clock state)) ; show DONE
 
   ;; Effort and global properties
   (setq org-global-properties '(("Effort_ALL". "0 0:10 0:20 0:30 1:00 2:00 3:00 4:00 6:00 8:00")))
@@ -1008,9 +1009,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 	   "* %?\nEntered on %U\n  %i\n  %a")))
 
   ;; start agenda view relative to current day, show given number of days
-  (setq org-agenda-span 14
+  (setq org-agenda-span 3
 	org-agenda-start-on-weekday nil
-	org-agenda-start-day "-3d")
+	org-agenda-start-day "-1d")
 
   ;; if non-nill, only show habits in today’s agenda view
   (setq org-habit-show-habits-only-for-today nil)
