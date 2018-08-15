@@ -28,227 +28,7 @@
 (el-get-bundle hydra-move-splitter
   :url "https://raw.githubusercontent.com/erreina/dotfiles/master/emacs/elisp/hydra-move-splitter.el")
 
-(el-get-bundle hydra
-  ;; https://github.com/abo-abo/hydra/wiki/Basics
-  (defhydra hydra-zoom (global-map "C-c")
-    "zoom"
-    ("+" text-scale-increase "in")
-    ("-" text-scale-decrease "out"))
-
-;; *** https://github.com/abo-abo/hydra/wiki/Compilation
-  (defhydra hydra-next-error
-    (global-map "C-x")
-    "
-Compilation errors:
-_j_: next error        _h_: first error    _q_uit
-_k_: previous error    _l_: last error
-"
-    ("`" next-error     nil)
-    ("j" next-error     nil :bind nil)
-    ("k" previous-error nil :bind nil)
-    ("h" first-error    nil :bind nil)
-    ("l" (condition-case err
-             (while t
-               (next-error))
-           (user-error nil))
-     nil :bind nil)
-    ("q" nil            nil :color blue))
-
-;; *** Movement (from The Internets)
-  (global-set-key (kbd "C-n")  (defhydra hydra-move
-     (:body-pre (forward-line))
-     "move"
-     ("n" next-line)
-     ("p" previous-line)
-     ("f" forward-char)
-     ("b" backward-char)
-     ("a" beginning-of-line)
-     ("e" move-end-of-line)
-     ("v" scroll-up-command)
-     ;; Converting M-v to V here by analogy.
-     ("V" scroll-down-command)
-     ("l" recenter-top-bottom)))
-
-;; *** https://github.com/abo-abo/hydra/wiki/multiple-cursors
-  (global-set-key (kbd "C-c m")  (defhydra hydra-multiple-cursors (:hint nil)
-    "
-     ^Up^            ^Down^          ^Mark^                ^Edit^            ^Other^
---------------------------------------------------------------------------------------
-[_p_]   Next    [_n_]   Next    [_a_] Mark all        [_l_] Edit lines  [_i_] Insert numbers
-[_P_]   Skip    [_N_]   Skip    [_m_] Mark all dwim   [_C-a_] Edit BOL  [_R_] Reverse regions
-[_M-p_] Unmark  [_M-n_] Unmark  [_r_] Mark by regexp  [_C-e_] Edit EOL  [_s_] Sort regions
-^ ^             ^ ^             [_d_] Mark in defun   [_C-'_] Hide unmatched [_q_] Quit
-"
-    ("a" mc/mark-all-like-this :exit t)
-    ("d" mc/mark-all-symbols-like-this-in-defun :exit t)
-    ("C-'" mc-hide-unmatched-lines-mode)
-    ("i" mc/insert-numbers :exit t)
-    ("n" mc/mark-next-like-this)
-    ("N" mc/skip-to-next-like-this)
-    ("l" mc/edit-lines :exit t)
-    ("m" mc/mark-all-dwim :exit t)
-    ("M-n" mc/unmark-next-like-this)
-    ("p" mc/mark-previous-like-this)
-    ("P" mc/skip-to-previous-like-this)
-    ("M-p" mc/unmark-previous-like-this)
-    ("r" mc/mark-all-in-region-regexp :exit t)
-    ("R" mc/reverse-regions)
-    ("s" mc/sort-regions)
-    ("q" nil)
-    ("C-a" mc/edit-beginnings-of-lines :exit t)
-    ("C-e" mc/edit-ends-of-lines :exit t)))
-
-;; *** https://github.com/abo-abo/hydra/wiki/Dired
-  (with-eval-after-load-feature 'dired
-    (define-key dired-mode-map "."
-      (defhydra hydra-dired (:hint nil :color pink)
-    "
-_+_ mkdir          _v_iew           _m_ark             _(_ details        _i_nsert-subdir    wdired
-_C_opy             _O_ view other   _U_nmark all                                             C-x C-q : edit
-_D_elete           _o_pen other     _u_nmark           _l_ redisplay      _w_ kill-subdir    C-c C-c : commit
-_R_ename           _M_ chmod        _t_oggle           _g_ revert buf     ^ ^                C-c ESC : abort
-_Y_ rel symlink    _G_ chgrp        ^ ^                _s_ort             ^ ^
-_S_ymlink          ^ ^                                 _._ toggle hydra   \\ flyspell
-^ ^                ^ ^              ^ ^                ^ ^                _?_ summary
-^ ^                _A_ find regexp
-_Z_ compress       _Q_ repl regexp
-
-T - tag prefix
-"
-    ("(" dired-hide-details-mode)
-    ("+" dired-create-directory)
-    ("?" dired-summary)
-    ("A" dired-do-find-regexp)
-    ("C" dired-do-copy) ;; Copy all marked files
-    ("D" dired-do-delete)
-    ("G" dired-do-chgrp)
-    ("g" revert-buffer) ;; read all directories again (refresh)
-    ("i" dired-maybe-insert-subdir)
-    ("l" dired-do-redisplay) ;; relist the marked or singel directory
-    ("M" dired-do-chmod)
-    ("m" dired-mark)
-    ("O" dired-display-file)
-    ("o" dired-find-file-other-window)
-    ("Q" dired-do-find-regexp-and-replace)
-    ("R" dired-do-rename)
-    ("S" dired-do-symlink)
-    ("s" dired-sort-toggle-or-edit)
-    ("t" dired-toggle-marks)
-    ("U" dired-unmark-all-marks)
-    ("u" dired-unmark)
-    ("v" dired-view-file) ;; q to exit, s to search, = gets line #
-    ("w" dired-kill-subdir)
-    ("Y" dired-do-relsymlink)
-    ("Z" dired-do-compress)
-    ("q" nil :color blue)
-    ("." nil :color blue))))
-
-;; *** https://github.com/abo-abo/hydra/wiki/Rectangle-Operations
-  (with-eval-after-load-feature 'rect
-    (global-set-key
-     (kbd "C-c r")
-     (defhydra hydra-rectangle (:body-pre (rectangle-mark-mode 1)
-					  :color pink
-					  :hint nil
-					  :post (deactivate-mark))
-       "
-  ^_k_^       _w_ copy      _o_pen       _N_umber-lines            |\\     -,,,--,,_
-_h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..  \-;;,_
-  ^_j_^       _d_ kill      _c_lear      _r_eset-region-mark      |,4-  ) )_   .;.(  `'-'
-^^^^          _u_ndo        _q_ quit     ^ ^                     '---''(./..)-'(_\_)
-"
-       ("k" rectangle-previous-line)
-       ("j" rectangle-next-line)
-       ("h" rectangle-backward-char)
-       ("l" rectangle-forward-char)
-       ("d" kill-rectangle)		     ;; C-x r k
-       ("y" yank-rectangle)		     ;; C-x r y
-       ("w" copy-rectangle-as-kill)	     ;; C-x r M-w
-       ("o" open-rectangle)		     ;; C-x r o
-       ("t" string-rectangle)		     ;; C-x r t
-       ("c" clear-rectangle)		     ;; C-x r c
-       ("e" rectangle-exchange-point-and-mark) ;; C-x C-x
-       ("N" rectangle-number-lines)            ;; C-x r N
-       ("r" (if (region-active-p)
-		(deactivate-mark)
-	      (rectangle-mark-mode 1)))
-       ("u" undo nil)
-       ("q" nil))))
-
-;; *** Windows management
-  (progn
-;; return to a previous window configuration easily with C-c <left>
-(require 'winner)
-(winner-mode)
-                   ; Navigate windows with S-<arrows>
-(windmove-default-keybindings 'super)
-(customize-set-variable 'windmove-wrap-around t)
-
-
-;; https://github.com/erreina/.emacs.d/blob/master/init.d/init-keybindings.el
-(require 'hydra-move-splitter)
-(global-set-key (kbd "C-c w") (defhydra hydra-window (:hint nil)
-  "
-Movement^^        ^Split^         ^Switch^      ^Resize^
-----------------------------------------------------------------
-_j_ ←          _v_ertical       _b_uffer         _J_ X←
-_k_ ↓          _h_ horizontal   _f_ind files     _K_ X↓
-_i_ ↑          _u_ undo         _a_ce 1          _I_ X↑
-_k_ →         _r_ reset        _s_ave           _L_ X→
-_q_ cancel     _D_lt Other      _S_wap           _m_aximize
-^ ^            _o_nly this      _d_elete
-"
-  ("j" windmove-left )
-  ("k" windmove-down )
-  ("i" windmove-up )
-  ("l" windmove-right )
-  ("J" hydra-move-splitter-left)
-  ("K" hydra-move-splitter-down)
-  ("I" hydra-move-splitter-up)
-  ("L" hydra-move-splitter-right)
-  ("b" ivy-switch-buffer :color blue)
-  ("B" ivy-switch-buffer)
-  ("f" counsel-find-file :color blue)
-  ("F" counsel-find-file)
-  ("a" (lambda ()
-	 (interactive)
-	 (ace-window 1)
-	 (add-hook 'ace-window-end-once-hook
-		   'hydra-window/body))
-   )
-  ("h" (lambda ()
-	 (interactive)
-	 (split-window-right)
-	 (windmove-right))
-   )
-  ("v" (lambda ()
-	 (interactive)
-	 (split-window-below)
-	 (windmove-down))
-   )
-  ("S" (lambda ()
-	 (interactive)
-	 (ace-window 4)
-	 (add-hook 'ace-window-end-once-hook
-		   'hydra-window/body)))
-  ("s" save-buffer :color blue)
-  ("d" delete-window :color blue)
-  ("D" (lambda ()
-	 (interactive)
-	 (ace-window 16)
-	 (add-hook 'ace-window-end-once-hook
-		   'hydra-window/body))
-   )
-  ("o" delete-other-windows :color blue)
-  ("O" delete-other-windows)
-  ("m" ace-delete-other-windows :color blue)
-  ("M" ace-delete-other-windows)
-  ("u" (progn
-	 (winner-undo)
-	 (setq this-command 'winner-undo))
-   )
-  ("r" winner-redo)
-  ("q" nil)))))
+(el-get-bundle hydra)
 (with-eval-after-load-feature 'hydra ; fix "free variable warning"
   (setq hydra-look-for-remap t))
 
@@ -488,7 +268,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package swiper
   :requires ivy
   :ensure t)
-(use-package counsel
+(use-package counsel :demand
   :requires swiper
   :ensure t
   :init
@@ -629,6 +409,231 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :after (typescript-mode company flycheck)
   :hook ((typescript-mode . tide-setup)
          (typescript-mode . tide-hl-identifier-mode)))
+
+(use-package hydra
+  :init
+(progn
+  ;; https://github.com/abo-abo/hydra/wiki/Basics
+  (defhydra hydra-zoom (global-map "C-c")
+    "zoom"
+    ("+" text-scale-increase "in")
+    ("-" text-scale-decrease "out"))
+
+;; *** https://github.com/abo-abo/hydra/wiki/Compilation
+  (defhydra hydra-next-error
+    (global-map "C-x")
+    "
+Compilation errors:
+_j_: next error        _h_: first error    _q_uit
+_k_: previous error    _l_: last error
+"
+    ("`" next-error     nil)
+    ("j" next-error     nil :bind nil)
+    ("k" previous-error nil :bind nil)
+    ("h" first-error    nil :bind nil)
+    ("l" (condition-case err
+             (while t
+               (next-error))
+           (user-error nil))
+     nil :bind nil)
+    ("q" nil            nil :color blue))
+
+;; *** Movement (from The Internets)
+  (global-set-key (kbd "C-n")  (defhydra hydra-move
+     (:body-pre (forward-line))
+     "move"
+     ("n" next-line)
+     ("p" previous-line)
+     ("f" forward-char)
+     ("b" backward-char)
+     ("a" beginning-of-line)
+     ("e" move-end-of-line)
+     ("v" scroll-up-command)
+     ;; Converting M-v to V here by analogy.
+     ("V" scroll-down-command)
+     ("l" recenter-top-bottom)))
+
+;; *** https://github.com/abo-abo/hydra/wiki/multiple-cursors
+  (global-set-key (kbd "C-c m")  (defhydra hydra-multiple-cursors (:hint nil)
+    "
+     ^Up^            ^Down^          ^Mark^                ^Edit^            ^Other^
+--------------------------------------------------------------------------------------
+[_p_]   Next    [_n_]   Next    [_a_] Mark all        [_l_] Edit lines  [_i_] Insert numbers
+[_P_]   Skip    [_N_]   Skip    [_m_] Mark all dwim   [_C-a_] Edit BOL  [_R_] Reverse regions
+[_M-p_] Unmark  [_M-n_] Unmark  [_r_] Mark by regexp  [_C-e_] Edit EOL  [_s_] Sort regions
+^ ^             ^ ^             [_d_] Mark in defun   [_C-'_] Hide unmatched [_q_] Quit
+"
+    ("a" mc/mark-all-like-this :exit t)
+    ("d" mc/mark-all-symbols-like-this-in-defun :exit t)
+    ("C-'" mc-hide-unmatched-lines-mode)
+    ("i" mc/insert-numbers :exit t)
+    ("n" mc/mark-next-like-this)
+    ("N" mc/skip-to-next-like-this)
+    ("l" mc/edit-lines :exit t)
+    ("m" mc/mark-all-dwim :exit t)
+    ("M-n" mc/unmark-next-like-this)
+    ("p" mc/mark-previous-like-this)
+    ("P" mc/skip-to-previous-like-this)
+    ("M-p" mc/unmark-previous-like-this)
+    ("r" mc/mark-all-in-region-regexp :exit t)
+    ("R" mc/reverse-regions)
+    ("s" mc/sort-regions)
+    ("q" nil)
+    ("C-a" mc/edit-beginnings-of-lines :exit t)
+    ("C-e" mc/edit-ends-of-lines :exit t)))
+
+;; *** https://github.com/abo-abo/hydra/wiki/Dired
+  (with-eval-after-load-feature 'dired
+    (define-key dired-mode-map "."
+      (defhydra hydra-dired (:hint nil :color pink)
+    "
+_+_ mkdir          _v_iew           _m_ark             _(_ details        _i_nsert-subdir    wdired
+_C_opy             _O_ view other   _U_nmark all                                             C-x C-q : edit
+_D_elete           _o_pen other     _u_nmark           _l_ redisplay      _w_ kill-subdir    C-c C-c : commit
+_R_ename           _M_ chmod        _t_oggle           _g_ revert buf     ^ ^                C-c ESC : abort
+_Y_ rel symlink    _G_ chgrp        ^ ^                _s_ort             ^ ^
+_S_ymlink          ^ ^                                 _._ toggle hydra   \\ flyspell
+^ ^                ^ ^              ^ ^                ^ ^                _?_ summary
+^ ^                _A_ find regexp
+_Z_ compress       _Q_ repl regexp
+
+T - tag prefix
+"
+    ("(" dired-hide-details-mode)
+    ("+" dired-create-directory)
+    ("?" dired-summary)
+    ("A" dired-do-find-regexp)
+    ("C" dired-do-copy) ;; Copy all marked files
+    ("D" dired-do-delete)
+    ("G" dired-do-chgrp)
+    ("g" revert-buffer) ;; read all directories again (refresh)
+    ("i" dired-maybe-insert-subdir)
+    ("l" dired-do-redisplay) ;; relist the marked or singel directory
+    ("M" dired-do-chmod)
+    ("m" dired-mark)
+    ("O" dired-display-file)
+    ("o" dired-find-file-other-window)
+    ("Q" dired-do-find-regexp-and-replace)
+    ("R" dired-do-rename)
+    ("S" dired-do-symlink)
+    ("s" dired-sort-toggle-or-edit)
+    ("t" dired-toggle-marks)
+    ("U" dired-unmark-all-marks)
+    ("u" dired-unmark)
+    ("v" dired-view-file) ;; q to exit, s to search, = gets line #
+    ("w" dired-kill-subdir)
+    ("Y" dired-do-relsymlink)
+    ("Z" dired-do-compress)
+    ("q" nil :color blue)
+    ("." nil :color blue))))
+
+;; *** https://github.com/abo-abo/hydra/wiki/Rectangle-Operations
+  (with-eval-after-load-feature 'rect
+    (global-set-key
+     (kbd "C-c r")
+     (defhydra hydra-rectangle (:body-pre (rectangle-mark-mode 1)
+					  :color pink
+					  :hint nil
+					  :post (deactivate-mark))
+       "
+  ^_k_^       _w_ copy      _o_pen       _N_umber-lines            |\\     -,,,--,,_
+_h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..  \-;;,_
+  ^_j_^       _d_ kill      _c_lear      _r_eset-region-mark      |,4-  ) )_   .;.(  `'-'
+^^^^          _u_ndo        _q_ quit     ^ ^                     '---''(./..)-'(_\_)
+"
+       ("k" rectangle-previous-line)
+       ("j" rectangle-next-line)
+       ("h" rectangle-backward-char)
+       ("l" rectangle-forward-char)
+       ("d" kill-rectangle)		     ;; C-x r k
+       ("y" yank-rectangle)		     ;; C-x r y
+       ("w" copy-rectangle-as-kill)	     ;; C-x r M-w
+       ("o" open-rectangle)		     ;; C-x r o
+       ("t" string-rectangle)		     ;; C-x r t
+       ("c" clear-rectangle)		     ;; C-x r c
+       ("e" rectangle-exchange-point-and-mark) ;; C-x C-x
+       ("N" rectangle-number-lines)            ;; C-x r N
+       ("r" (if (region-active-p)
+		(deactivate-mark)
+	      (rectangle-mark-mode 1)))
+       ("u" undo nil)
+       ("q" nil))))
+
+;; *** Windows management
+  (progn
+;; return to a previous window configuration easily with C-c <left>
+(require 'winner)
+(winner-mode)
+                   ; Navigate windows with S-<arrows>
+(windmove-default-keybindings 'super)
+(customize-set-variable 'windmove-wrap-around t)
+
+
+;; https://github.com/erreina/.emacs.d/blob/master/init.d/init-keybindings.el
+(require 'hydra-move-splitter)
+(with-eval-after-load-feature (ivy counsel)
+(global-set-key (kbd "C-c w") (defhydra hydra-window (:hint nil)
+  "
+Movement^^        ^Split^         ^Switch^      ^Resize^
+----------------------------------------------------------------
+_j_ ←          _v_ertical       _b_uffer         _J_ X←
+_k_ ↓          _h_ horizontal   _f_ind files     _K_ X↓
+_i_ ↑          _u_ undo         _a_ce 1          _I_ X↑
+_k_ →         _r_ reset        _s_ave           _L_ X→
+_q_ cancel     _D_lt Other      _S_wap           _m_aximize
+^ ^            _o_nly this      _d_elete
+"
+  ("j" windmove-left )
+  ("k" windmove-down )
+  ("i" windmove-up )
+  ("l" windmove-right )
+  ("J" hydra-move-splitter-left)
+  ("K" hydra-move-splitter-down)
+  ("I" hydra-move-splitter-up)
+  ("L" hydra-move-splitter-right)
+  ("b" ivy-switch-buffer :color blue)
+  ("B" ivy-switch-buffer)
+  ("f" counsel-find-file :color blue)
+  ("F" counsel-find-file)
+  ("a" (lambda ()
+	 (interactive)
+	 (ace-window 1)
+	 (add-hook 'ace-window-end-once-hook
+		   'hydra-window/body))
+   )
+  ("h" (lambda ()
+	 (interactive)
+	 (split-window-right)
+	 (windmove-right))
+   )
+  ("v" (lambda ()
+	 (interactive)
+	 (split-window-below)
+	 (windmove-down))
+   )
+  ("S" (lambda ()
+	 (interactive)
+	 (ace-window 4)
+	 (add-hook 'ace-window-end-once-hook
+		   'hydra-window/body)))
+  ("s" save-buffer :color blue)
+  ("d" delete-window :color blue)
+  ("D" (lambda ()
+	 (interactive)
+	 (ace-window 16)
+	 (add-hook 'ace-window-end-once-hook
+		   'hydra-window/body))
+   )
+  ("o" delete-other-windows :color blue)
+  ("O" delete-other-windows)
+  ("m" ace-delete-other-windows :color blue)
+  ("M" ace-delete-other-windows)
+  ("u" (progn
+	 (winner-undo)
+	 (setq this-command 'winner-undo))
+   )
+  ("r" winner-redo)
+  ("q" nil)))))))
 
 ;; ** misc
 (progn
