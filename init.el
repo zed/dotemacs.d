@@ -274,7 +274,7 @@
   :init
 					; https://oremacs.com/2017/08/04/ripgrep/
   (setq counsel-grep-base-command
-	"rg -i -M 120 --no-heading --line-number --color never '%s' %s")
+	"rg -i -M 120 --no-heading --line-number --color never -e %s %s")
   :bind (("C-s" . counsel-grep-or-swiper)
          ("M-x" . counsel-M-x)
          ("C-x C-f" . counsel-find-file)
