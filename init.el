@@ -957,6 +957,8 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (org-export-use-babel nil "disable evaluation of babel code blocks on export")
   (org-log-into-drawer t "hide State DONE. Useful for repeating tasks")
   :init
+  ;; export to the kill ring automatically for interactive exports
+  (setq org-export-copy-to-kill-ring 'if-interactive)
   ;; orgmobile
   (setq org-mobile-use-encryption t)
   (advice-add 'org-mobile-push :around #'init:with-secrets)
@@ -1029,10 +1031,28 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (org-clock-persistence-insinuate)
   (setq org-reverse-note-order t)
   (setq org-agenda-include-diary t)
+  ;; copy link url from org to outside of org mode
+  ;; https://emacs.stackexchange.com/questions/3981/how-to-copy-links-out-of-org-mode
+  (progn
+    (defun iqbal-yank-org-link (text)
+  (if (derived-mode-p 'org-mode)
+      (insert text)
+    (string-match org-bracket-link-regexp text)
+    (insert (substring text (match-beginning 1) (match-end 1)))))
 
-  ;; enable export to markdown in on C-c C-e
-  (add-hook 'org-mode-hook (lambda () (require 'ox-md nil t)))
-  ;; drastically improve performance of org-capture for large org files
+(defun iqbal-org-retrieve-url-from-point ()
+  (interactive)
+  (let* ((link-info (assoc :link (org-context)))
+         (text (when link-info
+                 ;; org-context seems to return nil if the current element
+                 ;; starts at buffer-start or ends at buffer-end
+                 (buffer-substring-no-properties (or (cadr link-info) (point-min))
+                                                 (or (caddr link-info) (point-max))))))
+    (if (not text)
+        (error "Not in org link")
+      (add-text-properties 0 (length text) '(yank-handler (iqbal-yank-org-link)) text)
+      (kill-new text))))
+    )
   )
 
 (use-package ob-async
