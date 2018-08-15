@@ -956,6 +956,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :custom
   (org-export-use-babel nil "disable evaluation of babel code blocks on export")
   (org-log-into-drawer t "hide State DONE. Useful for repeating tasks")
+  (org-export-backends '(md odt latex icalendar html ascii) "List of export back-ends that should be always available.")
   :init
   ;; export to the kill ring automatically for interactive exports
   (setq org-export-copy-to-kill-ring 'if-interactive)
@@ -1054,6 +1055,25 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
       (kill-new text))))
     )
   )
+
+  ;; enable export to markdown in on C-c C-e
+(use-package ox-md
+  :after org
+  :init
+  (add-hook 'org-mode-hook (lambda () (require 'ox-md))))
+
+(use-package ox-jira
+  :after org
+  :ensure t
+  :init
+  (add-hook 'org-mode-hook (lambda () (require 'ox-jira))))
+
+(use-package ox-gfm
+  :after org
+  :ensure t
+  :init
+  (add-hook 'org-mode-hook (lambda () (require 'ox-gfm))))
+
 
 (use-package ob-async
   :after org
