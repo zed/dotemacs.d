@@ -22,7 +22,10 @@
 (setq load-prefer-newer t) ; suppress warning about .autoloads.el files
 (el-get-bundle! with-eval-after-load-feature) ; to suppress "free variable" warning
 (el-get-bundle! use-package)
-(setq use-package-verbose t)
+(with-eval-after-load 'use-package
+    (setq use-package-verbose t)
+    ; M-x use-package-report to see the results
+    (setq use-package-compute-statistics t))
 
 ;; ** Hydra
 (el-get-bundle hydra-move-splitter
