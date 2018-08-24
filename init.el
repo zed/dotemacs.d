@@ -379,12 +379,9 @@
   (pyvenv-workon "py3.7"))
 
 (use-package blacken
-  :config
+  :custom
   ; PEP-8 Maximum Line Length
-  (customize-set-variable 'blacken-line-length 79)
-  ; format on save
-;;;;XXX  (add-hook 'python-mode-hook #'blacken-mode)
-  )
+  (blacken-line-length 79))
 
 (use-package idle-highlight-mode
   :hook (python-mode . #'init:enable-idle-highlight-mode)
