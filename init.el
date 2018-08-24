@@ -207,7 +207,7 @@
 (el-get-bundle idle-highlight-mode)
 ;; ** ^^^last el-get-bundle installed package
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; no new packages from here on out
+;; no new el-get packages from here on out
 (setq my:el-get-packages
        ;; list of packages we use straight from official recipes
        (mapcar #'el-get-as-symbol (mapcar #'el-get-source-name el-get-sources)))
@@ -414,6 +414,8 @@
 ;; ** php
 (use-package php-mode
   :ensure t)
+
+;; ** hydra
 
 (use-package hydra
   :init
