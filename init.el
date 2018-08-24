@@ -406,7 +406,8 @@
 
 ;; ** typescript
 (use-package typescript
-  :ensure t)
+  :ensure t
+  :defer t)
 (use-package tide
   :ensure t
   :after (typescript-mode company flycheck)
