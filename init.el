@@ -413,6 +413,10 @@
   :hook ((typescript-mode . tide-setup)
          (typescript-mode . tide-hl-identifier-mode)))
 
+;; ** php
+(use-package php-mode
+  :ensure t)
+
 (use-package hydra
   :init
 (progn
