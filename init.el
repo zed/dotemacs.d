@@ -1,4 +1,5 @@
 ; -*- coding: utf-8 orgstruct-heading-prefix-regexp: ";; *"; -*-
+;; * prelude
 (defconst emacs-start-time (current-time))
 
 (unless noninteractive
@@ -1095,9 +1096,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :ensure t
   :init
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+;; * ^^^last use-package
 
 ;; ** nand2tetris
-(setq nand2tetris-core-base-dir (getenv "NAND2TETRIS-CORE-BASE-DIR"))
+(setq nand2tetris-core-base-dir (getenv "NAND2TETRIS_CORE_BASE_DIR"))
 (setq safe-local-variable-values
       (quote
        ((encoding . utf-8)
