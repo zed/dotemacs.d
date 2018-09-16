@@ -1061,6 +1061,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
     )
   )
 
+(use-package htmlize
+  :ensure t)
+
   ;; enable export to markdown in on C-c C-e
 (use-package ox-md
   :after org
