@@ -250,7 +250,7 @@
 ;; ** helm google
 (use-package helm-google
   :ensure t
-  ;; If you want to keep the search open use C-z instead of RET.
+  ;; If you want to keep the search open use C-z or C-j instead of RET.
   :bind ("C-c s" . helm-google))
 
 ;; ** navigating,searching,selecting lists ivy, swiper, counsel
