@@ -446,21 +446,6 @@ _k_: previous error    _l_: last error
      nil :bind nil)
     ("q" nil            nil :color blue))
 
-;; *** Movement (from The Internets)
-  (global-set-key (kbd "C-n")  (defhydra hydra-move
-     (:body-pre (forward-line))
-     "move"
-     ("n" next-line)
-     ("p" previous-line)
-     ("f" forward-char)
-     ("b" backward-char)
-     ("a" beginning-of-line)
-     ("e" move-end-of-line)
-     ("v" scroll-up-command)
-     ;; Converting M-v to V here by analogy.
-     ("V" scroll-down-command)
-     ("l" recenter-top-bottom)))
-
 ;; *** https://github.com/abo-abo/hydra/wiki/multiple-cursors
   (global-set-key (kbd "C-c m")  (defhydra hydra-multiple-cursors (:hint nil)
     "
@@ -1004,6 +989,8 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 					; Set to <your Dropbox root directory>/MobileOrg.
   (setq org-mobile-directory (getenv "ORG_MOBILE_DIRECTORY"))
   (customize-set-variable 'org-agenda-files (list
+					     (concat org-directory "/calendar.org")
+					     (concat org-directory "/inbox.org")
 					     (getenv "ORG_AGENDA_FILE")
 					     (getenv "ORG_MOBILE_INBOX_FOR_PULL")))
   (customize-set-variable 'org-refile-targets
