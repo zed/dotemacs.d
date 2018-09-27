@@ -527,7 +527,7 @@ T - tag prefix
     ("D" dired-do-delete)
     ("G" dired-do-chgrp)
     ("g" revert-buffer) ;; read all directories again (refresh)
-    ("i" dired-maybe-insert-subdir)
+    ("i" dired-subtree-insert) ;; insert subtree under its line
     ("l" dired-do-redisplay) ;; relist the marked or singel directory
     ("M" dired-do-chmod)
     ("m" dired-mark)
@@ -735,6 +735,12 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
                     ; C-x C-j opens dired with the cursor right on the file you're editing
 (require 'dired-x))
+
+;; *** insert subdirectory directly below its line
+(use-package dired-subtree
+  :ensure t
+  :bind (:map dired-mode-map ("i" . dired-subtree-insert)))
+
 ;; ** eww
 (progn
   (setq
