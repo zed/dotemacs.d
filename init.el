@@ -346,6 +346,10 @@
 (use-package flycheck
   :ensure t)
 
+(use-package sh-mode
+  :hook (sh-mode . flycheck-mode))
+
+
 ;; ** yasnippet
 ;; from https://github.com/Schnouki/dotfiles/blob/master/emacs/init-30-yasnippet.el
 (use-package yasnippet
