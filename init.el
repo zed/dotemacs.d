@@ -420,6 +420,29 @@
 (use-package php-mode
   :ensure t)
 
+;; ** go
+(use-package flycheck-gometalinter
+  :ensure t
+  :config
+  (progn
+    (flycheck-gometalinter-setup)))
+
+;;; from https://github.com/mswift42/.emacs.d/blob/master/init.el
+(use-package company-go
+  :ensure t
+  :defer t
+  :init
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'company-go)))
+
+(use-package go-mode
+  :ensure t)
+
+(use-package go-eldoc
+  :ensure t
+  :hook (go-mode-hook . go-eldoc-setup))
+
+
 ;; ** hydra
 
 (use-package hydra
