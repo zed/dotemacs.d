@@ -290,7 +290,7 @@
 (use-package counsel-dash
   :ensure t
   :bind ("C-c d" . counsel-dash)
-  :config
+  :init
   (progn
     (defun python3-doc ()
       (interactive)
