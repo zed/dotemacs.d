@@ -741,13 +741,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :ensure t
   :bind (:map dired-mode-map ("i" . dired-subtree-insert)))
 
-;; ** eww
-(progn
-  (setq
-   browse-url-browser-function
-   '(
-     ("github.com" . browse-url-chromium)
-     ("." . eww-browse-url))))
+(require '.secrets "~/.secrets.el.gpg")
 
 ;; ** Save point position between sessions
 (require 'saveplace)
