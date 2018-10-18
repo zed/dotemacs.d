@@ -983,9 +983,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq org-export-copy-to-kill-ring 'if-interactive)
   ;; orgmobile
   (setq org-mobile-use-encryption t)
-  (advice-add 'org-mobile-push :around #'init:with-secrets)
-  (advice-add 'org-mobile-pull :around #'init:with-secrets)
-
+  (require '.secrets "~/.secrets.el.gpg")
 
   (setq org-todo-keywords
 	'((sequence "TODO(t)" "WAIT(w)" "|" "DONE(d!)" "DEFERRED(e)" "CANCELED(c)")))
@@ -1019,11 +1017,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq org-mobile-inbox-for-pull (getenv "ORG_MOBILE_INBOX_FOR_PULL"))
 					; Set to <your Dropbox root directory>/MobileOrg.
   (setq org-mobile-directory (getenv "ORG_MOBILE_DIRECTORY"))
-  (customize-set-variable 'org-agenda-files (list
-					     (concat org-directory "/calendar.org")
-					     (concat org-directory "/inbox.org")
-					     (getenv "ORG_AGENDA_FILE")
-					     (getenv "ORG_MOBILE_INBOX_FOR_PULL")))
   (customize-set-variable 'org-refile-targets
 			  '((nil :maxlevel . 2)
 			    (org-agenda-files :maxlevel . 2)))
