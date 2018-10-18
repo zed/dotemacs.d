@@ -978,6 +978,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (org-export-use-babel nil "disable evaluation of babel code blocks on export")
   (org-log-into-drawer t "hide State DONE. Useful for repeating tasks")
   (org-export-backends '(md odt latex icalendar html ascii) "List of export back-ends that should be always available.")
+  (org-modules '(org-habit habits))
+  (org-refile-targets  '((nil :maxlevel . 2) (org-agenda-files :maxlevel . 2)))
+
   :init
   ;; export to the kill ring automatically for interactive exports
   (setq org-export-copy-to-kill-ring 'if-interactive)
@@ -1017,10 +1020,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq org-mobile-inbox-for-pull (getenv "ORG_MOBILE_INBOX_FOR_PULL"))
 					; Set to <your Dropbox root directory>/MobileOrg.
   (setq org-mobile-directory (getenv "ORG_MOBILE_DIRECTORY"))
-  (customize-set-variable 'org-refile-targets
-			  '((nil :maxlevel . 2)
-			    (org-agenda-files :maxlevel . 2)))
-  (customize-set-variable 'org-modules '(org-habit habits))
   (setq org-capture-templates
 	'(("t" "Todo" entry (file+headline "inbox.org" "Tasks")
 	   "* TODO %?\n  %i\n  %a")
