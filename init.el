@@ -1047,6 +1047,12 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (org-clock-persistence-insinuate)
   (setq org-reverse-note-order t)
   (setq org-agenda-include-diary t)
+
+  ;;
+  (setq org-babel-default-header-args
+      (cons '(:results . "silent")
+            (assq-delete-all :results org-babel-default-header-args)))
+
   ;; copy link url from org to outside of org mode
   ;; https://emacs.stackexchange.com/questions/3981/how-to-copy-links-out-of-org-mode
   (progn
