@@ -420,7 +420,7 @@
 (use-package php-mode
   :ensure t)
 
-;; ** go
+;; ** golang
 (use-package flycheck-gometalinter
   :ensure t
   :config
