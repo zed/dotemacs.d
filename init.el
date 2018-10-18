@@ -389,8 +389,8 @@
   (blacken-line-length 79))
 
 (use-package idle-highlight-mode
-  :hook (python-mode . #'init:enable-idle-highlight-mode)
-  :hook (emacs-lisp-mode . #'init:enable-idle-highlight-mode)
+  :hook ((python-mode . init:enable-idle-highlight-mode)
+         (emacs-lisp-mode . init:enable-idle-highlight-mode))
   :config
   (defun init:enable-idle-highlight-mode ()
     (idle-highlight-mode t)))
