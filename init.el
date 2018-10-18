@@ -1117,6 +1117,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :ensure t
   :init
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+;; ** recursive directory tree comparison: M-x ztree-diff
+(use-package ztree
+  :ensure t) ; needs GNU diff utility
 ;; * ^^^last use-package
 
 ;; ** nand2tetris
