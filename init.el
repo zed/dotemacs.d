@@ -443,6 +443,10 @@
   :hook (go-mode-hook . go-eldoc-setup))
 
 
+;; ** Dockerfile
+(use-package dockerfile-mode
+  :ensure t)
+
 ;; ** hydra
 
 (use-package hydra
