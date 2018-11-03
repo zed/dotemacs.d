@@ -1069,6 +1069,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq org-babel-default-header-args
       (cons '(:results . "silent")
             (assq-delete-all :results org-babel-default-header-args)))
+  (setq org-babel-default-header-args:ipython '(
+						(:session . "*ipython-session*")
+						(:exports . "both")
+						(:results . "replace drawer verbatim value")
+						))
 
   ;; copy link url from org to outside of org mode
   ;; https://emacs.stackexchange.com/questions/3981/how-to-copy-links-out-of-org-mode
