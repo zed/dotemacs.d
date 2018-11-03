@@ -1052,12 +1052,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ;; if non-nill, only show habits in today’s agenda view
   (setq org-habit-show-habits-only-for-today nil)
   (setq org-confirm-babel-evaluate nil)
+  :bind (("C-c l" . org-store-link)
+	 ("C-c o" . org-open-at-point-global)
+	 ("C-c a" . org-agenda)
+	 ("C-c c" . org-capture))
   :config
-  (global-set-key "\C-cl" #'org-store-link)
-  (global-set-key "\C-co" 'org-open-at-point-global)
-  (global-set-key "\C-ca" #'org-agenda)
-  (global-set-key "\C-cc" #'org-capture)
-  (global-set-key "\C-cb" #'org-iswitchb)
   (define-key org-mode-map (kbd "M-o") 'ace-link-org)
 
   ;; resume the clock under the assumption that you have worked on this task while outside Emacs
