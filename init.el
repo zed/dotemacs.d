@@ -1163,6 +1163,16 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; ** recursive directory tree comparison: M-x ztree-diff
 (use-package ztree
   :ensure t) ; needs GNU diff utility
+
+;; ** edit browser text area in Emacs (sync both ways)
+(use-package atomic-chrome
+  ;; dependency Atomic Chrome extension (in Chrome)
+  :ensure t
+  :init
+  (setq atomic-chrome-default-major-mode 'markdown-mode)
+  (setq atomic-chrome-extension-type-list '(atomic-chrome))
+  :config
+  (atomic-chrome-start-server))
 ;; * ^^^last use-package
 
 ;; ** nand2tetris
