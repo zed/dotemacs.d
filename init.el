@@ -888,7 +888,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (column-number-mode)   ; enable columns numbers globally, it has a performance hit
 
 
-(add-hook 'before-save-hook #'delete-trailing-whitespace)
+;; don't edit non programming files such as images (png, jpg, etc)
+;; https://stackoverflow.com/questions/6138029/how-to-add-a-hook-to-only-run-in-a-particular-mode
+(add-hook 'prog-mode-hook
+	  #'(lambda ()
+	      (add-hook 'before-save-hook #'delete-trailing-whitespace nil t)))
 
                     ; copy/kill line on M-w, C-w
 (defadvice kill-ring-save (before slickcopy activate compile)
@@ -1098,6 +1102,28 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :init
   (add-hook 'org-mode-hook (lambda () (require 'ox-gfm))))
 
+(use-package ob-ipython
+  :after org
+  :ensure t
+  :commands company-ob-ipython
+  :init
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'company-ob-ipython))
+  ;; suppress warnings when C-c C-v C-z interpreter is started from within a source block
+  (setq python-shell-interpreter "ipython"
+	python-shell-interpreter-args "-i --simple-prompt"
+	python-shell-prompt-detect-failure-warning nil)
+  ;; use completion provided by ob-ipython
+  (add-to-list 'python-shell-completion-native-disabled-interpreters
+               "jupyter")
+)
+;; use a separate config for the :if
+(use-package ob-ipython
+  :if window-system
+  :config
+  (add-hook 'org-babel-after-execute-hook 'org-display-inline-images 'append)
+  :commands org-display-inline-images)
+
 
 (use-package ob-async
   :after org
@@ -1106,6 +1132,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
+     (ipython . t)
      (emacs-lisp . t)
      (shell . t) ; https://emacs.stackexchange.com/questions/37692/how-to-fix-symbols-function-definition-is-void-org-babel-get-header
      )))
