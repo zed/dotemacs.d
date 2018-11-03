@@ -228,13 +228,13 @@
   (apply orig-fun args))
 
 ;; ** which-key: show commands for the current prefix after a delay
-(use-package which-key :demand
+(use-package which-key
   :ensure t
   :config
   (which-key-mode))
 
 ;; ** theme-changer: use dark theme after sunset
-(use-package theme-changer :demand
+(use-package theme-changer
   :ensure t
   :custom
   (calendar-latitude 55.8) ; for solar package
@@ -256,7 +256,7 @@
 ;; ** navigating,searching,selecting lists ivy, swiper, counsel
 ;; *** ivy
 ; https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
-(use-package ivy :demand
+(use-package ivy
   :ensure t
   :bind ("C-c C-r" . ivy-resume)
   :config
@@ -270,26 +270,27 @@
   (ivy-mode 1)  ; turn on ivy for default functions
   )
 (use-package swiper
-  :requires ivy
   :ensure t)
-(use-package counsel :demand
-  :requires swiper
+(use-package counsel
   :ensure t
-  :init
-					; https://oremacs.com/2017/08/04/ripgrep/
-  (setq counsel-grep-base-command
-	"rg -i -M 120 --no-heading --line-number --color never -e %s %s")
   :bind (("C-s" . counsel-grep-or-swiper)
          ("M-x" . counsel-M-x)
          ("C-x C-f" . counsel-find-file)
          ("C-h f" . counsel-describe-function)
          ("C-h v" . counsel-describe-variable)
-         ("C-h a" . counsel-apropos)))
+         ("C-h a" . counsel-apropos))
+  :init
+					; https://oremacs.com/2017/08/04/ripgrep/
+  (setq counsel-grep-base-command
+	"rg -i -M 120 --no-heading --line-number --color never -e %s %s"))
 
 ;; counsel-dash
 (use-package counsel-dash
   :ensure t
   :bind ("C-c d" . counsel-dash)
+
+  ;; Note: can't use :config here -- too late for the hook to run then the
+  ;; keys are invoked (causing the config) in the corresponding buffer
   :init
   (progn
     (defun python3-doc ()
@@ -353,11 +354,9 @@
 ;; ** yasnippet
 ;; from https://github.com/Schnouki/dotfiles/blob/master/emacs/init-30-yasnippet.el
 (use-package yasnippet
+  :defer 1
   :ensure t
-  :defer 15
   :config
-  (use-package yasnippet-snippets
-    :ensure t)
   (progn
     ;; Snippets dir:
     ;; - make sure the local one (~/.emacs.d/snippets) comes first
@@ -367,11 +366,18 @@
                               yas-snippet-dirs)))
     (yas-global-mode 1)))
 
+(use-package yasnippet-snippets
+  :defer 1
+  :after yasnippet
+  :ensure t)
+
+
 ;; ** elpy (python)
 (use-package elpy
+  :commands elpy-enable flycheck-mode
   :ensure t
+  :init (with-eval-after-load 'python (elpy-enable))
   :config
-  (elpy-enable)
   ;; flycheck
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
   (add-hook 'elpy-mode-hook #'flycheck-mode))
@@ -396,6 +402,7 @@
     (idle-highlight-mode t)))
 
 (use-package gist
+  :defer 1
   :ensure t)
 
 ;; ** web-mode
@@ -418,11 +425,13 @@
 
 ;; ** php
 (use-package php-mode
+  :defer t
   :ensure t)
 
 ;; ** golang
 (use-package flycheck-gometalinter
   :ensure t
+  :defer t
   :config
   (progn
     (flycheck-gometalinter-setup)))
@@ -436,15 +445,18 @@
     (add-to-list 'company-backends 'company-go)))
 
 (use-package go-mode
+  :defer t
   :ensure t)
 
 (use-package go-eldoc
+  :defer t
   :ensure t
   :hook (go-mode-hook . go-eldoc-setup))
 
 
 ;; ** Dockerfile
 (use-package dockerfile-mode
+  :defer t
   :ensure t)
 
 ;; ** hydra
@@ -975,8 +987,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (setq flyspell-default-dictionary "ru")
 
 ;; ** configure org
-(use-package org :demand
+(use-package org
+  :commands turn-on-orgstruct++
   :ensure t
+  :demand t
   :pin manual
   :custom
   (org-export-use-babel nil "disable evaluation of babel code blocks on export")
@@ -1081,17 +1095,20 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ;; enable export to markdown in on C-c C-e
 (use-package ox-md
   :after org
+  :defer 1
   :init
   (add-hook 'org-mode-hook (lambda () (require 'ox-md))))
 
 (use-package ox-jira
   :after org
+  :defer 1
   :ensure t
   :init
   (add-hook 'org-mode-hook (lambda () (require 'ox-jira))))
 
 (use-package ox-gfm
   :after org
+  :defer 1
   :ensure t
   :init
   (add-hook 'org-mode-hook (lambda () (require 'ox-gfm))))
@@ -1100,7 +1117,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :after org
   :ensure t
   :commands company-ob-ipython
-  :init
+  :config
   (with-eval-after-load 'company
     (add-to-list 'company-backends 'company-ob-ipython))
   ;; suppress warnings when C-c C-v C-z interpreter is started from within a source block
@@ -1120,6 +1137,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 
 (use-package ob-async
+  :defer 1
   :after org
   :ensure t
   :config
