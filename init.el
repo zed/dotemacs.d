@@ -394,7 +394,7 @@
 (use-package blacken
   :custom
   ; PEP-8 Maximum Line Length
-  (blacken-line-length 79))
+  (blacken-line-length 78))
 
 (use-package idle-highlight-mode
   :hook ((python-mode . init:enable-idle-highlight-mode)
