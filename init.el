@@ -271,6 +271,8 @@
   )
 (use-package swiper
   :ensure t)
+(use-package smex
+  :ensure t)  ; used by counsel-M-x
 (use-package counsel
   :ensure t
   :bind (("C-s" . counsel-grep-or-swiper)
