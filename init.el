@@ -1,4 +1,3 @@
-; -*- coding: utf-8 orgstruct-heading-prefix-regexp: ";; *"; -*-
 ;; * prelude
 (defconst emacs-start-time (current-time))
 
@@ -116,6 +115,12 @@
     (define-key pdf-view-mode-map (kbd "s")  #'pdf-occur)
     (define-key pdf-view-mode-map (kbd "b")  #'pdf-view-set-slice-from-bounding-box)
     (define-key pdf-view-mode-map (kbd "r")  #'pdf-view-reset-slice)))
+
+;; ** highlight jira formatted files
+(el-get-bundle jira-markup-mode
+  :description "Emacs major mode for JIRA-markup-formatted text files"
+  :type github
+  :pkgname "mnuessler/jira-markup-mode")
 
 ;; ** Support for hacking python code
 (el-get-bundle tdd
@@ -606,6 +611,8 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (windmove-default-keybindings 'super)
 (customize-set-variable 'windmove-wrap-around t)
 
+;;
+(customize-set-variable 'confirm-kill-processes nil)
 
 ;; https://github.com/erreina/.emacs.d/blob/master/init.d/init-keybindings.el
 (require 'hydra-move-splitter)
@@ -1175,6 +1182,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq atomic-chrome-extension-type-list '(atomic-chrome))
   :config
   (atomic-chrome-start-server))
+
+;; ** fzf
+(use-package fzf
+  :ensure t
+  )
 ;; * ^^^last use-package
 
 ;; ** nand2tetris
