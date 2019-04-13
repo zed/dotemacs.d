@@ -274,6 +274,10 @@
 	ivy-count-format "%d/%d")
   (ivy-mode 1)  ; turn on ivy for default functions
   )
+;; **** ~C-o~ (=hydra-ivy/body=) invokes Hydra menus with key shortcuts.
+;;      When in Hydra, ~C-o~ or ~i~ resumes editing.
+(use-package ivy-hydra
+  :ensure t)
 (use-package swiper
   :ensure t)
 (use-package smex
