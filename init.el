@@ -1049,7 +1049,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq org-mobile-directory (getenv "ORG_MOBILE_DIRECTORY"))
   (setq org-capture-templates
 	'(("t" "Todo" entry (file+headline "inbox.org" "Tasks")
-	   "* TODO %?\n  %i\n  %a")
+	   "* TODO %?\n  %i\n  %a" :clock-in t :clock-resume t)
 	  ("j" "Journal" entry (file+datetree "journal.org")
 	   "* %?\nEntered on %U\n  %i\n  %a")))
 
