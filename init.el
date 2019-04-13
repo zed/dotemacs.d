@@ -394,7 +394,7 @@
   :init
   (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python)
   :config
-  (pyvenv-workon "py3.7"))
+  (pyvenv-workon "emacs"))
 
 (use-package blacken
   :custom
