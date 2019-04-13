@@ -1002,6 +1002,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :demand t
   :pin manual
   :custom
+  (org-src-tab-acts-natively t "make TAB insert spaces in python src blocks")
   (org-export-use-babel nil "disable evaluation of babel code blocks on export")
   (org-log-into-drawer t "hide State DONE. Useful for repeating tasks")
   (org-export-backends '(md odt latex icalendar html ascii) "List of export back-ends that should be always available.")
