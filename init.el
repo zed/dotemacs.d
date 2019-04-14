@@ -1132,41 +1132,30 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :init
   (add-hook 'org-mode-hook (lambda () (require 'ox-gfm))))
 
-(use-package ob-ipython
-  :after org
-  :ensure t
-  :commands company-ob-ipython
-  :config
-  (with-eval-after-load 'company
-    (add-to-list 'company-backends 'company-ob-ipython))
-  ;; suppress warnings when C-c C-v C-z interpreter is started from within a source block
-  (setq python-shell-interpreter "ipython"
-	python-shell-interpreter-args "-i --simple-prompt"
-	python-shell-prompt-detect-failure-warning nil)
-  ;; use completion provided by ob-ipython
-  (add-to-list 'python-shell-completion-native-disabled-interpreters
-               "jupyter")
-)
-;; use a separate config for the :if
-(use-package ob-ipython
-  :if window-system
-  :config
-  (add-hook 'org-babel-after-execute-hook 'org-display-inline-images 'append)
-  :commands org-display-inline-images)
-
-
 (use-package ob-async
   :defer 1
   :after org
   :ensure t
   :config
+  (setq ob-async-no-async-languages-alist '("jupyter-python" "jupyter-julia")))
+
+(use-package jupyter
+  :after org
+  :ensure t
+  :config
+  ;; org src blocks languages
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
-     (ipython . t)
      (emacs-lisp . t)
      (shell . t) ; https://emacs.stackexchange.com/questions/37692/how-to-fix-symbols-function-definition-is-void-org-babel-get-header
-     )))
+     (jupyter . t) ; must be last https://github.com/dzop/emacs-jupyter#org-mode-source-blocks
+     ))
+  ;; default args for jupyter-python
+  (setq org-babel-default-header-args:jupyter-python '((:results . "replace")
+						       (:async . "yes")
+                                                    (:session . "py")
+                                                    (:kernel . "python3"))))
 
 (use-package org-bullets
   :after org
