@@ -1187,6 +1187,12 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package fzf
   :ensure t
   )
+;; ** direnv
+(use-package direnv
+  :ensure t
+  :config
+  (direnv-mode))
+
 ;; ** python black
 (use-package python-black
   :demand t
