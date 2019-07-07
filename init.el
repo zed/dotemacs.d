@@ -360,6 +360,9 @@
   :config
   (global-git-gutter-mode t))
 
+;; ***
+(use-package git-timemachine
+  :ensure t)
 ;; ** real-time syntax check
 (use-package flycheck
   :ensure t)
