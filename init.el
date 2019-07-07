@@ -408,8 +408,8 @@
 
 (use-package blacken
   :custom
-  ; PEP-8 Maximum Line Length
-  (blacken-line-length 78))
+  ; use fill-column as the Maximum Line Length
+  (blacken-line-length 'fill))
 
 (use-package idle-highlight-mode
   :hook ((python-mode . init:enable-idle-highlight-mode)
@@ -1186,6 +1186,13 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; ** fzf
 (use-package fzf
   :ensure t
+  )
+;; ** python black
+(use-package python-black
+  :demand t
+  :after python
+  :custom
+  (python-black-extra-args '("-l" "78"))
   )
 ;; * ^^^last use-package
 
