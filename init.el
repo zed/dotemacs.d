@@ -134,6 +134,12 @@
   :type github
   :pkgname "proofit404/blacken")
 
+(el-get-bundle reformatter)
+(el-get-bundle python-black
+  :description "Emacs package to reformat Python using black-macchiato"
+  :type github
+  :pkgname "wbolster/emacs-python-black")
+
 ;; ** misc
 (el-get-bundle multiple-cursors ;; see also hydra-multiple-cursors
   (global-set-key (kbd "C-S-c C-S-c") #'mc/edit-lines)
