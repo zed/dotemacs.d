@@ -1187,6 +1187,12 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package fzf
   :ensure t
   )
+
+;; ** groovy
+(use-package groovy-mode
+  :ensure t
+  )
+
 ;; ** direnv
 (use-package direnv
   :ensure t
