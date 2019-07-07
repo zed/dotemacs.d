@@ -368,6 +368,10 @@
 ;; ***
 (use-package git-timemachine
   :ensure t)
+
+;; ** python debugger
+; realgud has to be installed manually to avoid https://github.com/realgud/realgud/issues/77
+
 ;; ** real-time syntax check
 (use-package flycheck
   :ensure t)
