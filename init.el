@@ -1262,6 +1262,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 (setq ad-redefinition-action 'accept) ;; suppress "got redefined" warning
 
+;; ** https://unix.stackexchange.com/questions/108259/how-do-i-stop-emacs-from-asking-me-if-i-want-to-load-a-large-file
+(setq large-file-warning-threshold 1000000000)
+
 ;; ** measure how long it took to load .emacs
 (progn (let ((elapsed (float-time (time-subtract (current-time)
 						 emacs-start-time))))
