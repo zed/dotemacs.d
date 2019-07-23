@@ -411,13 +411,6 @@
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
   (add-hook 'elpy-mode-hook #'flycheck-mode))
 
-(use-package pyvenv
-  :ensure t
-  :init
-  (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python)
-  :config
-  (pyvenv-workon "emacs"))
-
 (use-package blacken
   :custom
   ; use fill-column as the Maximum Line Length
