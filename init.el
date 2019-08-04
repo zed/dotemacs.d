@@ -1212,6 +1212,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :custom
   (python-black-extra-args '("-l" "78"))
   )
+
+;; ** C-x C-f /docker:user@container:/path/to/file
+(use-package docker-tramp
+  :ensure t)
 ;; * ^^^last use-package
 
 ;; ** nand2tetris
