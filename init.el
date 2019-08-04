@@ -1092,11 +1092,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (org-clock-persistence-insinuate)
   (setq org-reverse-note-order t)
   (setq org-agenda-include-diary t)
-  (setq org-babel-default-header-args:ipython '(
-						(:session . "*ipython-session*")
-						(:exports . "both")
-						(:results . "drawer")
-						))
+
+  (setq org-plantuml-jar-path
+      (expand-file-name "~/src/plantuml/plantuml.jar"))
 
   ;; copy link url from org to outside of org mode
   ;; https://emacs.stackexchange.com/questions/3981/how-to-copy-links-out-of-org-mode
@@ -1163,8 +1161,8 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
    '((python . t)
      (emacs-lisp . t)
      (shell . t) ; https://emacs.stackexchange.com/questions/37692/how-to-fix-symbols-function-definition-is-void-org-babel-get-header
-     (jupyter . t) ; must be last https://github.com/dzop/emacs-jupyter#org-mode-source-blocks
-     ))
+     (plantuml . t) ; http://eschulte.github.io/babel-dev/DONE-integrate-plantuml-support.html
+     (jupyter . t))) ; must be last https://github.com/dzop/emacs-jupyter#org-mode-source-blocks
   ;; default args for jupyter-python
   (setq org-babel-default-header-args:jupyter-python '((:results . "replace")
 						       (:async . "yes")
