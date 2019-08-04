@@ -1,3 +1,4 @@
+; -*- coding: utf-8 orgstruct-heading-prefix-regexp: ";; *"; -*-
 ;; * prelude
 (defconst emacs-start-time (current-time))
 
