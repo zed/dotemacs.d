@@ -662,18 +662,15 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 	 (interactive)
 	 (ace-window 1)
 	 (add-hook 'ace-window-end-once-hook
-		   'hydra-window/body))
-   )
+		   'hydra-window/body)))
   ("h" (lambda ()
 	 (interactive)
 	 (split-window-right)
-	 (windmove-right))
-   )
+	 (windmove-right)))
   ("v" (lambda ()
 	 (interactive)
 	 (split-window-below)
-	 (windmove-down))
-   )
+	 (windmove-down)))
   ("S" (lambda ()
 	 (interactive)
 	 (ace-window 4)
@@ -685,16 +682,14 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 	 (interactive)
 	 (ace-window 16)
 	 (add-hook 'ace-window-end-once-hook
-		   'hydra-window/body))
-   )
+		   'hydra-window/body)))
   ("o" delete-other-windows :color blue)
   ("O" delete-other-windows)
   ("m" ace-delete-other-windows :color blue)
   ("M" ace-delete-other-windows)
   ("u" (progn
 	 (winner-undo)
-	 (setq this-command 'winner-undo))
-   )
+	 (setq this-command 'winner-undo)))
   ("r" winner-redo)
   ("q" nil)))))))
 
@@ -724,8 +719,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; init.el) to jump to it.
 ;; You should add registers here for the files you edit most often.
 (dolist (r `((?i (file . ,(expand-file-name "~/.emacs")))
-             (?r (file . ,(expand-file-name (getenv "ORG_AGENDA_FILE"))))
-	     ))
+             (?r (file . ,(expand-file-name (getenv "ORG_AGENDA_FILE"))))))
   (set-register (car r) (cadr r)))
 
 ;; Commands which ask for a destination directory, such as those which
@@ -969,8 +963,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (c-add-style "my-style"
          '("python"
            (indent-tabs-mode . nil)        ; use spaces rather than tabs
-           (c-basic-offset . 2)
-           ))
+           (c-basic-offset . 2)))
 (defun init:c-mode-common-hook ()
   (c-set-style "my-style")        ; use my-style defined above
   (auto-fill-mode)
@@ -1116,9 +1109,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
     (if (not text)
         (error "Not in org link")
       (add-text-properties 0 (length text) '(yank-handler (iqbal-yank-org-link)) text)
-      (kill-new text))))
-    )
-  )
+      (kill-new text))))))
 
 (use-package htmlize
   :ensure t)
@@ -1151,23 +1142,27 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :config
   (setq ob-async-no-async-languages-alist '("jupyter-python" "jupyter-julia")))
 
-(use-package jupyter
+(use-package
+    jupyter
   :after org
   :ensure t
   :config
   ;; org src blocks languages
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((python . t)
-     (emacs-lisp . t)
-     (shell . t) ; https://emacs.stackexchange.com/questions/37692/how-to-fix-symbols-function-definition-is-void-org-babel-get-header
-     (plantuml . t) ; http://eschulte.github.io/babel-dev/DONE-integrate-plantuml-support.html
-     (jupyter . t))) ; must be last https://github.com/dzop/emacs-jupyter#org-mode-source-blocks
+  (org-babel-do-load-languages 'org-babel-load-languages '((python . t)
+							   (emacs-lisp . t)
+							   (shell . t) ; https://emacs.stackexchange.com/questions/37692/how-to-fix-symbols-function-definition-is-void-org-babel-get-header
+							   (plantuml . t) ; http://eschulte.github.io/babel-dev/DONE-integrate-plantuml-support.html
+							   (jupyter . t))) ; must be last https://github.com/dzop/emacs-jupyter#org-mode-source-blocks
   ;; default args for jupyter-python
-  (setq org-babel-default-header-args:jupyter-python '((:results . "replace")
-						       (:async . "yes")
-                                                    (:session . "py")
-                                                    (:kernel . "python3"))))
+  (setq org-babel-default-header-args:jupyter-python
+	'((:results .
+		    "replace")
+	  (:async .
+		  "yes")
+	  (:session .
+		    "py")
+	  (:kernel .
+		   "python3"))))
 
 (use-package org-bullets
   :after org
@@ -1191,13 +1186,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; ** fzf
 (use-package fzf
-  :ensure t
-  )
+  :ensure t)
 
 ;; ** groovy
 (use-package groovy-mode
-  :ensure t
-  )
+  :ensure t)
 
 ;; ** direnv
 (use-package direnv
@@ -1210,11 +1203,14 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :demand t
   :after python
   :custom
-  (python-black-extra-args '("-l" "78"))
-  )
+  (python-black-extra-args '("-l" "78")))
 
 ;; ** C-x C-f /docker:user@container:/path/to/file
 (use-package docker-tramp
+  :ensure t)
+
+;; ** M-x elisp-format-region
+(use-package elisp-format
   :ensure t)
 ;; * ^^^last use-package
 
