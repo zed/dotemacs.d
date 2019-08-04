@@ -155,6 +155,9 @@
     "Major mode for editing GitHub Flavored Markdown files" t)
   (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode)))
 
+(el-get-bundle sqlite-dump
+  :url "https://download.tuxfamily.org/user42/sqlite-dump.el")
+
 ;; ** insecure
 (setq el-get-allow-insecure t)
 (el-get-bundle geiser)
