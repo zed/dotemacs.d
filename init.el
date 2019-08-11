@@ -391,7 +391,6 @@
 
 (use-package sh-mode
   :ensure nil
-  :ensure nil
   :hook (sh-mode . flycheck-mode))
 
 
