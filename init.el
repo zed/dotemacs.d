@@ -1085,6 +1085,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
   ;; if non-nill, only show habits in today’s agenda view
   (setq org-habit-show-habits-only-for-today nil)
+
+  ;; shift the org habit graph in the agenda further out right so as
+  ;; to leave enough room for the headings to be visible.
+  (setq org-habit-graph-column 90)
   (setq org-confirm-babel-evaluate nil)
   :bind (("C-c l" . org-store-link)
 	 ("C-c o" . org-open-at-point-global)
