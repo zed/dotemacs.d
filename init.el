@@ -289,6 +289,7 @@
   :ensure t
   :bind (("C-s" . counsel-grep-or-swiper)
 	 ("M-x" . counsel-M-x) ; show keybindings
+	 ("<f5>" . counsel-compile)
          ("C-x C-f" . counsel-find-file)
          ("C-h f" . counsel-describe-function)
          ("C-h v" . counsel-describe-variable)
@@ -897,10 +898,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
                     ; suppress Warning (mule): Invalid coding system `ascii' is specified
 (define-coding-system-alias 'ascii 'us-ascii)
-
-                    ; run compile command on F5, change command with C-u F5
-(global-set-key [f5] #'compile)
-
 
 (setq compilation-ask-about-save nil)
 (setq compilation-read-command nil)
