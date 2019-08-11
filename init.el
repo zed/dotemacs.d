@@ -206,8 +206,6 @@
 ; for ivy-regex-fuzzy sorting of large lists
 (el-get-bundle flx)
 
-(el-get-bundle wgrep) ; support writing in grep/rg results
-
 ;; *** ido/ivy/helm imenu tag selection across buffers with the same mode/project etc
 (el-get-bundle imenu-anywhere)
 
@@ -261,12 +259,6 @@
     (mapc 'disable-theme custom-enabled-themes))
   :config
   (change-theme 'tango 'tango-dark))
-
-;; ** helm google
-(use-package helm-google
-  :ensure t
-  ;; If you want to keep the search open use C-z or C-j instead of RET.
-  :bind ("C-c s" . helm-google))
 
 ;; ** navigating,searching,selecting lists ivy, swiper, counsel
 ;; *** ivy
