@@ -363,7 +363,7 @@
 
 (use-package forge
 
-  :defer 1
+  :defer t
   :after magit)
 
 ;; ***
@@ -380,6 +380,7 @@
 
 ;; ***
 (use-package git-timemachine
+  :defer t
   )
 
 ;; ** python debugger
@@ -387,6 +388,7 @@
 
 ;; ** real-time syntax check
 (use-package flycheck
+  :defer t
   )
 
 (use-package sh-mode
@@ -397,7 +399,7 @@
 ;; ** yasnippet
 ;; from https://github.com/Schnouki/dotfiles/blob/master/emacs/init-30-yasnippet.el
 (use-package yasnippet
-  :defer 1
+  :defer t
 
   :config
   (progn
@@ -410,7 +412,7 @@
     (yas-global-mode 1)))
 
 (use-package yasnippet-snippets
-  :defer 1
+  :defer t
   :after yasnippet
   )
 
@@ -1018,11 +1020,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; ** flyspell
 (use-package flyspell
   :ensure nil
+  :defer t
   :hook (prog-mode . flyspell-prog-mode))
 
 ;; ** configure org
 (use-package org
-  :demand t
   :ensure nil
   :commands turn-on-orgstruct++
   :custom
@@ -1129,29 +1131,19 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
       (kill-new text))))))
 
 (use-package htmlize
+  :defer 30
   )
-
-  ;; enable export to markdown in on C-c C-e
-(use-package ox-md
-  :ensure nil
-  :after org
-  :defer 1
-  :init
-  (add-hook 'org-mode-hook (lambda () (require 'ox-md))))
 
 (use-package ox-jira
   :after org
-  :defer 1
-
-  :init
-  (add-hook 'org-mode-hook (lambda () (require 'ox-jira))))
+  :defer 30
+  )
 
 (use-package ox-gfm
   :after org
-  :defer 1
+  :defer 30
+  )
 
-  :init
-  (add-hook 'org-mode-hook (lambda () (require 'ox-gfm))))
 ;; org-slack-export-to-clipboard-as-slack
 (use-package ox-slack
   :after org
@@ -1159,16 +1151,14 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   )
 
 (use-package ob-async
-  :defer 1
   :after org
-
+  :defer 10
   :config
   (setq ob-async-no-async-languages-alist '("jupyter-python" "jupyter-julia")))
 
-(use-package
-    jupyter
+(use-package jupyter
   :after org
-
+  :defer 10
   :config
   ;; org src blocks languages
   (org-babel-do-load-languages 'org-babel-load-languages '((python . t)
@@ -1195,12 +1185,13 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; ** recursive directory tree comparison: M-x ztree-diff
 (use-package ztree
+  :defer t
   ) ; needs GNU diff utility
 
 ;; ** edit browser text area in Emacs (sync both ways)
 (use-package atomic-chrome
   ;; dependency Atomic Chrome extension (in Chrome)
-
+  :defer 10
   :init
   (setq atomic-chrome-default-major-mode 'markdown-mode)
   (setq atomic-chrome-extension-type-list '(atomic-chrome))
@@ -1213,6 +1204,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; ** groovy
 (use-package groovy-mode
+  :defer t
   )
 
 ;; ** direnv
@@ -1231,15 +1223,18 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; ** C-x C-f /docker:user@container:/path/to/file
 (use-package docker-tramp
+  :defer t
   )
 
 ;; ** M-x elisp-format-region
 (use-package elisp-format
+  :defer 100
   )
 
 ;; ** google-this "C-c / g"
 (use-package google-this
-
+  :defer t
+  :bind ("C-x g" . google-this)
   :config
   (google-this-mode 1))
 
