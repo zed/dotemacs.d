@@ -5,6 +5,13 @@
 (unless noninteractive
   (message "Loading %s..." load-file-name))
 
+(defun init:report-elapsed-time (&optional what-has-loaded)
+  "Report time elapsed since emacs start."
+  (or what-has-loaded (setq what-has-loaded load-file-name))
+  (let ((elapsed (float-time (time-subtract (current-time)
+					      emacs-start-time))))
+    (message "Loading %s...done (elapsed %.3fs)" what-has-loaded elapsed)))
+
 ;; * load customizations
 (setq custom-file "~/.custom.el")
 (load custom-file)
@@ -233,9 +240,11 @@
 (el-get-ensure-byte-compilable-autoload-file el-get-autoload-file)
 (el-get-cleanup my:el-get-packages) ; uninstall packages that are not mentioned
 (el-get 'sync my:el-get-packages)
+(init:report-elapsed-time "el-get-packages")
 
 ;; * configure packages
 (package-initialize)
+(init:report-elapsed-time "package-initialize")
 
 (defun init:with-secrets (orig-fun &rest args)
   "Load secrets before calling `orig-fun'."
@@ -1248,6 +1257,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
          ("<f2>" . bm-next)
          ("<S-f2>" . bm-previous)))
 ;; * ^^^last use-package
+(init:report-elapsed-time "use-package")
 
 ;; ** nand2tetris
 (setq nand2tetris-core-base-dir (getenv "NAND2TETRIS_CORE_BASE_DIR"))
@@ -1296,15 +1306,12 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (setq large-file-warning-threshold 1000000000)
 
 ;; ** measure how long it took to load .emacs
-(progn (let ((elapsed (float-time (time-subtract (current-time)
-						 emacs-start-time))))
-	 (message "Loading %s...done (%.3fs)" load-file-name elapsed))
-
+(progn (init:report-elapsed-time)
        (add-hook 'after-init-hook
 		 `(lambda ()
 		    (let ((elapsed (float-time (time-subtract (current-time)
 							      emacs-start-time))))
-		      (message "Loading %s...done (%.3fs) [after-init]"
+		      (message "Loading %s...done (elapsed %.3fs) [after-init]"
 			       ,load-file-name elapsed)))
 		 t))
 ;; * the end
