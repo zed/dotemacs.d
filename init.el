@@ -1236,6 +1236,12 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; ** C-a moves the point to the first non-whitespace character on the line
 (use-package crux
   :bind (("C-a" . crux-move-beginning-of-line)))
+
+;; ** visible bookmark to jump around a file
+(use-package bm
+  :bind (("<C-f2>" . bm-toggle)
+         ("<f2>" . bm-next)
+         ("<S-f2>" . bm-previous)))
 ;; * ^^^last use-package
 
 ;; ** nand2tetris
