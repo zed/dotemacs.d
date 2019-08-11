@@ -240,6 +240,12 @@
   (require '.secrets "~/.secrets.el.gpg")
   (apply orig-fun args))
 
+;; ** delight: remove modes from ModeLine
+;; C-h v minor-mode-alist
+(use-package delight
+  :ensure t
+  :demand t)
+
 ;; ** which-key: show commands for the current prefix after a delay
 (use-package which-key
   :ensure t
@@ -265,6 +271,7 @@
 ; https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
 (use-package ivy
   :ensure t
+  :delight
   :bind ("C-c C-r" . ivy-resume)
   :config
   ; https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/
@@ -356,6 +363,7 @@
 ;; ***
 (use-package git-gutter
   :ensure t
+  :delight
   :custom
   (git-gutter:window-width 2)
   (git-gutter:modified-sign "☁")
@@ -1245,6 +1253,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :lighter " my-keys")
 
 (my-keys-minor-mode 1)
+(delight 'my-keys-minor-mode nil t)
 
 (setq ad-redefinition-action 'accept) ;; suppress "got redefined" warning
 
