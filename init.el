@@ -1232,6 +1232,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
   :config
   (google-this-mode 1))
+
+;; ** C-a moves the point to the first non-whitespace character on the line
+(use-package crux
+  :bind (("C-a" . crux-move-beginning-of-line)))
 ;; * ^^^last use-package
 
 ;; ** nand2tetris
