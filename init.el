@@ -272,6 +272,8 @@
 (use-package ivy
   :ensure t
   :delight
+  :init
+  (ivy-mode 1)  ; turn on ivy for default functions
   :bind ("C-c C-r" . ivy-resume)
   :config
   ; https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/
@@ -281,7 +283,6 @@
   (setq ivy-height 20)
   (setq ivy-use-virtual-buffers t
 	ivy-count-format "%d/%d")
-  (ivy-mode 1)  ; turn on ivy for default functions
   )
 ;; **** ~C-o~ (=hydra-ivy/body=) invokes Hydra menus with key shortcuts.
 ;;      When in Hydra, ~C-o~ or ~i~ resumes editing.
