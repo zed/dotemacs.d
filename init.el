@@ -299,6 +299,7 @@
 	"rg -i -M 120 --no-heading --line-number --color never -e %s %s"))
 
 ;; counsel-dash
+;; *** counsel-dash
 (use-package counsel-dash
   :ensure t
   :bind ("C-c d" . counsel-dash)
