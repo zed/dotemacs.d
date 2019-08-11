@@ -30,7 +30,7 @@
 
 ;; ** Hydra
 (el-get-bundle hydra-move-splitter
-  :url "https://raw.githubusercontent.com/erreina/dotfiles/master/emacs/elisp/hydra-move-splitter.el")
+  :url "https://raw.githubusercontent.com/erreina/dotfiles/a8a19b3a466720ba345e68b71449191644987276/emacs/elisp/hydra-move-splitter.el")
 
 (el-get-bundle hydra)
 (with-eval-after-load-feature 'hydra ; fix "free variable warning"
