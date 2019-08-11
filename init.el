@@ -1213,6 +1213,12 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; ** M-x elisp-format-region
 (use-package elisp-format
   :ensure t)
+
+;; ** google-this "C-c / g"
+(use-package google-this
+  :ensure t
+  :config
+  (google-this-mode 1))
 ;; * ^^^last use-package
 
 ;; ** nand2tetris
