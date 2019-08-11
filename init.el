@@ -24,9 +24,11 @@
 (el-get-bundle! with-eval-after-load-feature) ; to suppress "free variable" warning
 (el-get-bundle! use-package)
 (with-eval-after-load 'use-package
-    (setq use-package-verbose t)
-    ; M-x use-package-report to see the results
-    (setq use-package-compute-statistics t))
+  (require 'use-package-ensure)
+  (setq use-package-always-ensure t)
+  (setq use-package-verbose t)
+					; M-x use-package-report to see the results
+  (setq use-package-compute-statistics t))
 
 ;; ** Hydra
 (el-get-bundle hydra-move-splitter
@@ -243,18 +245,18 @@
 ;; ** delight: remove modes from ModeLine
 ;; C-h v minor-mode-alist
 (use-package delight
-  :ensure t
+
   :demand t)
 
 ;; ** which-key: show commands for the current prefix after a delay
 (use-package which-key
-  :ensure t
+
   :config
   (which-key-mode))
 
 ;; ** theme-changer: use dark theme after sunset
 (use-package theme-changer
-  :ensure t
+
   :custom
   (calendar-latitude 55.8) ; for solar package
   (calendar-longitude 37.6)
@@ -270,7 +272,7 @@
 ;; *** ivy
 ; https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
 (use-package ivy
-  :ensure t
+
   :delight
   :init
   (ivy-mode 1)  ; turn on ivy for default functions
@@ -283,18 +285,20 @@
   (setq ivy-height 20)
   (setq ivy-use-virtual-buffers t
 	ivy-count-format "%d/%d")
+  ; remove "^" from the default regex
+  (setq ivy-initial-inputs-alist nil)
   )
 ;; **** ~C-o~ (=hydra-ivy/body=) invokes Hydra menus with key shortcuts.
 ;;      When in Hydra, ~C-o~ or ~i~ resumes editing.
 (use-package ivy-hydra
-  :ensure t)
+  )
 (use-package swiper
-  :ensure t)
+  )
 ;; *** amx -- M-x smex fork
 (use-package amx
-  :ensure t)  ; used by counsel-M-x
+  )  ; used by counsel-M-x
 (use-package counsel
-  :ensure t
+
   :bind (("C-s" . counsel-grep-or-swiper)
 	 ("M-x" . counsel-M-x) ; show keybindings
 	 ("<f5>" . counsel-compile)
@@ -310,7 +314,7 @@
 ;; counsel-dash
 ;; *** counsel-dash
 (use-package counsel-dash
-  :ensure t
+
   :bind ("C-c d" . counsel-dash)
 
   ;; Note: can't use :config here -- too late for the hook to run then the
@@ -340,30 +344,31 @@
 
 ;; ** rg
 (use-package rg
-  :ensure t
+
   :bind ("C-x C-r" . rg))
 
 ;; ** ace-link
 (use-package ace-link
+  :ensure nil
   :config
   (require 'info)
   (ace-link-setup-default))
 
 ;; ** magit
 (use-package magit
-  :ensure t
+
   :bind ("C-c g" . magit-status)
   :config
   (setq magit-completing-read-function 'ivy-completing-read))
 
 (use-package forge
-  :ensure t
+
   :defer 1
   :after magit)
 
 ;; ***
 (use-package git-gutter
-  :ensure t
+
   :delight
   :custom
   (git-gutter:window-width 2)
@@ -375,16 +380,18 @@
 
 ;; ***
 (use-package git-timemachine
-  :ensure t)
+  )
 
 ;; ** python debugger
 ; realgud has to be installed manually to avoid https://github.com/realgud/realgud/issues/77
 
 ;; ** real-time syntax check
 (use-package flycheck
-  :ensure t)
+  )
 
 (use-package sh-mode
+  :ensure nil
+  :ensure nil
   :hook (sh-mode . flycheck-mode))
 
 
@@ -392,7 +399,7 @@
 ;; from https://github.com/Schnouki/dotfiles/blob/master/emacs/init-30-yasnippet.el
 (use-package yasnippet
   :defer 1
-  :ensure t
+
   :config
   (progn
     ;; Snippets dir:
@@ -406,13 +413,13 @@
 (use-package yasnippet-snippets
   :defer 1
   :after yasnippet
-  :ensure t)
+  )
 
 
 ;; ** elpy (python)
 (use-package elpy
   :commands elpy-enable flycheck-mode
-  :ensure t
+
   :init (with-eval-after-load 'python (elpy-enable))
   :config
   ;; flycheck
@@ -420,11 +427,13 @@
   (add-hook 'elpy-mode-hook #'flycheck-mode))
 
 (use-package blacken
+  :ensure nil
   :custom
   ; use fill-column as the Maximum Line Length
   (blacken-line-length 'fill))
 
 (use-package idle-highlight-mode
+  :ensure nil
   :hook ((python-mode . init:enable-idle-highlight-mode)
          (emacs-lisp-mode . init:enable-idle-highlight-mode))
   :config
@@ -433,22 +442,24 @@
 
 (use-package gist
   :defer 1
-  :ensure t)
+  )
 
 ;; ** web-mode
 (use-package web-mode
+  :ensure nil
   :mode "\\.html?\\'")
 ;; ** yaml-mode
 (use-package yaml-mode
+  :ensure nil
   :mode "\\.yml\\'"
   :bind ("C-m" . newline-and-indent))
 
 ;; ** typescript
 (use-package typescript
-  :ensure t
+
   :defer t)
 (use-package tide
-  :ensure t
+
   :after (typescript-mode company flycheck)
   :hook ((typescript-mode . tide-setup)
          (typescript-mode . tide-hl-identifier-mode)))
@@ -456,11 +467,11 @@
 ;; ** php
 (use-package php-mode
   :defer t
-  :ensure t)
+  )
 
 ;; ** golang
 (use-package flycheck-gometalinter
-  :ensure t
+
   :defer t
   :config
   (progn
@@ -468,7 +479,7 @@
 
 ;;; from https://github.com/mswift42/.emacs.d/blob/master/init.el
 (use-package company-go
-  :ensure t
+
   :defer t
   :init
   (with-eval-after-load 'company
@@ -476,22 +487,23 @@
 
 (use-package go-mode
   :defer t
-  :ensure t)
+  )
 
 (use-package go-eldoc
   :defer t
-  :ensure t
+
   :hook (go-mode-hook . go-eldoc-setup))
 
 
 ;; ** Dockerfile
 (use-package dockerfile-mode
   :defer t
-  :ensure t)
+  )
 
 ;; ** hydra
 
 (use-package hydra
+  :ensure nil
   :init
 (progn
   ;; https://github.com/abo-abo/hydra/wiki/Basics
@@ -780,7 +792,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; *** insert subdirectory directly below its line
 (use-package dired-subtree
-  :ensure t
+
   :bind (:map dired-mode-map ("i" . dired-subtree-insert)))
 
 (require '.secrets "~/.secrets.el.gpg")
@@ -1009,10 +1021,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; ** configure org
 (use-package org
-  :commands turn-on-orgstruct++
-  :ensure t
   :demand t
-  :pin manual
+  :ensure nil
+  :commands turn-on-orgstruct++
   :custom
   (org-src-tab-acts-natively t "make TAB insert spaces in python src blocks")
   (org-export-use-babel nil "disable evaluation of babel code blocks on export")
@@ -1113,10 +1124,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
       (kill-new text))))))
 
 (use-package htmlize
-  :ensure t)
+  )
 
   ;; enable export to markdown in on C-c C-e
 (use-package ox-md
+  :ensure nil
   :after org
   :defer 1
   :init
@@ -1125,28 +1137,28 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package ox-jira
   :after org
   :defer 1
-  :ensure t
+
   :init
   (add-hook 'org-mode-hook (lambda () (require 'ox-jira))))
 
 (use-package ox-gfm
   :after org
   :defer 1
-  :ensure t
+
   :init
   (add-hook 'org-mode-hook (lambda () (require 'ox-gfm))))
 
 (use-package ob-async
   :defer 1
   :after org
-  :ensure t
+
   :config
   (setq ob-async-no-async-languages-alist '("jupyter-python" "jupyter-julia")))
 
 (use-package
     jupyter
   :after org
-  :ensure t
+
   :config
   ;; org src blocks languages
   (org-babel-do-load-languages 'org-babel-load-languages '((python . t)
@@ -1167,18 +1179,18 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 (use-package org-bullets
   :after org
-  :ensure t
+
   :init
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
 ;; ** recursive directory tree comparison: M-x ztree-diff
 (use-package ztree
-  :ensure t) ; needs GNU diff utility
+  ) ; needs GNU diff utility
 
 ;; ** edit browser text area in Emacs (sync both ways)
 (use-package atomic-chrome
   ;; dependency Atomic Chrome extension (in Chrome)
-  :ensure t
+
   :init
   (setq atomic-chrome-default-major-mode 'markdown-mode)
   (setq atomic-chrome-extension-type-list '(atomic-chrome))
@@ -1187,20 +1199,21 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; ** fzf
 (use-package fzf
-  :ensure t)
+  )
 
 ;; ** groovy
 (use-package groovy-mode
-  :ensure t)
+  )
 
 ;; ** direnv
 (use-package direnv
-  :ensure t
+
   :config
   (direnv-mode))
 
 ;; ** python black
 (use-package python-black
+  :ensure nil
   :demand t
   :after python
   :custom
@@ -1208,15 +1221,15 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; ** C-x C-f /docker:user@container:/path/to/file
 (use-package docker-tramp
-  :ensure t)
+  )
 
 ;; ** M-x elisp-format-region
 (use-package elisp-format
-  :ensure t)
+  )
 
 ;; ** google-this "C-c / g"
 (use-package google-this
-  :ensure t
+
   :config
   (google-this-mode 1))
 ;; * ^^^last use-package
