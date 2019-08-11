@@ -318,7 +318,11 @@
   :init
 					; https://oremacs.com/2017/08/04/ripgrep/
   (setq counsel-grep-base-command
-	"rg -i -M 120 --no-heading --line-number --color never -e %s %s"))
+	"rg -i -M 120 --no-heading --line-number --color never -e %s %s")
+  :config
+  ;; Enabling counsel-mode remaps built-in Emacs functions that have counsel replacements
+  (counsel-mode 1)
+  )
 
 ;; counsel-dash
 ;; *** counsel-dash
