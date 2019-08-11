@@ -282,12 +282,13 @@
   :ensure t)
 (use-package swiper
   :ensure t)
-(use-package smex
+;; *** amx -- M-x smex fork
+(use-package amx
   :ensure t)  ; used by counsel-M-x
 (use-package counsel
   :ensure t
   :bind (("C-s" . counsel-grep-or-swiper)
-         ("M-x" . counsel-M-x)
+	 ("M-x" . counsel-M-x) ; show keybindings
          ("C-x C-f" . counsel-find-file)
          ("C-h f" . counsel-describe-function)
          ("C-h v" . counsel-describe-variable)
