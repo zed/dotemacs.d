@@ -1148,6 +1148,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
   :init
   (add-hook 'org-mode-hook (lambda () (require 'ox-gfm))))
+;; org-slack-export-to-clipboard-as-slack
+(use-package ox-slack
+  :after org
+  :defer t
+  )
 
 (use-package ob-async
   :defer 1
