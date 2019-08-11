@@ -1015,8 +1015,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
     ("english"
      "[A-Za-z]" "[^A-Za-z]"
      "[']"  nil ("-d" "en_US") nil iso-8859-1)))
-
-(setq flyspell-default-dictionary "ru")
+;; ** flyspell
+(use-package flyspell
+  :ensure nil
+  :hook (prog-mode . flyspell-prog-mode))
 
 ;; ** configure org
 (use-package org
