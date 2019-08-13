@@ -1247,7 +1247,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; ** google-this "C-c / g"
 (use-package google-this
   :defer t
-  :bind ("C-x g" . google-this)
+  :bind ("C-c s" . google-this)
   :config
   (google-this-mode 1))
 
