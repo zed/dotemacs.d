@@ -254,8 +254,7 @@
 ;; ** delight: remove modes from ModeLine
 ;; C-h v minor-mode-alist
 (use-package delight
-
-  :demand t)
+  :commands delight)
 
 ;; ** which-key: show commands for the current prefix after a delay
 (use-package which-key
@@ -281,7 +280,6 @@
 ;; *** ivy
 ; https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
 (use-package ivy
-
   :delight
   :init
   (ivy-mode 1)  ; turn on ivy for default functions
@@ -307,7 +305,7 @@
 (use-package amx
   )  ; used by counsel-M-x
 (use-package counsel
-
+  :delight
   :bind (("C-s" . counsel-grep-or-swiper)
 	 ("M-x" . counsel-M-x) ; show keybindings
 	 ("<f5>" . counsel-compile)
@@ -1034,6 +1032,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package flyspell
   :ensure nil
   :defer t
+  :delight
   :hook (prog-mode . flyspell-prog-mode))
 
 ;; ** configure org
@@ -1342,6 +1341,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package treemacs-magit
   :after treemacs magit
   :ensure t)
+
+;; ** config for company
+(use-package company
+  :ensure nil
+  :delight)
 ;; * ^^^last use-package
 (init:report-elapsed-time "use-package")
 
