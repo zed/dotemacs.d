@@ -744,7 +744,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
                     ; http://stackoverflow.com/a/471916/
 (setq tab-width 4)
 (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80))
-(setq indent-tabs-mode nil)
 
 
 ;; Part of the Emacs Starter Kit
@@ -1045,6 +1044,8 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :ensure nil
   :commands turn-on-orgstruct++
   :custom
+  (org-src-preserve-indenhtation nil "leading whitespace blocks are stripped")
+  (org-edit-src-content-indentation 0 " and the code block is not indented (0!)")
   (org-src-tab-acts-natively t "make TAB insert spaces in python src blocks")
   (org-export-use-babel nil "disable evaluation of babel code blocks on export")
   (org-log-into-drawer t "hide State DONE. Useful for repeating tasks")
@@ -1354,8 +1355,18 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package company
   :ensure nil
   :delight)
-;; * ^^^last use-package
+;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
+
+;; ** core emacs settings
+(use-package emacs
+  :custom
+  (indent-tabs-mode nil)
+  :config
+  (defadvice align-regexp (around align-regexp-with-spaces activate)
+    (let ((indent-tabs-mode nil))
+      ad-do-it)))
+
 
 ;; ** nand2tetris
 (setq nand2tetris-core-base-dir (getenv "NAND2TETRIS_CORE_BASE_DIR"))
