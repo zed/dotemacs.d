@@ -5,6 +5,11 @@
 (unless noninteractive
   (message "Loading %s..." load-file-name))
 
+;; ** https://www.reddit.com/r/emacs/comments/ct0h6m/this_nobbled_me_yesterday_on_debian_10_it_needs/
+(when (and (>= libgnutls-version 30603)
+           (version<= emacs-major-version "26.2"))
+  (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
+
 (defun init:report-elapsed-time (&optional what-has-loaded)
   "Report time elapsed since emacs start."
   (or what-has-loaded (setq what-has-loaded load-file-name))
