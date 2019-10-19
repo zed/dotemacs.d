@@ -1243,12 +1243,15 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :defer 100
   )
 
-;; ** google-this "C-c / g"
+;; ** google-this "C-c s"
 (use-package google-this
-  :defer t
   :bind ("C-c s" . google-this)
+  ;;  note: google-this-mode enables "C-c /" map
   :config
-  (google-this-mode 1))
+  ;; override google-this-url to force English
+  (defun google-this-url ()
+    "URL for google searches."
+    (concat google-this-base-url google-this-location-suffix "/search?hl=en&ion=1&q=%s")))
 
 ;; ** C-a moves the point to the first non-whitespace character on the line
 (use-package crux
