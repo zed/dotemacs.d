@@ -314,6 +314,7 @@
 (use-package counsel
   :delight
   :bind (("C-s" . counsel-grep-or-swiper)
+         ("C-c s" . counsel-search)
 	 ("M-x" . counsel-M-x) ; show keybindings
 	 ("<f5>" . counsel-compile)
          ("C-x C-f" . counsel-find-file)
@@ -1251,10 +1252,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :defer 100
   )
 
-;; ** google-this "C-c s"
+;; ** google-this
 (use-package google-this
   :defer t
-  :bind ("C-c s" . google-this)
   ;;  note: google-this-mode enables "C-c /" map
   :custom
   (google-this-location-suffix "com" "(com, co.uk, fr, etc)")
