@@ -1251,8 +1251,12 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; ** google-this "C-c s"
 (use-package google-this
+  :defer t
   :bind ("C-c s" . google-this)
   ;;  note: google-this-mode enables "C-c /" map
+  :custom
+  (google-this-location-suffix "com" "(com, co.uk, fr, etc)")
+  (google-this-mode t)
   :config
   ;; override google-this-url to force English
   (defun google-this-url ()
@@ -1271,7 +1275,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; ** treemacs https://github.com/Alexander-Miller/treemacs
 (use-package treemacs
-  :ensure t
   :defer t
   :init
   (with-eval-after-load 'winum
