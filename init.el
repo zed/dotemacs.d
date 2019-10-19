@@ -309,6 +309,8 @@
 ;; *** amx -- M-x smex fork
 (use-package amx
   )  ; used by counsel-M-x
+(use-package request
+  )  ; used by counsel-search
 (use-package counsel
   :delight
   :bind (("C-s" . counsel-grep-or-swiper)
