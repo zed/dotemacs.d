@@ -1113,6 +1113,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ;; to leave enough room for the headings to be visible.
   (setq org-habit-graph-column 90)
   (setq org-confirm-babel-evaluate nil)
+  (setq org-agenda-custom-commands
+        '(("n" agenda "+notes")
+          ("w" agenda "-notes")))
   :bind (("C-c l" . org-store-link)
 	 ("C-c o" . org-open-at-point-global)
 	 ("C-c a" . org-agenda)
