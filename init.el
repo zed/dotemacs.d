@@ -361,7 +361,7 @@
        counsel-dash-docsets '("Bash")))
     (add-hook 'sh-mode-hook 'bash-doc)))
 
-;; ** rg
+;; ** ripgrep
 (use-package rg
 
   :bind ("C-x C-r" . rg))
