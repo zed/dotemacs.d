@@ -1155,23 +1155,23 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
       (kill-new text))))))
 
 (use-package htmlize
-  :defer 30
+  :commands (htmlize-buffer htmlize-file htmlize-many-files htmlize-many-files-dired)
   )
 
 (use-package ox-jira
   :after org
-  :defer 30
+  :commands ox-jira-export-as-jira
   )
 
 (use-package ox-gfm
   :after org
-  :defer 30
+  :commands org-gfm-export-to-markdown
   )
 
-;; org-slack-export-to-clipboard-as-slack
+;;
 (use-package ox-slack
   :after org
-  :defer t
+  :commands org-slack-export-to-clipboard-as-slack
   )
 
 (use-package ob-async
