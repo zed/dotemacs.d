@@ -1084,7 +1084,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq org-agenda-log-mode-items '(closed clock state)) ; show DONE
 
   ;; Effort and global properties
-  (setq org-global-properties '(("Effort_ALL". "0 0:10 0:20 0:30 1:00 2:00 3:00 4:00 6:00 8:00")))
+  (setq org-global-properties '(("Effort_ALL". "0 0:10 0:20 0:30 1:00 2:00 4:00 8:00")))
 
   ;; Set global Column View format
   (setq org-columns-default-format '"%38ITEM(Details) %TAGS(Context) %7TODO(To Do) %5Effort(Time){:} %6CLOCKSUM(Clock)")
