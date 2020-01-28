@@ -362,8 +362,12 @@
     (add-hook 'sh-mode-hook 'bash-doc)))
 
 ;; ** ripgrep
+;;; type `e' in rg-mode to edit search results, `C-x C-s' to save them
+(use-package wgrep
+  ;; save buffers automatically before finishing wgrep mode
+  :custom
+  (wgrep-auto-save-buffer t))
 (use-package rg
-
   :bind ("C-x C-r" . rg))
 
 ;; ** ace-link
