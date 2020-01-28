@@ -379,7 +379,7 @@
 
 ;; ** magit
 (use-package magit
-
+  :bind ("C-c M-g" . magit-file-dispatch)
   :bind ("C-c g" . magit-status)
   :custom
   (magit-log-section-commit-count 20)
