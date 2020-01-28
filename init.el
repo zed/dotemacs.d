@@ -377,6 +377,8 @@
 (use-package magit
 
   :bind ("C-c g" . magit-status)
+  :custom
+  (magit-log-section-commit-count 20)
   :config
   (setq magit-completing-read-function 'ivy-completing-read))
 
