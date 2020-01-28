@@ -1104,7 +1104,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 	   "* %?\nEntered on %U\n  %i\n  %a")))
 
   ;; start agenda view relative to current day, show given number of days
-  (setq org-agenda-span 3
+  (setq org-agenda-span 2
 	org-agenda-start-on-weekday nil
 	org-agenda-start-day "-1d")
 
