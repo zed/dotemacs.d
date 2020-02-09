@@ -330,6 +330,19 @@
   (counsel-mode 1)
   )
 
+
+;; *** projectile C-c p p
+(use-package projectile
+  :custom
+  (projectile-completion-system 'ivy))
+
+(use-package counsel-projectile
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :config
+  (require '.secrets "~/.secrets.el.gpg")
+  (counsel-projectile-mode +1))
+
 ;; counsel-dash
 ;; *** counsel-dash
 (use-package counsel-dash
