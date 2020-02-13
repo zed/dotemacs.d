@@ -779,8 +779,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; quickly. Use C-x r j followed by the letter of the register (i for
 ;; init.el) to jump to it.
 ;; You should add registers here for the files you edit most often.
-(dolist (r `((?i (file . ,(expand-file-name "~/.emacs")))
-             (?r (file . ,(expand-file-name (getenv "ORG_AGENDA_FILE"))))))
+(dolist (r `((?i (file . ,(expand-file-name "~/.emacs")))))
   (set-register (car r) (cadr r)))
 
 ;; Commands which ask for a destination directory, such as those which
@@ -1114,8 +1113,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ;; fold with Tab/S-Tab on headers in org-mode
   (add-hook 'emacs-lisp-mode-hook #'turn-on-orgstruct++)
 
-					; Set to the location of your Org files on your local system
-  (setq org-directory (getenv "ORG_DIRECTORY"))
 					; Set to the name of the file where new notes will be stored
   (setq org-mobile-inbox-for-pull (getenv "ORG_MOBILE_INBOX_FOR_PULL"))
 					; Set to <your Dropbox root directory>/MobileOrg.
@@ -1138,9 +1135,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ;; to leave enough room for the headings to be visible.
   (setq org-habit-graph-column 90)
   (setq org-confirm-babel-evaluate nil)
-  (setq org-agenda-custom-commands
-        '(("n" agenda "+notes")
-          ("w" agenda "-notes")))
   :bind (("C-c l" . org-store-link)
 	 ("C-c o" . org-open-at-point-global)
 	 ("C-c a" . org-agenda)
