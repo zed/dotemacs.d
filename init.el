@@ -559,8 +559,7 @@
     ("p" previous-logical-line "prev" :bind nil))
 
 ;; *** https://github.com/abo-abo/hydra/wiki/Compilation
-  (defhydra hydra-next-error
-    (global-map "C-x")
+  (defhydra hydra-next-error (global-map "C-x")
     "
 Compilation errors:
 _j_: next error        _h_: first error    _q_uit
