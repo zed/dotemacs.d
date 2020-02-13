@@ -551,6 +551,13 @@
     ("+" text-scale-increase "in")
     ("-" text-scale-decrease "out"))
 
+;; *** C-c n/p - next/prev logical line
+  (defhydra hydra-logical-line (global-map "C-c")
+      "logical line"
+    ("n" next-logical-line "next")
+    ; note: "C-c p" is reserved for projectile
+    ("p" previous-logical-line "prev" :bind nil))
+
 ;; *** https://github.com/abo-abo/hydra/wiki/Compilation
   (defhydra hydra-next-error
     (global-map "C-x")
