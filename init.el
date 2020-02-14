@@ -1078,7 +1078,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (org-log-into-drawer t "hide State DONE. Useful for repeating tasks")
   (org-export-backends '(md odt latex icalendar html ascii) "List of export back-ends that should be always available.")
   (org-modules '(org-habit))
-  (org-refile-targets  '((nil :maxlevel . 2) (org-agenda-files :maxlevel . 2)))
 
   :init
   ;; export to the kill ring automatically for interactive exports
