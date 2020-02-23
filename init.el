@@ -251,10 +251,13 @@
 (package-initialize)
 (init:report-elapsed-time "package-initialize")
 
-(defun init:with-secrets (orig-fun &rest args)
-  "Load secrets before calling `orig-fun'."
-  (require '.secrets "~/.secrets.el.gpg")
-  (apply orig-fun args))
+;; ** load secrets
+;;;; to fix gpg while using ipad, force reading password from stdin
+;; (unless (display-graphic-p)
+;;   ;; running without GUI
+;;   ;; accept gpg passphrase without GUI/gpg-agent
+;;   (setq epa-pinentry-mode 'loopback))
+(require '.secrets "~/.secrets.el.gpg")
 
 ;; ** delight: remove modes from ModeLine
 ;; C-h v minor-mode-alist
@@ -316,7 +319,8 @@
   :bind (("C-s" . counsel-grep-or-swiper)
          ("C-c s" . counsel-search)
 	 ("M-x" . counsel-M-x) ; show keybindings
-	 ("<f5>" . counsel-compile)
+	 ("<f5>" . compile)
+	 ("<S-f5>" . counsel-compile)
          ("C-x C-f" . counsel-find-file)
          ("C-h f" . counsel-describe-function)
          ("C-h v" . counsel-describe-variable)
@@ -327,8 +331,7 @@
 	"rg -i -M 120 --no-heading --line-number --color never -e %s %s")
   :config
   ;; Enabling counsel-mode remaps built-in Emacs functions that have counsel replacements
-  (counsel-mode 1)
-  )
+  (counsel-mode 1))
 
 
 ;; *** projectile C-c p p
@@ -340,7 +343,6 @@
   :bind-keymap
   ("C-c p" . projectile-command-map)
   :config
-  (require '.secrets "~/.secrets.el.gpg")
   (counsel-projectile-mode +1))
 
 ;; counsel-dash
@@ -838,8 +840,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
   :bind (:map dired-mode-map ("i" . dired-subtree-insert)))
 
-(require '.secrets "~/.secrets.el.gpg")
-
 ;; ** Save point position between sessions
 (require 'saveplace)
 (setq-default save-place t) ; set global default value for buffer local variable
@@ -847,8 +847,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; ** gnus
 (with-eval-after-load "gnus"
-  (advice-add 'gnus :around #'init:with-secrets)
-
   (setq mm-discouraged-alternatives '("text/html" "text/richtext"))
   (setq gnus-message-archive-group
 	'((if (message-news-p)
@@ -918,7 +916,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (defun irc-start ()
   (interactive)
   (.secrets-irc-start))
-(advice-add 'irc-start :around #'init:with-secrets)
 
 (with-eval-after-load "erc"
 					; IRC client (*nix only)
@@ -1084,7 +1081,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq org-export-copy-to-kill-ring 'if-interactive)
   ;; orgmobile
   (setq org-mobile-use-encryption t)
-  (require '.secrets "~/.secrets.el.gpg")
 
   (setq org-todo-keywords
 	'((sequence "TODO(t)" "WAIT(w)" "|" "DONE(d!)" "DEFERRED(e)" "CANCELED(c)")))
