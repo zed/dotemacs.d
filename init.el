@@ -459,9 +459,12 @@
 
 ;; ** elpy (python)
 (use-package elpy
-  :commands elpy-enable flycheck-mode
-
-  :init (with-eval-after-load 'python (elpy-enable))
+  :commands elpy-enable
+  :custom
+  (python-check-command "flake8")
+  :init
+  ;; https://github.com/jorgenschaefer/elpy/blob/master/docs/introduction.rst
+  (advice-add 'python-mode :before 'elpy-enable)
   :config
   ;; flycheck
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
