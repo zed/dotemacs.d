@@ -42,6 +42,8 @@
 					; M-x use-package-report to see the results
   (setq use-package-compute-statistics t))
 
+(setq ad-redefinition-action 'accept) ;; suppress "got redefined" warning
+
 ;; ** Hydra
 (el-get-bundle hydra-move-splitter
   :url "https://raw.githubusercontent.com/erreina/dotfiles/a8a19b3a466720ba345e68b71449191644987276/emacs/elisp/hydra-move-splitter.el")
@@ -1434,8 +1436,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 (my-keys-minor-mode 1)
 (delight 'my-keys-minor-mode nil t)
-
-(setq ad-redefinition-action 'accept) ;; suppress "got redefined" warning
 
 ;; ** https://unix.stackexchange.com/questions/108259/how-do-i-stop-emacs-from-asking-me-if-i-want-to-load-a-large-file
 (setq large-file-warning-threshold 1000000000)
