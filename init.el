@@ -1381,6 +1381,19 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package company
   :ensure nil
   :delight)
+
+;; ** slack config
+(use-package alert)  ;; fix Error (use-package): Failed to install slack: https://melpa.org/packages/alert-20191126.2032.el: Not found
+(use-package slack
+  :after alert
+  :commands slack-start
+  :custom
+  (slack-buffer-emojify t) ;; if you want to enable emoji, default nil
+  (slack-prefer-current-team t)
+  (slack-display-team-name nil)
+  :config
+  (.secrets-slack-register-team))
+
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 
