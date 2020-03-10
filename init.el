@@ -425,8 +425,11 @@
   :defer t
   )
 
-;; ** python debugger
-; realgud has to be installed manually to avoid https://github.com/realgud/realgud/issues/77
+;; ** debugger
+(use-package realgud
+  :ensure nil ; ; realgud has to be installed manually to avoid https://github.com/realgud/realgud/issues/77
+  :commands (realgud:pdb realgud:trepan3k)  ; run it from a Python file
+  )
 
 ;; ** real-time syntax check
 (use-package flycheck
