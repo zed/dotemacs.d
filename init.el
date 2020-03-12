@@ -981,12 +981,16 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 (column-number-mode)   ; enable columns numbers globally, it has a performance hit
 
+;;
+(defun init-trailing-whitespace-hook ()
+  (setq show-trailing-whitespace t)
+  (add-hook 'before-save-hook #'delete-trailing-whitespace nil t))
 
 ;; don't edit non programming files such as images (png, jpg, etc)
 ;; https://stackoverflow.com/questions/6138029/how-to-add-a-hook-to-only-run-in-a-particular-mode
-(add-hook 'prog-mode-hook
-	  #'(lambda ()
-	      (add-hook 'before-save-hook #'delete-trailing-whitespace nil t)))
+(add-hook 'prog-mode-hook #'init-trailing-whitespace-hook)
+;;; for some reason groovy mode is not derived from the prog mode
+(add-hook 'groovy-mode-hook #'init-trailing-whitespace-hook)
 
                     ; copy/kill line on M-w, C-w
 (defadvice kill-ring-save (before slickcopy activate compile)
