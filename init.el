@@ -231,7 +231,7 @@
 (el-get-bundle yaml-mode)
 ;; ** try
 (el-get-bundle try
-  :url "https://raw.githubusercontent.com/larstvei/Try/master/try.el")
+  :url "https://raw.githubusercontent.com/larstvei/Try/8831ded1784df43a2bd56c25ad3d0650cdb9df1d/try.el")
 
 ;; ** idle-highlight
 (el-get-bundle idle-highlight-mode)
