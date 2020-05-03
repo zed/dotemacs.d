@@ -429,6 +429,10 @@
   :defer t
   )
 
+;; ***
+(use-package diffview
+  :commands (diffview-region diffview-current))
+
 ;; ** debugger
 (use-package realgud
   :ensure nil ; ; realgud has to be installed manually to avoid https://github.com/realgud/realgud/issues/77
