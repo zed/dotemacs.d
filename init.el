@@ -1216,6 +1216,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
   (setq org-plantuml-jar-path
       (expand-file-name "~/src/plantuml/plantuml.jar"))
+  (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
 
   ;; copy link url from org to outside of org mode
   ;; https://emacs.stackexchange.com/questions/3981/how-to-copy-links-out-of-org-mode
