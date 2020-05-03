@@ -1477,6 +1477,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (indent-tabs-mode nil)
   (menu-bar-mode nil) ; hide Menu Bar
   (tool-bar-mode nil) ; hide Tool Bar
+  (set-mark-command-repeat-pop t)
   :hook
   (after-save . executable-make-buffer-file-executable-if-script-p)
   :config
