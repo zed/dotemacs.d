@@ -327,13 +327,17 @@
          ("C-h f" . counsel-describe-function)
          ("C-h v" . counsel-describe-variable)
          ("C-h a" . counsel-apropos))
+  :custom
+  (enable-recursive-minibuffers t)
   :init
 					; https://oremacs.com/2017/08/04/ripgrep/
   (setq counsel-grep-base-command
 	"rg -i -M 120 --no-heading --line-number --color never -e %s %s")
   :config
   ;; Enabling counsel-mode remaps built-in Emacs functions that have counsel replacements
-  (counsel-mode 1))
+  (counsel-mode 1)
+  (minibuffer-depth-indicate-mode) ;; for enable-recursive-minibuffers
+  )
 
 
 ;; *** projectile C-c p p
