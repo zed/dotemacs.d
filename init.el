@@ -328,6 +328,7 @@
          ("C-h a" . counsel-apropos))
   :custom
   (enable-recursive-minibuffers t)
+  (counsel-search-engine 'google)
   :init
 					; https://oremacs.com/2017/08/04/ripgrep/
   (setq counsel-grep-base-command
