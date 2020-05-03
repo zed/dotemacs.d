@@ -1077,7 +1077,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :ensure nil
   :defer t
   :delight
-  :hook (prog-mode . flyspell-prog-mode))
+  :hook
+  ((org-mode yaml-mode markdown-mode git-commit-mode) . flyspell-mode)
+  (prog-mode . flyspell-prog-mode)
+  )
+
 
 ;; ** configure org
 (use-package org
