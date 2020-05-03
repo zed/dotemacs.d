@@ -319,7 +319,6 @@
 (use-package counsel
   :delight
   :bind (("C-s" . counsel-grep-or-swiper)
-         ("C-c s" . counsel-search)
 	 ("M-x" . counsel-M-x) ; show keybindings
 	 ("<f5>" . compile)
 	 ("<S-f5>" . counsel-compile)
@@ -1360,6 +1359,14 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (defun google-this-url ()
     "URL for google searches."
     (concat google-this-base-url google-this-location-suffix "/search?hl=en&ion=1&q=%s")))
+
+;; ** display web search results in Ivy-enabled minibuffer
+(use-package counsel-web
+  :commands (counsel-web-suggest counsel-web-search counsel-web-thing-at-point)
+  :bind
+  ("C-c s" . counsel-web-suggest)
+  :custom
+  (counsel-web-engine 'google))
 
 ;; ** C-a moves the point to the first non-whitespace character on the line
 (use-package crux
