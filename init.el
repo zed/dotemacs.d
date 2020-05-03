@@ -1350,9 +1350,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; ** google-this
 (use-package google-this
   :defer t
-  ;;  note: google-this-mode enables "C-c /" map
+  :delight
   :custom
   (google-this-location-suffix "com" "(com, co.uk, fr, etc)")
+  ;;  note: google-this-mode enables "C-c /" map
   (google-this-mode t)
   :config
   ;; override google-this-url to force English
