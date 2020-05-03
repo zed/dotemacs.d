@@ -894,7 +894,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (define-key term-raw-map  (kbd "C-y") #'term-paste)
 
 
-(global-set-key (kbd "C-x C-c") #'save-buffers-kill-emacs)
+(global-set-key (kbd "C-x C-c") #'kill-emacs)
 
                     ; C-x C-j opens dired with the cursor right on the file you're editing
 (require 'dired-x))
@@ -1147,7 +1147,13 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (org-log-into-drawer t "hide State DONE. Useful for repeating tasks")
   (org-export-backends '(md odt latex icalendar html ascii) "List of export back-ends that should be always available.")
   (org-modules '(org-habit))
-
+  :hook
+  (kill-emacs . init:org-clock-out-and-save)
+  :preface
+  (defun init:org-clock-out-and-save ()
+    "Save buffers and stop clocking."
+    (ignore-errors (org-clock-out) t)
+    (save-some-buffers t))
   :init
   ;; export to the kill ring automatically for interactive exports
   (setq org-export-copy-to-kill-ring 'if-interactive)
