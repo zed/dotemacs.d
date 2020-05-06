@@ -1246,6 +1246,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
       (add-text-properties 0 (length text) '(yank-handler (iqbal-yank-org-link)) text)
       (kill-new text))))))
 
+(use-package hl-line
+  :after org
+  :hook
+    (org-mode . hl-line-mode))
+
 (use-package htmlize
   :commands (htmlize-buffer htmlize-file htmlize-many-files htmlize-many-files-dired)
   )
