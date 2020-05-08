@@ -426,8 +426,7 @@
 
 ;; ***
 (use-package git-timemachine
-  :defer t
-  )
+  :commands git-timemachine-toggle)
 
 ;; ***
 (use-package diffview
