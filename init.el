@@ -268,7 +268,7 @@
 
 ;; ** which-key: show commands for the current prefix after a delay
 (use-package which-key
-
+  :delight
   :config
   (which-key-mode))
 
