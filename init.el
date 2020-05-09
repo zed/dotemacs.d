@@ -338,7 +338,18 @@
   (counsel-mode 1)
   (minibuffer-depth-indicate-mode) ;; for enable-recursive-minibuffers
   )
+(with-eval-after-load-feature (counsel vterm)
+  (defun vterm-counsel-yank-pop-action (orig-fun &rest args)
+  (if (equal major-mode 'vterm-mode)
+      (let ((inhibit-read-only t)
+            (yank-undo-function (lambda (_start _end) (vterm-undo))))
+        (cl-letf (((symbol-function 'insert-for-yank)
+               (lambda (str) (vterm-send-string str t))))
+            (apply orig-fun args)))
+    (apply orig-fun args)))
 
+  (advice-add 'counsel-yank-pop-action :around #'vterm-counsel-yank-pop-action)
+  )
 
 ;; *** projectile C-c p p
 (use-package projectile
@@ -1481,6 +1492,13 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (slack-display-team-name nil)
   :config
   (.secrets-slack-register-team))
+
+;; ** emacs-libvterm
+;; - C-c C-t :: to toggle vterm-copy-mode, press Enter to leave
+;; - C-c C-n and C-c C-p :: next/previous prompt
+(use-package vterm
+  :commands (vterm vterm-other-window)
+  :custom (vterm-buffer-name-string "vterm %s"))
 
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
