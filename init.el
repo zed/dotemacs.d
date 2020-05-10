@@ -1509,6 +1509,14 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ;; M-x clm/open-command-log-buffer
   (global-command-log-mode))
 
+;; ** enable Emacs keybinding in the non-default system layout too
+;; to see the remappings: M-x reverse-im-which-key-show
+(use-package reverse-im
+  :custom
+  (reverse-im-input-methods '("russian-computer"))
+  :config
+  (reverse-im-mode t))
+
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 
@@ -1527,7 +1535,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
       ad-do-it)))
 
 
-;; ** nand2tetris
 (setq nand2tetris-core-base-dir (getenv "NAND2TETRIS_CORE_BASE_DIR"))
 (setq safe-local-variable-values
       (quote
