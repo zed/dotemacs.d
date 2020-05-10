@@ -1517,6 +1517,12 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :config
   (reverse-im-mode t))
 
+;; ** Deleting a whitespace character will delete all whitespace until the next non-whitespace character
+(use-package hungry-delete
+  :delight
+  :config
+  (global-hungry-delete-mode))
+
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 
