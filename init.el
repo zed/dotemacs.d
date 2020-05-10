@@ -1523,6 +1523,19 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :config
   (global-hungry-delete-mode))
 
+;; ** grep for definitions
+(use-package dumb-jump
+  :commands dumb-jump-go
+  :init
+  (defhydra dumb-jump-hydra (global-map "M-g" :color blue :columns 3)
+    "Dumb Jump"
+    ("j" dumb-jump-go "Go")
+    ("o" dumb-jump-go-other-window "Other window")
+    ("e" dumb-jump-go-prefer-external "Go external")
+    ("x" dumb-jump-go-prefer-external-other-window "Go external other window")
+    ("i" dumb-jump-go-prompt "Prompt")
+    ("l" dumb-jump-quick-look "Quick look")
+    ("b" dumb-jump-back "Back")))
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 
