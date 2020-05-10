@@ -1500,6 +1500,13 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :commands (vterm vterm-other-window)
   :custom (vterm-buffer-name-string "vterm %s"))
 
+;; ** show typed keys
+(use-package command-log-mode
+  :commands command-log-mode
+  :config
+  ;; M-x clm/open-command-log-buffer
+  (global-command-log-mode))
+
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 
