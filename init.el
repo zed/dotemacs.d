@@ -417,6 +417,8 @@
   (magit-log-section-commit-count 20)
   :config
   (setq magit-completing-read-function 'ivy-completing-read))
+(with-eval-after-load-feature (magit org)
+  (define-key magit-process-mode-map (kbd "M-o") 'ace-link-org))
 
 (use-package forge
 
