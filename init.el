@@ -272,6 +272,13 @@
   :config
   (which-key-mode))
 
+;; ** show typed keys
+(use-package command-log-mode
+  :commands command-log-mode
+  :config
+  ;; M-x clm/open-command-log-buffer
+  (global-command-log-mode))
+
 ;; ** theme-changer: use dark theme after sunset
 (use-package theme-changer
 
@@ -911,10 +918,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
                     ; C-x C-j opens dired with the cursor right on the file you're editing
 (require 'dired-x))
 
-;; *** insert subdirectory directly below its line
+;; *** Insert directory subtree at point or remove it if it was not present
 (use-package dired-subtree
-
-  :bind (:map dired-mode-map ("i" . dired-subtree-insert)))
+  :bind (:map dired-mode-map ("TAB" . dired-subtree-toggle)))
 
 ;; ** Save point position between sessions
 (require 'saveplace)
@@ -1502,13 +1508,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :commands (vterm vterm-other-window)
   :custom (vterm-buffer-name-string "vterm %s"))
 
-;; ** show typed keys
-(use-package command-log-mode
-  :commands command-log-mode
-  :config
-  ;; M-x clm/open-command-log-buffer
-  (global-command-log-mode))
-
 ;; ** enable Emacs keybinding in the non-default system layout too
 ;; to see the remappings: M-x reverse-im-which-key-show
 (use-package reverse-im
@@ -1536,6 +1535,12 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
     ("i" dumb-jump-go-prompt "Prompt")
     ("l" dumb-jump-quick-look "Quick look")
     ("b" dumb-jump-back "Back")))
+
+;; ** delete upto char
+(use-package avy-zap
+  :bind
+  ("M-z" . avy-zap-to-char-dwim)
+  ("M-z" . avy-zap-up-to-char-dwim))
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 
