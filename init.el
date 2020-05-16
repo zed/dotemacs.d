@@ -541,6 +541,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (use-package elpy
   :commands elpy-enable
   :custom
+  (elpy-rpc-python-command "python3")
   (python-check-command "flake8")
   :init
   ;; https://github.com/jorgenschaefer/elpy/blob/master/docs/introduction.rst
