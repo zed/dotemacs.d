@@ -1319,6 +1319,12 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 	  (:kernel .
 		   "python3"))))
 
+;; *** vi-like speed keys for org mode
+(use-package worf
+  :bind (:map worf-mode-map ("M-o" . ace-link-org))
+  :hook (org-mode . worf-mode))
+
+;; *** pretty asterisk symbols for org mode
 (use-package org-bullets
   :after org
 
