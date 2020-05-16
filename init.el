@@ -543,6 +543,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :custom
   (elpy-rpc-python-command "python3")
   (python-check-command "flake8")
+  (flycheck-python-flake8-executable "flake8")
   :init
   ;; https://github.com/jorgenschaefer/elpy/blob/master/docs/introduction.rst
   (advice-add 'python-mode :before 'elpy-enable)
