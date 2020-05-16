@@ -1551,6 +1551,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (menu-bar-mode nil) ; hide Menu Bar
   (tool-bar-mode nil) ; hide Tool Bar
   (set-mark-command-repeat-pop t)
+  ; use Org mode for the *scratch* buffer
+  (initial-major-mode 'org-mode)
+  ; make the *scratch* buffer empty
+  (initial-scratch-message "")
   :hook
   (after-save . executable-make-buffer-file-executable-if-script-p)
   :config
