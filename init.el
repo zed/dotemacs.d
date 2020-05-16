@@ -1355,7 +1355,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :defer t
   )
 
-;; ** direnv
+;; ** direnv: .envrc envvars visible for commands started in emacs
 (use-package direnv
 
   :config
