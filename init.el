@@ -793,7 +793,7 @@ Movement^^        ^Split^         ^Switch^      ^Resize^
 _j_ ←          _v_ertical       _b_uffer         _J_ X←
 _k_ ↓          _h_ horizontal   _f_ind files     _K_ X↓
 _i_ ↑          _u_ undo         _a_ce 1          _I_ X↑
-_k_ →         _r_ reset        _s_ave           _L_ X→
+_l_ →         _r_ reset        _s_ave           _L_ X→
 _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ^ ^            _o_nly this      _d_elete
 "
