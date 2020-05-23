@@ -1553,6 +1553,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :bind
   ("M-z" . avy-zap-to-char-dwim)
   ("M-z" . avy-zap-up-to-char-dwim))
+
+;; ** with with jira issues in org mode
+(use-package org-jira
+  :commands org-jira-get-issues)
+
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 
