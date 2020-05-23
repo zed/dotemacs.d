@@ -1516,7 +1516,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; - C-c C-n and C-c C-p :: next/previous prompt
 (use-package vterm
   :commands (vterm vterm-other-window)
-  :custom (vterm-buffer-name-string "vterm %s"))
+  :custom
+  (vterm-buffer-name-string "vterm %s")
+  (vterm-kill-buffer-on-exit t))
 
 ;; ** enable Emacs keybinding in the non-default system layout too
 ;; to see the remappings: M-x reverse-im-which-key-show
