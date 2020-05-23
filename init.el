@@ -315,7 +315,7 @@
 ;; **** ~C-o~ (=hydra-ivy/body=) invokes Hydra menus with key shortcuts.
 ;;      When in Hydra, ~C-o~ or ~i~ resumes editing.
 (use-package ivy-hydra
-  )
+  :after (ivy hydra))
 (use-package swiper
   )
 ;; *** amx -- M-x smex fork
