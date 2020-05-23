@@ -776,7 +776,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 ;; return to a previous window configuration easily with C-c <left>
 (require 'winner)
 (winner-mode)
-                   ; Navigate windows with S-<arrows>
+                   ; Navigate windows with s-<arrows>
 (windmove-default-keybindings 'super)
 (customize-set-variable 'windmove-wrap-around t)
 
