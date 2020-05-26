@@ -1573,8 +1573,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ; make the *scratch* buffer empty
   (initial-scratch-message "")
   :hook
-  (after-save . executable-make-buffer-file-executable-if-script-p)
+  (after-save . init:chmod+x-files-with-shebang)
   :config
+  (defun init:chmod+x-files-with-shebang ()
+    (unless (string-match "__init__.py" (or (buffer-file-name) ""))
+      (executable-make-buffer-file-executable-if-script-p)))
   (defadvice align-regexp (around align-regexp-with-spaces activate)
     (let ((indent-tabs-mode nil))
       ad-do-it)))
