@@ -558,7 +558,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :ensure nil
   :custom
   ; PEP-8 Maximum Line Length
-  (blacken-line-length 78))
+  (blacken-line-length 78)
+  (blacken-allow-py36 nil))
 
 (use-package idle-highlight-mode
   :ensure nil
