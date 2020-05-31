@@ -931,6 +931,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (setq-default save-place t) ; set global default value for buffer local variable
 (setq save-place-file (expand-file-name ".places" user-emacs-directory))
 
+;; ** save minibuffer history
+(use-package savehist
+  :config (savehist-mode))
+
+
 ;; ** gnus
 (with-eval-after-load "gnus"
   (setq mm-discouraged-alternatives '("text/html" "text/richtext"))
