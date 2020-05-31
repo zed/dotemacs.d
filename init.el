@@ -235,6 +235,16 @@
 
 ;; ** idle-highlight
 (el-get-bundle idle-highlight-mode)
+
+;; ** Show the history of points you visited before
+(el-get-bundle popwin)
+(el-get-bundle point-history
+  :url "https://raw.githubusercontent.com/blue0513/point-history/65eb652549abc704e07311a7820956e467444ec5/point-history.el"
+  (point-history-mode t))
+; M-x ivy-point-history
+(el-get-bundle ivy-point-history
+  :url "https://raw.githubusercontent.com/SuzumiyaAoba/ivy-point-history/88c0a585105271322ac0bc65418c7eb908139bcd/ivy-point-history.el")
+
 ;; ** ^^^last el-get-bundle installed package
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; no new el-get packages from here on out
