@@ -1,4 +1,4 @@
-; -*- coding: utf-8 lexical-binding: t orgstruct-heading-prefix-regexp: ";; *"; -*-
+; -*- coding: utf-8 lexical-binding: t; -*-
 ;; * prelude
 (defconst emacs-start-time (current-time))
 
@@ -245,6 +245,8 @@
 (el-get-bundle ivy-point-history
   :url "https://raw.githubusercontent.com/SuzumiyaAoba/ivy-point-history/88c0a585105271322ac0bc65418c7eb908139bcd/ivy-point-history.el")
 
+;; ** install newer org
+(el-get-bundle org)
 ;; ** ^^^last el-get-bundle installed package
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; no new el-get packages from here on out
@@ -1176,7 +1178,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; ** configure org
 (use-package org
   :ensure nil
-  :commands turn-on-orgstruct++
   :custom
   (org-src-preserve-indenhtation nil "leading whitespace blocks are stripped")
   (org-edit-src-content-indentation 0 " and the code block is not indented (0!)")
@@ -1219,11 +1220,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq org-columns-default-format '"%38ITEM(Details) %TAGS(Context) %7TODO(To Do) %5Effort(Time){:} %6CLOCKSUM(Clock)")
 
 
-
-  ;; From https://github.com/higham/dot-emacs/blob/master/.emacs
-  ;; fold with Tab/S-Tab on headers in org-mode
-  (add-hook 'emacs-lisp-mode-hook #'turn-on-orgstruct++)
-
 					; Set to the name of the file where new notes will be stored
   (setq org-mobile-inbox-for-pull (getenv "ORG_MOBILE_INBOX_FOR_PULL"))
 					; Set to <your Dropbox root directory>/MobileOrg.
@@ -1262,6 +1258,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq org-plantuml-jar-path
       (expand-file-name "~/src/plantuml/plantuml.jar"))
   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
+
+  ;; FIXME: workaround
+  ;; https://github.com/syl20bnr/spacemacs/issues/11798
+  (when (version<= "9.2" (org-version))
+    (require 'org-tempo))
 
   ;; copy link url from org to outside of org mode
   ;; https://emacs.stackexchange.com/questions/3981/how-to-copy-links-out-of-org-mode
