@@ -1537,6 +1537,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package vterm
   :commands (vterm vterm-other-window)
   :custom
+  (vterm-max-scrollback 100000) ;; SB_MAX 100000
   (vterm-buffer-name-string "vterm %s")
   (vterm-kill-buffer-on-exit t))
 
