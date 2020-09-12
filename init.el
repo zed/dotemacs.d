@@ -1329,6 +1329,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 							   (shell . t) ; https://emacs.stackexchange.com/questions/37692/how-to-fix-symbols-function-definition-is-void-org-babel-get-header
 							   (plantuml . t) ; http://eschulte.github.io/babel-dev/DONE-integrate-plantuml-support.html
 							   (jupyter . t))) ; must be last https://github.com/dzop/emacs-jupyter#org-mode-source-blocks
+  (setq org-babel-python-command "/usr/bin/python3")
   ;; default args for jupyter-python
   (setq org-babel-default-header-args:jupyter-python
 	'((:results .
