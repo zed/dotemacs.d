@@ -1247,7 +1247,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 	 ("C-c a" . org-agenda)
 	 ("C-c c" . org-capture))
   :config
-  (define-key org-mode-map (kbd "M-o") 'ace-link-org)
+  (define-key global-map (kbd "M-o") 'ace-link-org)
   (define-key org-agenda-mode-map (kbd "o") 'ace-link-org)
 
   ;; resume the clock under the assumption that you have worked on this task while outside Emacs
