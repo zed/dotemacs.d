@@ -1323,23 +1323,23 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :defer 10
   :config
   ;; org src blocks languages
-  (setq org-babel-python-command "python3")
-  (org-babel-do-load-languages 'org-babel-load-languages '((python . t)
-							   (emacs-lisp . t)
-							   (shell . t) ; https://emacs.stackexchange.com/questions/37692/how-to-fix-symbols-function-definition-is-void-org-babel-get-header
-							   (plantuml . t) ; http://eschulte.github.io/babel-dev/DONE-integrate-plantuml-support.html
-							   (jupyter . t))) ; must be last https://github.com/dzop/emacs-jupyter#org-mode-source-blocks
   (setq org-babel-python-command "/usr/bin/python3")
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)
+     (emacs-lisp . t)
+     (shell . t)
+                                        ; https://emacs.stackexchange.com/questions/37692/how-to-fix-symbols-function-definition-is-void-org-babel-get-header
+     (plantuml . t)
+                                        ; http://eschulte.github.io/babel-dev/DONE-integrate-plantuml-support.html
+     (jupyter . t)))
+                                        ; must be last https://github.com/dzop/emacs-jupyter#org-mode-source-blocks
   ;; default args for jupyter-python
   (setq org-babel-default-header-args:jupyter-python
-	'((:results .
-		    "replace")
-	  (:async .
-		  "yes")
-	  (:session .
-		    "py")
-	  (:kernel .
-		   "python3"))))
+        '((:results . "replace")
+	  (:async . "yes")
+	  (:session . "py")
+	  (:kernel . "python3"))))
 
 ;; *** vi-like speed keys for org mode
 (use-package worf
