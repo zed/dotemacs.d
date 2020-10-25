@@ -1536,6 +1536,8 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; - C-c C-n and C-c C-p :: next/previous prompt
 (use-package vterm
   :commands (vterm vterm-other-window)
+  :config
+  (unbind-key "<f11>" vterm-mode-map)
   :custom
   (vterm-max-scrollback 100000) ;; SB_MAX 100000
   (vterm-buffer-name-string "vterm %s")
