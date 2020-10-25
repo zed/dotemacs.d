@@ -1343,7 +1343,23 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; *** vi-like speed keys for org mode
 (use-package worf
-  :bind (:map worf-mode-map ("M-o" . ace-link-org))
+  :bind (:map worf-mode-map
+              ("M-o" . ace-link-org)
+              ("[" . init:worf-back)
+              ("]" . init:worf-forward))
+  :init
+  (defun init:worf-back ()
+    "When point is special, call the worf command otherwise call self-insert"
+    (interactive)
+    (if (worf--special-p)
+        (worf-back-to-special)
+      (call-interactively 'org-self-insert-command)))
+  (defun init:worf-forward ()
+    "When point is special, call the worf command otherwise call self-insert"
+    (interactive)
+    (if (worf--special-p)
+        (worf-forward)
+      (call-interactively 'org-self-insert-command)))
   :hook (org-mode . worf-mode))
 
 ;; *** pretty asterisk symbols for org mode
