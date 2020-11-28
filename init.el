@@ -1338,6 +1338,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package org-jira
   :commands org-jira-get-issues)
 
+(use-package tla-mode
+  :ensure nil
+  :mode "\.tla$")
+
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 
