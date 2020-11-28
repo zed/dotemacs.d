@@ -206,6 +206,7 @@
 ;; *** handle git conflicts
 ;;; from https://ladicle.com/post/config/#smerge
 (use-package smerge-mode
+  :ensure nil
   :delight
   :preface
   (with-eval-after-load 'hydra
@@ -685,6 +686,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; ** save minibuffer history
 (use-package savehist
+  :ensure nil
   :config (savehist-mode))
 
 
@@ -1027,6 +1029,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
       (kill-new text))))))
 
 (use-package hl-line
+  :ensure nil
   :after org
   :hook
     (org-mode . hl-line-mode))
@@ -1341,6 +1344,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; ** core emacs settings
 (use-package emacs
+  :ensure nil
   :custom
   (indent-tabs-mode nil)
   (menu-bar-mode nil) ; hide Menu Bar
