@@ -335,11 +335,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :bind ("C-m" . newline-and-indent))
 
 ;; ** typescript
-(use-package typescript
-
-  :defer t)
 (use-package tide
-
   :after (typescript-mode company flycheck)
   :hook ((typescript-mode . tide-setup)
          (typescript-mode . tide-hl-identifier-mode)))
@@ -1274,7 +1270,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; ** config for company
 (use-package company
   :ensure nil
-  :delight)
+  :delight
+  :init
+  (global-company-mode)
+  (with-eval-after-load-feature 'company
+    (add-to-list 'company-backends 'company-restclient)))
 
 ;; ** slack config
 (use-package alert)  ;; fix Error (use-package): Failed to install slack: https://melpa.org/packages/alert-20191126.2032.el: Not found

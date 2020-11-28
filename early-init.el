@@ -194,12 +194,6 @@
 
 (el-get-bundle typing)
 
-;; ** company
-(el-get-bundle company
-  (global-company-mode))
-(with-eval-after-load-feature 'company
-  (add-to-list 'company-backends 'company-restclient))
-
 ;; ** Increase selection by semantic units
 (el-get-bundle expand-region
   (global-set-key (kbd "C-=") 'er/expand-region))
@@ -219,6 +213,7 @@
 (el-get-bundle web-mode)
 ;; ** yaml-mode
 (el-get-bundle yaml-mode)
+
 ;; ** try
 (el-get-bundle try
   :url "https://raw.githubusercontent.com/larstvei/Try/8831ded1784df43a2bd56c25ad3d0650cdb9df1d/try.el")
@@ -234,9 +229,6 @@
 ; M-x ivy-point-history
 (el-get-bundle ivy-point-history
   :url "https://raw.githubusercontent.com/SuzumiyaAoba/ivy-point-history/88c0a585105271322ac0bc65418c7eb908139bcd/ivy-point-history.el")
-
-;; ** install newer org
-(el-get-bundle org)
 
 ;; ** tla-mode
 (el-get-bundle tla-mode
