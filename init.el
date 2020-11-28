@@ -32,7 +32,6 @@
 
 ;; ** theme-changer: use dark theme after sunset
 (use-package theme-changer
-
   :custom
   (calendar-latitude 55.8) ; for solar package
   (calendar-longitude 37.6)
@@ -90,7 +89,7 @@
   :init
 					; https://oremacs.com/2017/08/04/ripgrep/
   (setq counsel-grep-base-command
-	"rg -i -M 120 --no-heading --line-number --color never -e %s %s")
+	"rg -i -M 120 --no-heading --line-number --color never --text -e %s %s")
   :config
   ;; Enabling counsel-mode remaps built-in Emacs functions that have counsel replacements
   (counsel-mode 1)
