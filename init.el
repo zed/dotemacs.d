@@ -123,12 +123,12 @@
 ;; *** counsel-dash
 (use-package counsel-dash
 
-  :bind ("C-c d" . counsel-dash)
+  :bind ("C-c d" . counsel-dash-at-point)
 
   ;; Note: can't use :config here -- too late for the hook to run then the
   ;; keys are invoked (causing the config) in the corresponding buffer
   :init
-  (progn
+  (progn  ;; M-x counsel-dash-install-docset
     (defun python3-doc ()
       (interactive)
       (setq-local counsel-dash-docsets
