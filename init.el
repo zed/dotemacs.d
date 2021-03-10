@@ -823,6 +823,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (add-hook 'prog-mode-hook #'init-trailing-whitespace-hook)
 ;;; for some reason groovy mode is not derived from the prog mode
 (add-hook 'groovy-mode-hook #'init-trailing-whitespace-hook)
+(add-hook 'markdown-mode-hook #'init-trailing-whitespace-hook)
 
                     ; copy/kill line on M-w, C-w
 (defadvice kill-ring-save (before slickcopy activate compile)
