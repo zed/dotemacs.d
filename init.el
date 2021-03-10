@@ -982,7 +982,8 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :bind (("C-c l" . org-store-link)
 	 ("C-c o" . org-open-at-point-global)
 	 ("C-c a" . org-agenda)
-	 ("C-c c" . org-capture))
+	 ("C-c c" . org-capture)
+         ("C-c C-x C-j" . org-clock-goto))
   :config
   (define-key global-map (kbd "M-o") 'ace-link-org)
   (define-key org-agenda-mode-map (kbd "o") 'ace-link-org)
