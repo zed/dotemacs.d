@@ -923,7 +923,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (org-export-use-babel nil "disable evaluation of babel code blocks on export")
   (org-log-into-drawer t "hide State DONE. Useful for repeating tasks")
   (org-export-backends '(md odt latex icalendar html ascii) "List of export back-ends that should be always available.")
-  (org-modules '(org-habit))
+  (org-modules '(org-habit ol-w3m ol-bbdb ol-bibtex ol-docview ol-gnus ol-info ol-irc ol-mhe ol-rmail ol-eww org-tempo))
   :hook
   (kill-emacs . init:org-clock-out-and-save)
   :preface
