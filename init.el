@@ -312,8 +312,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :ensure nil
   :custom
   ; PEP-8 Maximum Line Length
-  (blacken-line-length 78)
-  (blacken-allow-py36 nil))
+  (blacken-line-length 78))
 
 (use-package idle-highlight-mode
   :ensure nil
@@ -1148,7 +1147,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :demand t
   :after python
   :custom
-  (python-black-extra-args '("-l" "78")))
+  (python-black-extra-args '("-l" "78" "--experimental-string-processing")))
 
 ;; ** C-x C-f /docker:user@container:/path/to/file
 (use-package docker-tramp
