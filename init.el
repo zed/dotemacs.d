@@ -1000,7 +1000,12 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq org-plantuml-jar-path
       (expand-file-name "~/src/plantuml/plantuml.jar"))
   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
+  (defun org-summary-todo (n-done n-not-done)
+    "Switch entry to DONE when all subentries are done, to TODO otherwise."
+    (let (org-log-done org-log-states)   ; turn off logging
+      (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
 
+  (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
   ;; FIXME: workaround
   ;; https://github.com/syl20bnr/spacemacs/issues/11798
   (when (version<= "9.2" (org-version))
