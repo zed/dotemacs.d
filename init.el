@@ -920,6 +920,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package org
   :ensure nil
   :custom
+  (org-id-link-to-org-use-id t "`C-c l' uses ID to link to an org entry")
   (org-enforce-todo-dependencies t "can't mark DONE if there are TODO children")
   (org-use-property-inheritance t "properties such as attachment dirs apply also for sublevels")
   (org-src-preserve-indenhtation nil "leading whitespace blocks are stripped")
