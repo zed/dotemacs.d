@@ -1081,6 +1081,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
                                         ; https://emacs.stackexchange.com/questions/37692/how-to-fix-symbols-function-definition-is-void-org-babel-get-header
      (plantuml . t)
                                         ; http://eschulte.github.io/babel-dev/DONE-integrate-plantuml-support.html
+     (R . t)
      (jupyter . t)))
                                         ; must be last https://github.com/dzop/emacs-jupyter#org-mode-source-blocks
   ;; default args for jupyter-python
@@ -1353,6 +1354,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package tla-mode
   :ensure nil
   :mode "\.tla$")
+
+;; ** R support
+(use-package ess)
 
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
