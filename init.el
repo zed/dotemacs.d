@@ -576,7 +576,8 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 	 (interactive)
 	 (ace-window 4)
 	 (add-hook 'ace-window-end-once-hook
-		   'hydra-window/body)))
+		   'hydra-window/body))
+        :color blue)
   ("s" save-buffer :color blue)
   ("d" delete-window :color blue)
   ("D" (lambda ()
