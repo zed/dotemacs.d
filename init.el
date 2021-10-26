@@ -199,6 +199,10 @@
   :commands git-timemachine-toggle)
 
 ;; ***
+(with-eval-after-load-feature (python)
+  (add-hook 'python-mode-hook (lambda () (blamer-mode t))))
+
+;; ***
 (use-package diffview
   :commands (diffview-region diffview-current))
 
