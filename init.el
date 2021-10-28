@@ -1365,6 +1365,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :ensure nil
   :mode "\.tla$")
 
+;; ** C-x n n recursive-narrow-or-widen-dwim
+(use-package recursive-narrow)
+
 ;; ** R support
 (use-package ess)
 
