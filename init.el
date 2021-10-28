@@ -1148,6 +1148,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :defer t
   )
 
+(use-package jenkinsfile-mode
+  :defer t
+  :custom
+  (groovy-indent-offset 2))
+
 ;; ** direnv: .envrc envvars visible for commands started in emacs
 (use-package direnv
 
