@@ -1008,6 +1008,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (define-key global-map (kbd "M-o") 'ace-link-org)
   (define-key org-agenda-mode-map (kbd "o") 'ace-link-org)
 
+  ;; how large are inline latex formula (between $$ on =C-x C-c C-l=)
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
+
   ;; resume the clock under the assumption that you have worked on this task while outside Emacs
   (setq org-clock-persist 'history)
   (org-clock-persistence-insinuate)
