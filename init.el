@@ -110,6 +110,7 @@
 
 ;; *** projectile C-c p p
 (use-package projectile
+  :delight
   :custom
   (projectile-completion-system 'ivy))
 
