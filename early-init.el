@@ -233,14 +233,6 @@
 ;; ** tla-mode
 (el-get-bundle tla-mode
   :url "https://raw.githubusercontent.com/ratish-punnoose/tla-mode/28c915aa49e043358a29bde045a68357027d96de/tla-mode.el")
-
-;; ** blamer-mode (like VS Code's GitLens)
-;;
-(el-get-bundle blamer
-  :description "display who touched the line last"
-  :type github
-  :pkgname "Artawower/blamer.el")
-
 ;; ** ^^^last el-get-bundle installed package
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; no new el-get packages from here on out
