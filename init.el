@@ -600,6 +600,15 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ("r" winner-redo)
   ("q" nil)))))))
 
+;; ** org-fc :: spaced repetition system SRS in emacs
+(use-package org-fc
+  :load-path "~/src/org-fc"
+  :custom (org-fc-directories '("~/org/"))
+  :bind
+  ("C-c f" . org-fc-hydra/body)
+  :config
+  (require 'org-fc-hydra))
+
 ;; ** misc
 (progn
 					; uniquify buffers with the same name
