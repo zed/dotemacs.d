@@ -1027,6 +1027,26 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (when (version<= "9.2" (org-version))
     (require 'org-tempo))
 
+  ;; archive logbook entries
+  (progn (defun qpet/org-archive-delete-logbook ()
+           (save-excursion
+             (org-end-of-meta-data)
+             (let ((elm (org-element-at-point)))
+               (when (and
+                      (equal (org-element-type elm) 'drawer)
+                      (equal (org-element-property :drawer-name elm) "LOGBOOK"))
+                 (delete-region (org-element-property :begin elm)
+                                (org-element-property :end elm))))))
+
+         (defun qpet/org-archive-without-delete ()
+           (cl-letf (((symbol-function 'org-cut-subtree) (lambda () nil)))
+             (org-archive-subtree)))
+
+         (defun qpet/org-archive-logbook ()
+           (interactive)
+           (qpet/org-archive-without-delete)
+           (qpet/org-archive-delete-logbook)))
+
   ;; copy link url from org to outside of org mode
   ;; https://emacs.stackexchange.com/questions/3981/how-to-copy-links-out-of-org-mode
   (progn
