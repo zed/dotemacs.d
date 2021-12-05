@@ -1014,7 +1014,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq org-agenda-include-diary t)
 
   (setq org-plantuml-jar-path
-      (expand-file-name "~/src/plantuml/plantuml.jar"))
+        (expand-file-name "~/src/plantuml/plantuml.jar"))
   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
   (defun org-summary-todo (n-done n-not-done)
     "Switch entry to DONE when all subentries are done, to TODO otherwise."
@@ -1051,23 +1051,23 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ;; https://emacs.stackexchange.com/questions/3981/how-to-copy-links-out-of-org-mode
   (progn
     (defun iqbal-yank-org-link (text)
-  (if (derived-mode-p 'org-mode)
-      (insert text)
-    (string-match org-bracket-link-regexp text)
-    (insert (substring text (match-beginning 1) (match-end 1)))))
+      (if (derived-mode-p 'org-mode)
+          (insert text)
+        (string-match org-bracket-link-regexp text)
+        (insert (substring text (match-beginning 1) (match-end 1)))))
 
-(defun iqbal-org-retrieve-url-from-point ()
-  (interactive)
-  (let* ((link-info (assoc :link (org-context)))
-         (text (when link-info
-                 ;; org-context seems to return nil if the current element
-                 ;; starts at buffer-start or ends at buffer-end
-                 (buffer-substring-no-properties (or (cadr link-info) (point-min))
-                                                 (or (caddr link-info) (point-max))))))
-    (if (not text)
-        (error "Not in org link")
-      (add-text-properties 0 (length text) '(yank-handler (iqbal-yank-org-link)) text)
-      (kill-new text))))))
+    (defun iqbal-org-retrieve-url-from-point ()
+      (interactive)
+      (let* ((link-info (assoc :link (org-context)))
+             (text (when link-info
+                     ;; org-context seems to return nil if the current element
+                     ;; starts at buffer-start or ends at buffer-end
+                     (buffer-substring-no-properties (or (cadr link-info) (point-min))
+                                                     (or (caddr link-info) (point-max))))))
+        (if (not text)
+            (error "Not in org link")
+          (add-text-properties 0 (length text) '(yank-handler (iqbal-yank-org-link)) text)
+          (kill-new text))))))
 
 (use-package hl-line
   :ensure nil
