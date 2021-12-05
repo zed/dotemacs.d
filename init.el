@@ -1363,6 +1363,9 @@ dir-param))
   :config
   (.secrets-slack-register-team))
 
+;; ** *customizable* 256 color support for term, ansi-term, vterm
+(use-package eterm-256color)
+
 ;; ** emacs-libvterm
 ;; - C-c C-t :: to toggle vterm-copy-mode, press Enter to leave
 ;; - C-c C-n and C-c C-p :: next/previous prompt
@@ -1371,6 +1374,7 @@ dir-param))
   :config
   (unbind-key "<f11>" vterm-mode-map)
   :custom
+  (vterm-term-environment-variable "eterm-color")
   (vterm-max-scrollback 100000) ;; SB_MAX 100000
   (vterm-buffer-name-string "vterm %s")
   (vterm-kill-buffer-on-exit t))
