@@ -1096,6 +1096,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
      (plantuml . t)
                                         ; http://eschulte.github.io/babel-dev/DONE-integrate-plantuml-support.html
      (R . t)
+     (sqlite . t)
      (jupyter . t)))
                                         ; must be last https://github.com/dzop/emacs-jupyter#org-mode-source-blocks
   ;; default args for jupyter-python
