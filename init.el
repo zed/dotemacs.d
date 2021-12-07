@@ -1247,9 +1247,15 @@ dir-param))
 (use-package counsel-web
   :commands (counsel-web-suggest counsel-web-search counsel-web-thing-at-point)
   :bind
-  ("C-c s" . counsel-web-suggest)
+  ("C-c s" . counsel-web-suggest-thing-at-point)
   :custom
-  (counsel-web-engine 'google))
+  (counsel-web-engine 'google)
+  :config
+  ;; start web search suggesting a thing at point
+  (defun counsel-web-suggest-thing-at-point (thing)
+    "Use THING as the initial input for counsel-web-suggest"
+    (interactive (list (thing-at-point counsel-web-thing)))
+    (counsel-web-suggest thing)))
 
 ;; ** C-a moves the point to the first non-whitespace character on the line
 (use-package crux
