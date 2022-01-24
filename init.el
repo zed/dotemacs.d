@@ -130,11 +130,13 @@
   ;; keys are invoked (causing the config) in the corresponding buffer
   :init
   (progn  ;; M-x counsel-dash-install-docset
+          ;; M-x counsel-dash-install-user-docset
     (defun python3-doc ()
       (interactive)
       (setq-local counsel-dash-docsets
-		  '("Python 3" "NumPy")))
+		  '("Pandas" "Python 3" "NumPy" "SciPy" "Matplotlib" "scikit-learn" "seaborn 0.11.0")))
     (add-hook 'python-mode-hook 'python3-doc)
+    (add-hook 'org-mode-hook 'python3-doc)
 
     (defun c++-doc ()
       (interactive)
