@@ -1108,7 +1108,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :defer 10
   :config
   ;; org src blocks languages
-  (setq org-babel-python-command "/usr/bin/python3")
+  (setq org-babel-python-command "python3.10")
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
@@ -1125,8 +1125,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq org-babel-default-header-args:jupyter-python
         '((:results . "replace")
 	  (:async . "yes")
-	  (:session . "py")
-	  (:kernel . "python3"))))
+	  (:session . "py3.10.1")
+          ; to list: (jupyter-available-kernelspecs 'refresh)
+	  (:kernel . "python-3.10.1"))))
 
 ;; https://www.mail-archive.com/emacs-orgmode@gnu.org/msg129554.html
 (define-advice org-babel-execute-src-block (:filter-args (&optional args)
