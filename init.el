@@ -1425,6 +1425,13 @@ dir-param))
 (use-package org-jira
   :commands org-jira-get-issues)
 
+;; ** automatically toggle a latex fragment preview in org-mode
+;;    when cursor enters/leaves it
+(use-package org-fragtog
+  :after org
+  :hook ((org-mode . org-fragtog-mode)))
+
+;; ** syntax highlighting for TLA+ code
 (use-package tla-mode
   :ensure nil
   :mode "\.tla$")
