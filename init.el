@@ -1385,8 +1385,7 @@ dir-param))
   :custom
   (vterm-term-environment-variable "eterm-color")
   (vterm-max-scrollback 100000) ;; SB_MAX 100000
-  (vterm-buffer-name-string "vterm %s")
-  (vterm-kill-buffer-on-exit t))
+  (vterm-buffer-name-string "vterm %s"))
 
 ;; ** enable Emacs keybinding in the non-default system layout too
 ;; to see the remappings: M-x reverse-im-which-key-show
