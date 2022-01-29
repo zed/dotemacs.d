@@ -679,8 +679,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
                     ; Well the real default would be C-c C-j C-y C-c C-k.
 (define-key term-raw-map  (kbd "C-y") #'term-paste)
 
-
-(global-set-key (kbd "C-x C-c") #'kill-emacs)
+(global-unset-key (kbd "C-x C-c"))
 
                     ; C-x C-j opens dired with the cursor right on the file you're editing
 (require 'dired-x))
