@@ -1435,6 +1435,17 @@ dir-param))
   :ensure nil
   :mode "\.tla$")
 
+;; ** ox-ipynb — Convert an org-file to an ipynb (jupyter notebook)
+(use-package ox-ipynb
+  :ensure nil
+  ;; Works interactively:
+  ;;   M-x ox-ipynb-export-org-file-to-ipynb-file RET
+  ;; Works non-interactively:
+  ;;   (ox-ipynb-export-org-file-to-ipynb-file "test.org")
+  ;; Works in Dired+ by marking some *.org files
+  ;;   and pressing "@" ox-ipynb-export-org-file-to-ipynb-file RET
+  :commands ox-ipynb-export-org-file-to-ipynb-file)
+
 ;; ** C-x n n recursive-narrow-or-widen-dwim
 (use-package recursive-narrow)
 

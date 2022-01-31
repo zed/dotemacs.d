@@ -233,6 +233,10 @@
 ;; ** tla-mode
 (el-get-bundle tla-mode
   :url "https://raw.githubusercontent.com/ratish-punnoose/tla-mode/28c915aa49e043358a29bde045a68357027d96de/tla-mode.el")
+
+;; ** ox-ipynb — Convert an org-file to an ipynb
+(el-get-bundle ox-ipynb
+  :url "https://raw.githubusercontent.com/jkitchin/ox-ipynb/0af95842c4158c71edd6173dbc3405597b528871/ox-ipynb.el")
 ;; ** ^^^last el-get-bundle installed package
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; no new el-get packages from here on out
