@@ -295,7 +295,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (use-package elpy
   :commands elpy-enable
   :custom
-  (elpy-rpc-python-command "~/.pyenv/shims/python3.8")
+  (elpy-rpc-python-command "~/.pyenv/shims/python3.10")
   (python-check-command "flake8")
   (flycheck-python-flake8-executable "flake8")
   (flycheck-python-pylint-executable "pylint")
