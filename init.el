@@ -1126,7 +1126,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 	  (:async . "yes")
 	  (:session . "py3.10.1")
           ; to list: (jupyter-available-kernelspecs 'refresh)
-	  (:kernel . "python-3.10.1"))))
+	  (:kernel . "python-3.10.1")))
+  ;; default args for sh
+  (setq org-babel-default-header-args:sh
+        '((:results . "output"))))
 
 ;; https://www.mail-archive.com/emacs-orgmode@gnu.org/msg129554.html
 (define-advice org-babel-execute-src-block (:filter-args (&optional args)
