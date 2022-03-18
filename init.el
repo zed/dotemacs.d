@@ -304,9 +304,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   ;; https://github.com/jorgenschaefer/elpy/blob/master/docs/introduction.rst
   (advice-add 'python-mode :before 'elpy-enable)
   :config
-  ;; workaround xref-find-definitions/elpy-goto-definition issue https://github.com/jorgenschaefer/elpy/issues/1795
-  ;; add this and the dumb-jump hook will work
-  (advice-add 'elpy--xref-backend :override #'dumb-jump-xref-activate)
   ;; flycheck
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
   (add-hook 'elpy-mode-hook #'flycheck-mode))
