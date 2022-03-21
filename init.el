@@ -1210,12 +1210,6 @@ dir-param))
   :custom
   (groovy-indent-offset 2))
 
-;; ** direnv: .envrc envvars visible for commands started in emacs
-(use-package direnv
-
-  :config
-  (direnv-mode))
-
 ;; ** python black
 (use-package python-black
   :ensure nil
@@ -1454,6 +1448,13 @@ dir-param))
 
 ;; ** R support
 (use-package ess)
+
+;; ** direnv: .envrc envvars visible for commands started in emacs
+(use-package envrc
+  ; expect envrc.el to cause less performance issues than direnv.el
+  :config
+  ; buffer-local direnv integration for Emacs
+  (envrc-global-mode))
 
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
