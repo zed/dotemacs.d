@@ -1093,7 +1093,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 (use-package ob-async
   :after org
-  :defer 10
   :config
   (setq ob-async-no-async-languages-alist '("jupyter-python" "jupyter-ansible" "jupyter-julia")))
 
