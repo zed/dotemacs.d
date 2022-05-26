@@ -310,9 +310,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (use-package blacken
   :ensure nil
-  :custom
-  ; PEP-8 Maximum Line Length
-  (blacken-line-length 78))
+  )
 
 (use-package idle-highlight-mode
   :ensure nil
