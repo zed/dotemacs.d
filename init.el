@@ -1473,6 +1473,9 @@ dir-param))
   :hook
   (after-save . init:chmod+x-files-with-shebang)
   :config
+  ; try to detect long line and mitigate performance issues
+  (global-so-long-mode)
+
   (defun init:chmod+x-files-with-shebang ()
     (unless (string-match "__init__.py" (or (buffer-file-name) ""))
       (executable-make-buffer-file-executable-if-script-p)))
