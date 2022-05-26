@@ -1102,7 +1102,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :defer 2
   :config
   ;; org src blocks languages
-  (setq org-babel-python-command "python3.10")
+  (setq org-babel-python-command "python3.11")
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
