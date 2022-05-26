@@ -929,7 +929,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (org-id-link-to-org-use-id t "`C-c l' uses ID to link to an org entry")
   (org-enforce-todo-dependencies t "can't mark DONE if there are TODO children")
   (org-use-property-inheritance t "properties such as attachment dirs apply also for sublevels")
-  (org-src-preserve-indenhtation nil "leading whitespace blocks are stripped")
+  (org-src-preserve-indentation nil "leading whitespace blocks are stripped")
   (org-edit-src-content-indentation 0 " and the code block is not indented (0!)")
   (org-src-tab-acts-natively t "make TAB insert spaces in python src blocks")
   (org-export-use-babel nil "disable evaluation of babel code blocks on export")
