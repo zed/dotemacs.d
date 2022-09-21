@@ -1212,8 +1212,7 @@ dir-param))
   :ensure nil
   :demand t
   :after python
-  :custom
-  (python-black-extra-args '("-l" "78" "--experimental-string-processing")))
+  )
 
 ;; ** C-x C-f /docker:user@container:/path/to/file
 (use-package docker-tramp
