@@ -1012,12 +1012,39 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq org-plantuml-jar-path
         (expand-file-name "~/src/plantuml/plantuml.jar"))
   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
+
+  ;; Mark heading done when all subtasked are done
   (defun org-summary-todo (n-done n-not-done)
     "Switch entry to DONE when all subentries are done, to TODO otherwise."
     (let (org-log-done org-log-states)   ; turn off logging
       (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
 
   (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+
+  ;; Mark heading done when all checkboxes are checked.
+  ;; https://orgmode.org/worg/org-hacks.html#mark-done-when-all-checkboxes-checked
+  ;; see https://list.orgmode.org/87r5718ytv.fsf@sputnik.localhost
+  (eval-after-load 'org-list
+    '(add-hook 'org-checkbox-statistics-hook (function ndk/checkbox-list-complete)))
+
+  (defun ndk/checkbox-list-complete ()
+    (save-excursion
+      (org-back-to-heading t)
+      (let ((beg (point)) end)
+        (end-of-line)
+        (setq end (point))
+        (goto-char beg)
+        (if (re-search-forward "\\[\\([0-9]*%\\)\\]\\|\\[\\([0-9]*\\)/\\([0-9]*\\)\\]" end t)
+            (if (match-end 1)
+                (if (equal (match-string 1) "100%")
+                    ;; all done - do the state change
+                    (org-todo 'done)
+                  (org-todo 'todo))
+              (if (and (> (match-end 2) (match-beginning 2))
+                       (equal (match-string 2) (match-string 3)))
+                  (org-todo 'done)
+                (org-todo 'todo)))))))
+
   ;; FIXME: workaround
   ;; https://github.com/syl20bnr/spacemacs/issues/11798
   (when (version<= "9.2" (org-version))
