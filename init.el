@@ -5,11 +5,11 @@
 (init:report-elapsed-time "package-initialize")
 
 ;; ** load secrets
-;;;; to fix gpg while using ipad, force reading password from stdin
-;; (unless (display-graphic-p)
-;;   ;; running without GUI
-;;   ;; accept gpg passphrase without GUI/gpg-agent
-;;   (setq epa-pinentry-mode 'loopback))
+;; to fix gpg while using ipad, force reading password from stdin
+(unless (display-graphic-p)
+  ;; running without GUI
+  ;; accept gpg passphrase without GUI/gpg-agent
+  (setq epa-pinentry-mode 'loopback))
 (require '.secrets "~/.secrets.el.gpg")
 
 ;; ** delight: remove modes from ModeLine
