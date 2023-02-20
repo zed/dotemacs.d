@@ -310,6 +310,9 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (use-package blacken
   :ensure nil
+  :hook (python-mode . blacken-mode)
+  :custom
+  (blacken-only-if-project-is-blackened t)
   )
 
 (use-package idle-highlight-mode
