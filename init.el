@@ -1587,3 +1587,4 @@ dir-param))
 			       ,load-file-name elapsed)))
 		 t))
 ;; * the end
+(put 'scroll-left 'disabled nil)
