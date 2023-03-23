@@ -1504,6 +1504,11 @@ dir-param))
          ("TAB" . 'copilot-accept-completion))
   :ensure nil)
 
+
+;; * create presentations in emacs
+;;   reveal.js
+(use-package ox-reveal)
+
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 
