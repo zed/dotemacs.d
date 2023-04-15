@@ -1482,33 +1482,6 @@ dir-param))
   ; buffer-local direnv integration for Emacs
   (envrc-global-mode))
 
-;; ** copilot-mode
-(use-package editorconfig) ; fix No such file or directory, editorconfig
-(use-package copilot
-  :commands (
-             copilot-login
-             copilot-diagnose
-             copilot-mode
-             copilot-complete
-             copilot-accept-completion
-             copilot-clear-overlay
-             copilot-next-completion
-             copilot-previous-completion
-             copilot-logout
-             )
-  :hook (prog-mode . copilot-mode)
-  :bind (("C-TAB" . 'copilot-accept-completion-by-word)
-         ("C-<tab>" . 'copilot-accept-completion-by-word)
-         :map copilot-completion-map
-         ("<tab>" . 'copilot-accept-completion)
-         ("TAB" . 'copilot-accept-completion))
-  :ensure nil)
-
-
-;; * create presentations in emacs
-;;   reveal.js
-(use-package ox-reveal)
-
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 

@@ -237,10 +237,6 @@
 ;; ** ox-ipynb — Convert an org-file to an ipynb
 (el-get-bundle ox-ipynb
   :url "https://raw.githubusercontent.com/jkitchin/ox-ipynb/0af95842c4158c71edd6173dbc3405597b528871/ox-ipynb.el")
-
-;; ** copilot
-(el-get-bundle zerolfx/copilot.el)
-
 ;; ** ^^^last el-get-bundle installed package
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; no new el-get packages from here on out
