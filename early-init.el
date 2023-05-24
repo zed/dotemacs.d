@@ -6,7 +6,7 @@
 
 ;; ** https://www.reddit.com/r/emacs/comments/ct0h6m/this_nobbled_me_yesterday_on_debian_10_it_needs/
 (when (and (>= libgnutls-version 30603)
-           (version<= emacs-major-version "26.2"))
+           (version<= emacs-version "26.2"))
   (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
 
 (defun init:report-elapsed-time (&optional what-has-loaded)
@@ -32,7 +32,11 @@
 
 ;; * install packages
 (setq load-prefer-newer t) ; suppress warning about .autoloads.el files
-(el-get-bundle! with-eval-after-load-feature) ; to suppress "free variable" warning
+
+;; to suppress "free variable" warning
+(el-get-bundle! with-eval-after-load-feature
+  ; It fixes "Package cl is deprecated" warning on Emacs 27+
+  :url "https://github.com/tarao/with-eval-after-load-feature-el/blob/889253d5e99503b16f36fcf91f7e6654f70f0d4d/with-eval-after-load-feature.el")
 (el-get-bundle! use-package)
 (with-eval-after-load 'use-package
   (require 'use-package-ensure)
