@@ -980,7 +980,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq org-capture-templates
 	'(("t" "Todo" entry (file+headline "inbox.org" "Tasks")
 	   "* TODO %?\n  %i\n  %a" :clock-in t :clock-resume t)
-	  ("j" "Journal" entry (file+datetree "journal.org")
+	  ("j" "Journal" entry (file+olp+datetree "journal.org")
 	   "* %?\nEntered on %U\n  %i\n  %a")))
 
   ;; start agenda view relative to current day, show given number of days
@@ -1181,6 +1181,9 @@ dir-param))
 
 
 ;; *** vi-like speed keys for org mode
+;; On worf-mode: Symbol’s value as variable is void: hydra-worf-change
+;; apply:
+;;   https://github.com/leotaku/worf/commit/38e901d3888e3a245a5cba14a061bffa1c5fd20b
 (use-package worf
   :bind (:map worf-mode-map
               ("M-o" . ace-link-org)
