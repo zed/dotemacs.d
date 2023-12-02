@@ -1130,6 +1130,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :after org
   :defer 2
   :config
+  (setq jupyter-use-zmq nil)
   ;; org src blocks languages
   (setq org-babel-python-command "python3.11")
   (org-babel-do-load-languages
