@@ -295,7 +295,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (use-package elpy
   :commands elpy-enable
   :custom
-  (elpy-rpc-python-command "~/.pyenv/shims/python3.10")
+  (elpy-rpc-python-command "~/.pyenv/shims/python3.11")
   (python-check-command "flake8")
   (flycheck-python-flake8-executable "flake8")
   (flycheck-python-pylint-executable "pylint")
@@ -1148,9 +1148,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq org-babel-default-header-args:jupyter-python
         '((:results . "replace")
 	  (:async . "yes")
-	  (:session . "py3.10.1")
+	  (:session . "py3.11")
           ; to list: (jupyter-available-kernelspecs 'refresh)
-	  (:kernel . "python-3.10.1")))
+	  (:kernel . "python3")))
   ;; default args for sh
   (setq org-babel-default-header-args:sh
         '((:results . "output")))
