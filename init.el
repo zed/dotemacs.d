@@ -125,6 +125,8 @@
 (use-package counsel-dash
 
   :bind ("C-c d" . counsel-dash-at-point)
+  :custom
+  (dash-docs-browser-func 'eww)
 
   ;; Note: can't use :config here -- too late for the hook to run then the
   ;; keys are invoked (causing the config) in the corresponding buffer
