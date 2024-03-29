@@ -1490,6 +1490,10 @@ dir-param))
 ;;   reveal.js
 (use-package ox-reveal)
 
+;; * colorize *compilation* buffer output (interpret escape codes)
+(use-package ansi-color
+    :hook (compilation-filter . ansi-color-compilation-filter))
+
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 
