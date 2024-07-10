@@ -1464,6 +1464,11 @@ dir-param))
   :ensure nil
   :mode "\.tla$")
 
+;; ** syntax highlighting for Zig code
+(use-package zig-mode
+  :mode "\.zig$")
+
+
 ;; ** ox-ipynb — Convert an org-file to an ipynb (jupyter notebook)
 (use-package ox-ipynb
   :ensure nil
