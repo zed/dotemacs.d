@@ -17,6 +17,9 @@
     (message "Loading %s...done (elapsed %.3fs)" what-has-loaded elapsed)))
 
 ;; * load customizations
+(require 'package)
+(add-to-list 'package-archives
+	     '("melpa" . "https://melpa.org/packages/") t)
 (setq custom-file "~/.custom.el")
 (load custom-file)
 
