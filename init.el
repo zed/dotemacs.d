@@ -1080,7 +1080,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
          ("C-c C-x C-j" . org-clock-goto))
   :config
   (define-key global-map (kbd "M-o") 'ace-link-org)
-  (define-key org-agenda-mode-map (kbd "o") 'ace-link-org)
 
   ;; how large are inline latex formula (between $$ on =C-x C-c C-l=)
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
@@ -1173,6 +1172,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
             (error "Not in org link")
           (add-text-properties 0 (length text) '(yank-handler (iqbal-yank-org-link)) text)
           (kill-new text))))))
+
+(use-package org-agenda
+  :ensure nil
+  :config
+  (define-key org-agenda-mode-map (kbd "o") 'ace-link-org))
 
 (use-package hl-line
   :ensure nil
