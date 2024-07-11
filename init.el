@@ -10,7 +10,7 @@
   ;; running without GUI
   ;; accept gpg passphrase without GUI/gpg-agent
   (setq epa-pinentry-mode 'loopback))
-(require '.secrets "~/.secrets.el.gpg")
+(require '.secrets "~/.secrets.el.gpg" 'noerror)
 
 ;; ** delight: remove modes from ModeLine
 ;; C-h v minor-mode-alist
