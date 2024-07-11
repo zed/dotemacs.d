@@ -1327,11 +1327,6 @@ dir-param))
   :after python
   )
 
-;; ** C-x C-f /docker:user@container:/path/to/file
-(use-package docker-tramp
-  :defer t
-  )
-
 ;; ** M-x elisp-format-region
 (use-package elisp-format
   :defer 100
