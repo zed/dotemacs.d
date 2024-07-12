@@ -177,6 +177,7 @@
   :bind ("C-c g" . magit-status)
   :custom
   (magit-log-section-commit-count 20)
+  (git-commit-major-mode 'markdown-mode)
   :config
   (setq magit-completing-read-function 'ivy-completing-read))
 (with-eval-after-load-feature (magit org)
