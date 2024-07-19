@@ -1246,6 +1246,15 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
         '((:results . "output")))
   (setq org-babel-default-header-args:shell
         '((:results . "output")))
+  ;; fix:
+  ;; jupyter-api-url-request: Jupyter REST API error: 404, "Not found"
+  ;; from
+  ;; https://github.com/emacs-jupyter/jupyter/issues/542#issuecomment-2210783148
+  (defun gm/jupyter-api-request-xsrf-cookie-error-advice (func &rest args)
+  (condition-case nil
+      (apply func args)
+    (jupyter-api-http-error nil)))
+  (advice-add 'jupyter-api-request-xsrf-cookie :around #'gm/jupyter-api-request-xsrf-cookie-error-advice)
   )
 
 ;; https://www.mail-archive.com/emacs-orgmode@gnu.org/msg129554.html
