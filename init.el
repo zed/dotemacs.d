@@ -1221,7 +1221,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :config
   (setq jupyter-use-zmq nil)
   ;; org src blocks languages
-  (setq org-babel-python-command "python3.11")
+  (setq org-babel-python-command "python3.12")
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
@@ -1238,7 +1238,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq org-babel-default-header-args:jupyter-python
         '((:results . "replace")
 	  (:async . "yes")
-	  (:session . "py3.11")
+	  (:session . "py3.12")
           ; to list: (jupyter-available-kernelspecs 'refresh)
 	  (:kernel . "python3")))
   ;; default args for sh
