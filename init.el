@@ -12,6 +12,10 @@
   (setq epa-pinentry-mode 'loopback))
 (require '.secrets "~/.secrets.el.gpg" 'noerror)
 
+;; ** enable :ensure-system-package keyword for use-package
+(use-package use-package-ensure-system-package
+  :ensure t)
+
 ;; ** delight: remove modes from ModeLine
 ;; C-h v minor-mode-alist
 (use-package delight
@@ -123,7 +127,7 @@
 ;; counsel-dash
 ;; *** counsel-dash
 (use-package counsel-dash
-
+  :ensure-system-package sqlite3
   :bind ("C-c d" . counsel-dash-at-point)
   :custom
   (dash-docs-browser-func 'eww)
@@ -162,6 +166,7 @@
   :custom
   (wgrep-auto-save-buffer t))
 (use-package rg
+  :ensure-system-package (rg . ripgrep)
   :bind ("C-x C-r" . rg))
 
 ;; ** ace-link
