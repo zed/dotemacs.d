@@ -169,6 +169,10 @@
 ;; ** ox-ipynb — Convert an org-file to an ipynb
 (el-get-bundle ox-ipynb
   :url "https://raw.githubusercontent.com/jkitchin/ox-ipynb/0af95842c4158c71edd6173dbc3405597b528871/ox-ipynb.el")
+
+;; ** protobuf-mode — major mode for editing protocol buffers.
+(el-get-bundle protobuf-mode
+  :url "https://raw.githubusercontent.com/protocolbuffers/protobuf/b9483e03c7cfa854c250ad6415b4d9e6f7a9709e/editors/protobuf-mode.el")
 ;; ** ^^^last el-get-bundle installed package
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; no new el-get packages from here on out
