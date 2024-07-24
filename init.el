@@ -135,12 +135,14 @@
   ;; Note: can't use :config here -- too late for the hook to run then the
   ;; keys are invoked (causing the config) in the corresponding buffer
   :init
-  (progn  ;; M-x counsel-dash-install-docset
-          ;; M-x counsel-dash-install-user-docset
+  (progn  ;; M-x counsel-dash-install-docset  (after using counsel-dash)
+          ;; M-x counsel-dash-install-user-docset -> 404 from https://dashes-to-dashes.herokuapp.com/docsets/contrib
+    ;;;; (setq url-debug t) ;; see *URL-DEBUG* buffer
     (defun python3-doc ()
       (interactive)
       (setq-local counsel-dash-docsets
-		  '("Pandas" "Python 3" "NumPy" "SciPy" "Matplotlib" "scikit-learn" "seaborn 0.11.0")))
+                  '("Pandas" "Python 3" "NumPy" "SciPy" "Matplotlib" "scikit-learn" "seaborn")))
+
     (add-hook 'python-mode-hook 'python3-doc)
     (add-hook 'org-mode-hook 'python3-doc)
 
@@ -157,7 +159,37 @@
       (interactive)
       (setq-local
        counsel-dash-docsets '("Bash")))
-    (add-hook 'sh-mode-hook 'bash-doc)))
+    (add-hook 'sh-mode-hook 'bash-doc))
+  :config
+
+  ;; from https://github.com/dash-docs-el/dash-docs/issues/23#issuecomment-1694059091
+  (defun dash-docs-unofficial-docsets ()
+    "Return a list of lists with docsets contributed by users.
+The first element is the docset's name second the docset's archive url."
+    (let ((user-docs (assoc-default 'docsets
+                                    (dash-docs-read-json-from-url
+                                     "https://kapeli.com/feeds/zzz/user_contributed/build/index.json"))))
+      (mapcar (lambda (docset)
+                (list
+                 (assoc-default 'name docset)
+                 (car docset)
+                 (assoc-default 'archive docset)))
+              user-docs)))
+
+  (defun dash-docs-install-user-docset ()
+    "Download an unofficial docset with specified DOCSET-NAME and move its stuff to docsets-path."
+    (interactive)
+    (let* ((docsets (dash-docs-unofficial-docsets))
+           (docset-name (dash-docs-read-docset
+                         "Install docset"
+                         (mapcar 'car docsets)))
+           (docset (assoc-default docset-name docsets)))
+      (when (dash-docs--ensure-created-docsets-path (dash-docs-docsets-path))
+        (let ((url
+               (format "https://kapeli.com/feeds/zzz/user_contributed/build/%s/%s"
+                       (car docset)
+                       (cadr docset))))
+          (dash-docs--install-docset url (car docset)))))))
 
 ;; ** ripgrep
 ;;; type `e' in rg-mode to edit search results, `C-x C-s' to save them
