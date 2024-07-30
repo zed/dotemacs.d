@@ -1289,26 +1289,28 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (advice-add 'jupyter-api-request-xsrf-cookie :around #'gm/jupyter-api-request-xsrf-cookie-error-advice)
   )
 
-;; https://www.mail-archive.com/emacs-orgmode@gnu.org/msg129554.html
-(define-advice org-babel-execute-src-block (:filter-args (&optional args)
-set-detault-dir-to-org-attach-path)
-  "Set working directory to the current entry's attach directory."
-  (if (eq major-mode 'org-mode)
-      (let* ((directory (file-name-as-directory (org-attach-dir
-'create-if-none)))
-             (arg (car args))
-             (info (cadr args))
-             (params (org-babel-merge-params (nth 2 info) (caddr args)))
-             (dir-param (alist-get :dir params)))
-        (unless (and dir-param (or (equal (f-full default-directory) (f-full
-dir-param))
-                                   (f-absolute-p dir-param)))
-          (setf (alist-get :dir params)
-                (if dir-param
-                    (f-join directory (alist-get :dir params))
-                  directory)))
-        (list arg info params))
-    (list arg info params)))
+(use-package f)
+(with-eval-after-load-feature 'f
+  ;; https://www.mail-archive.com/emacs-orgmode@gnu.org/msg129554.html
+  (define-advice org-babel-execute-src-block (:filter-args (&optional args)
+                                                           set-detault-dir-to-org-attach-path)
+    "Set working directory to the current entry's attach directory."
+    (if (eq major-mode 'org-mode)
+        (let* ((directory (file-name-as-directory (org-attach-dir
+                                                   'create-if-none)))
+               (arg (car args))
+               (info (cadr args))
+               (params (org-babel-merge-params (nth 2 info) (caddr args)))
+               (dir-param (alist-get :dir params)))
+          (unless (and dir-param (or (equal (f-full default-directory) (f-full
+                                                                        dir-param))
+                                     (f-absolute-p dir-param)))
+            (setf (alist-get :dir params)
+                  (if dir-param
+                      (f-join directory (alist-get :dir params))
+                    directory)))
+          (list arg info params))
+      (list arg info params))))
 
 
 ;; *** vi-like speed keys for org mode
