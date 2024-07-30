@@ -1622,6 +1622,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package ansi-color
     :hook (compilation-filter . ansi-color-compilation-filter))
 
+(use-package rust-mode
+  :hook (rust-mode . prettify-symbols-mode)
+  :custom
+  (rust-format-on-save t)
+  )
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 
