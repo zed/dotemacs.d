@@ -213,7 +213,7 @@ The first element is the docset's name second the docset's archive url."
   :bind ("C-c M-g" . magit-file-dispatch)
   :bind ("C-c g" . magit-status)
   :custom
-  (magit-log-section-commit-count 20)
+  (magit-log-section-commit-count 40)
   (git-commit-major-mode 'markdown-mode)
   :config
   (setq magit-completing-read-function 'ivy-completing-read))
