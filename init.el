@@ -1021,16 +1021,23 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (c-set-style "my-java-style"))
 (add-hook 'java-mode-hook #'init:java-mode-hook)
 
-                    ; список используемых нами словарей
-                    ; from https://habrahabr.ru/post/215055/
-(setq ispell-local-dictionary-alist
-      '(("russian"
-     "[АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯабвгдеёжзийклмнопрстуфхцчшщьыъэюя]"
-     "[^АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯабвгдеёжзийклмнопрстуфхцчшщьыъэюя]"
-     "[-]"  nil ("-d" "ru_RU") nil utf-8)
-    ("english"
-     "[A-Za-z]" "[^A-Za-z]"
-     "[']"  nil ("-d" "en_US") nil iso-8859-1)))
+;; multi-language spell checking
+;; https://github.com/Hi-Angel/dotfiles/blob/55e1daf5266ee997e72700cf7d8b6463e2b02531/.emacs#L859-L870
+(use-package ispell
+  :ensure nil
+  :ensure-system-package hunspell
+  :defer t
+  :init
+  ;; It's unclear if the default aspell supports multiple langs at once, but Emacs
+  ;; with aspel backend doesn't. Let's use hunspell instead.
+  (setq ispell-program-name "hunspell")
+  (setq flyspell-prog-text-faces '(font-lock-comment-face font-lock-doc-face))
+  :config
+  (ispell-set-spellchecker-params) ;; ispell initialization, a mandatory call
+  (ispell-hunspell-add-multi-dic "en_US,ru_RU")
+  (ispell-change-dictionary "en_US,ru_RU" t) ;; with t set dict globally
+  )
+
 ;; ** flyspell
 (use-package flyspell
   :ensure nil
