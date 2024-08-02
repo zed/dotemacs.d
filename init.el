@@ -1358,16 +1358,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :defer t
   ) ; needs GNU diff utility
 
-;; ** edit browser text area in Emacs (sync both ways)
-(use-package atomic-chrome
-  ;; dependency Atomic Chrome extension (in Chrome)
-  :defer 10
-  :init
-  (setq atomic-chrome-default-major-mode 'markdown-mode)
-  (setq atomic-chrome-extension-type-list '(atomic-chrome))
-  :config
-  (atomic-chrome-start-server))
-
 ;; ** fzf
 (use-package fzf
   )
