@@ -1253,6 +1253,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :after org
   :config
   (setq ob-async-no-async-languages-alist '("jupyter-python" "jupyter-ansible" "jupyter-julia")))
+(use-package ob-restclient)
 
 (use-package jupyter
   :after org
@@ -1271,6 +1272,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
                                         ; http://eschulte.github.io/babel-dev/DONE-integrate-plantuml-support.html
      (R . t)
      (sqlite . t)
+     (restclient . t)
      (jupyter . t)))
                                         ; must be last https://github.com/dzop/emacs-jupyter#org-mode-source-blocks
   ;; default args for jupyter-python
@@ -1517,7 +1519,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :delight
   :init
   (global-company-mode)
-  (with-eval-after-load-feature 'company
+  (with-eval-after-load-feature (company restclient)
     (add-to-list 'company-backends 'company-restclient)))
 
 ;; ** slack config
