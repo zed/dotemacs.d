@@ -1321,31 +1321,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
           (list arg info params))
       (list arg info params))))
 
-
-;; *** vi-like speed keys for org mode
-;; On worf-mode: Symbol’s value as variable is void: hydra-worf-change
-;; apply:
-;;   https://github.com/leotaku/worf/commit/38e901d3888e3a245a5cba14a061bffa1c5fd20b
-(use-package worf
-  :bind (:map worf-mode-map
-              ("M-o" . ace-link-org)
-              ("[" . init:worf-back)
-              ("]" . init:worf-forward))
-  :init
-  (defun init:worf-back ()
-    "When point is special, call the worf command otherwise call self-insert"
-    (interactive)
-    (if (worf--special-p)
-        (worf-back-to-special)
-      (call-interactively 'org-self-insert-command)))
-  (defun init:worf-forward ()
-    "When point is special, call the worf command otherwise call self-insert"
-    (interactive)
-    (if (worf--special-p)
-        (worf-forward)
-      (call-interactively 'org-self-insert-command)))
-  :hook (org-mode . worf-mode))
-
 ;; *** pretty asterisk symbols for org mode
 (use-package org-bullets
   :after org
