@@ -1602,8 +1602,13 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package rust-mode
   :hook (rust-mode . prettify-symbols-mode)
   :custom
-  (rust-format-on-save t)
-  )
+  (rust-format-on-save t))
+;; ** htmlz-mode -- simple live html preview in browser
+(use-package htmlz-mode
+  :vc (:url "https://github.com/zed/htmlz-mode"
+       :rev "build/set-package-requires")
+  ;; M-x htmlz-mode in html buffer, to enable the minor-mode
+  :commands htmlz-mode)
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 
