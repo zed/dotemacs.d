@@ -1,3 +1,4 @@
+; -*- coding: utf-8 lexical-binding: t; -*-
 ;; * prelude
 (defconst emacs-start-time (current-time))
 
