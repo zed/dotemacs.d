@@ -42,10 +42,10 @@
   (calendar-latitude 55.8) ; for solar package
   (calendar-longitude 37.6)
   :init
-  ; reset old theme settings while loading a new theme
-  (defadvice load-theme
-      (before disable-before-load (theme &optional no-confirm no-enable) activate)
+  (defun init:disable-before-load (theme &optional no-confirm no-enable)
+    "Reset old theme settings while loading a new theme"
     (mapc 'disable-theme custom-enabled-themes))
+  (advice-add 'load-theme :before #'init:disable-before-load)
   :config
   (change-theme 'tango 'tango-dark))
 
@@ -782,23 +782,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
                     ; The default way to toggle between them is C-c C-j and C-c C-k, let's
                     ; better use just one key to do the same.
 (require 'term)
-
-; don't ask which shell to use
-(defvar init:term-shell "/bin/zsh")
-(defadvice ansi-term (before init:force-zsh)
-  (interactive (list init:term-shell)))
-(ad-activate 'ansi-term)
-
-; kill the buffer when the shell exits
-; from http://echosa.github.io/blog/2012/06/06/improving-ansi-term/
-(defadvice term-sentinel (around init:advice-term-sentinel (proc msg))
-  (if (memq (process-status proc) '(signal exit))
-      (let ((buffer (process-buffer proc)))
-        ad-do-it
-        (kill-buffer buffer))
-    ad-do-it))
-(ad-activate 'term-sentinel)
-
 (define-key term-raw-map  (kbd "C-'") #'term-line-mode)
 (define-key term-mode-map (kbd "C-'") #'term-char-mode)
                     ; Have C-y act as usual in term-mode, to avoid C-' C-y C-'
@@ -967,18 +950,20 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (add-hook 'yaml-mode-hook #'init-trailing-whitespace-hook)
 
                     ; copy/kill line on M-w, C-w
-(defadvice kill-ring-save (before slickcopy activate compile)
+(defun init:slickcopy (beg end &optional region)
   "When called interactively with no active region, copy a single line instead."
   (interactive
    (if mark-active (list (region-beginning) (region-end))
      (list (line-beginning-position)
            (line-beginning-position 2)))))
-(defadvice kill-region (before slickcut activate compile)
+(advice-add 'kill-ring-save :before #'init:slickcopy)
+(defun init:slickcut (beg end &optional region)
   "When called interactively with no active region, kill a single line instead."
   (interactive
    (if mark-active (list (region-beginning) (region-end))
      (list (line-beginning-position)
            (line-beginning-position 2)))))
+(advice-add 'kill-region :before #'init:slickcut)
 
                     ; http://www.emacswiki.org/emacs/BackupDirectory
 (setq
@@ -1645,9 +1630,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (defun init:chmod+x-files-with-shebang ()
     (unless (string-match "__init__.py" (or (buffer-file-name) ""))
       (executable-make-buffer-file-executable-if-script-p)))
-  (defadvice align-regexp (around align-regexp-with-spaces activate)
+  (defun init:align-regexp-with-spaces (orig-fun &rest args)
     (let ((indent-tabs-mode nil))
-      ad-do-it)))
+      (apply orig-fun args)))
+  (advice-add 'align-regexp :around #'init:align-regexp-with-spaces))
 
 
 (setq nand2tetris-core-base-dir (getenv "NAND2TETRIS_CORE_BASE_DIR"))
