@@ -40,10 +40,10 @@
 (el-get-bundle! with-eval-after-load-feature
   ; It fixes "Package cl is deprecated" warning on Emacs 27+
   :url "https://github.com/tarao/with-eval-after-load-feature-el/blob/889253d5e99503b16f36fcf91f7e6654f70f0d4d/with-eval-after-load-feature.el")
-(el-get-bundle! use-package)
+(require 'use-package)
 (with-eval-after-load 'use-package
+  (setopt use-package-always-ensure t)
   (require 'use-package-ensure)
-  (setq use-package-always-ensure t)
   (setq use-package-verbose t)
 					; M-x use-package-report to see the results
   (setq use-package-compute-statistics t))

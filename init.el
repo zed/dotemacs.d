@@ -12,7 +12,9 @@
   (setq epa-pinentry-mode 'loopback))
 (require '.secrets "~/.secrets.el.gpg" 'noerror)
 
-;; ** enable :ensure-system-package keyword for use-package
+;; ** Ensure system binaries exist alongside your package declarations.
+;;   Enable :ensure-system-package keyword for use-package
+;; https://github.com/jwiegley/use-package?tab=readme-ov-file#keyword-extensions
 (use-package use-package-ensure-system-package
   :ensure t)
 
@@ -78,6 +80,7 @@
 (use-package request
   )  ; used by counsel-search
 (use-package counsel
+  :ensure-system-package (rg . ripgrep)
   :delight
   :bind (("C-s" . counsel-grep-or-swiper)
 	 ("M-x" . counsel-M-x) ; show keybindings
@@ -210,6 +213,7 @@ The first element is the docset's name second the docset's archive url."
 
 ;; ** magit
 (use-package magit
+  :ensure-system-package git
   :bind ("C-c M-g" . magit-file-dispatch)
   :bind ("C-c g" . magit-status)
   :custom
@@ -306,6 +310,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   )
 
 (use-package sh-mode
+  :ensure-system-package shellcheck
   :ensure nil
   :hook (sh-mode . flycheck-mode))
 
@@ -333,6 +338,11 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 ;; ** elpy (python)
 (use-package elpy
+  :ensure-system-package
+  (
+   (pipx . "python -m pip install pipx")
+   (flake8 . "pipx install flake8 --include-deps")
+   (pylint . "pipx install pylint --include-deps"))
   :commands elpy-enable
   :custom
   (elpy-rpc-python-command "~/.pyenv/versions/3.11.7/bin/python3.11")
@@ -349,6 +359,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (add-hook 'elpy-mode-hook #'flycheck-mode))
 
 (use-package blacken
+  :ensure-system-package (black . "pipx install black-macchiato --include-deps")
   :ensure nil
   :hook (python-mode . blacken-mode)
   :custom
@@ -1351,7 +1362,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package python-black
   :ensure nil
   :demand t
-  :after python
+  :after blacken
   )
 
 ;; ** M-x elisp-format-region
