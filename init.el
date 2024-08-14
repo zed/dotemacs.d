@@ -1020,9 +1020,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; multi-language spell checking
 ;; https://github.com/Hi-Angel/dotfiles/blob/55e1daf5266ee997e72700cf7d8b6463e2b02531/.emacs#L859-L870
 (use-package ispell
-  :ensure nil
-  :ensure-system-package hunspell
-  :defer t
+  :ensure-system-package (hunspell hunspell-ru)
   :init
   ;; It's unclear if the default aspell supports multiple langs at once, but Emacs
   ;; with aspel backend doesn't. Let's use hunspell instead.
