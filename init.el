@@ -1034,6 +1034,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package org
   :ensure nil
   :custom
+  (org-image-max-width 1.0 "limit the displayed image width")
   (org-list-allow-alphabetical t "allow a) b) c) plain list items")
   (org-id-link-to-org-use-id t "`C-c l' uses ID to link to an org entry")
   (org-enforce-todo-dependencies t "can't mark DONE if there are TODO children")
@@ -1118,6 +1119,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq org-agenda-include-diary t)
 
   (setq org-plantuml-jar-path
+        ;; sudo apt install default-jre graphviz
         (expand-file-name "~/src/plantuml/plantuml.jar"))
   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
 
