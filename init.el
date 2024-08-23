@@ -1593,6 +1593,13 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
        :rev "build/set-package-requires")
   ;; M-x htmlz-mode in html buffer, to enable the minor-mode
   :commands htmlz-mode)
+
+(use-package minimap
+  :commands minimap-mode
+  :custom  (minimap-window-location 'right)
+  :init
+  (setq minimap-major-modes '(prog-mode text-mode)))
+
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 
