@@ -341,6 +341,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 ;; ** elpy (python)
 (use-package elpy
   :commands elpy-enable
+  :delight
   :init
   ;; https://github.com/jorgenschaefer/elpy/blob/master/docs/introduction.rst
   (advice-add 'python-mode :before 'elpy-enable))
@@ -348,6 +349,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (use-package blacken
   :ensure-system-package (black . "pipx install black-macchiato --include-deps")
   :ensure nil
+  :delight
   :hook (python-mode . blacken-mode)
   :custom
   (blacken-only-if-project-is-blackened t)
