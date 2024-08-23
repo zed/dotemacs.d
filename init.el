@@ -335,6 +335,9 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :after yasnippet
   )
 
+(use-package pet
+  :delight
+  :hook (python-base-mode . pet-mode))
 
 ;; ** elpy (python)
 (use-package elpy
