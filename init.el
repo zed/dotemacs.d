@@ -338,25 +338,10 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 ;; ** elpy (python)
 (use-package elpy
-  :ensure-system-package
-  (
-   (pipx . "python -m pip install pipx")
-   (flake8 . "pipx install flake8 --include-deps")
-   (pylint . "pipx install pylint --include-deps"))
   :commands elpy-enable
-  :custom
-  (elpy-rpc-python-command "~/.pyenv/versions/3.11.7/bin/python3.11")
-  (python-check-command "flake8")
-  (flycheck-python-flake8-executable "flake8")
-  (flycheck-python-pylint-executable "pylint")
-  (flycheck-pylintrc "pylintrc")
   :init
   ;; https://github.com/jorgenschaefer/elpy/blob/master/docs/introduction.rst
-  (advice-add 'python-mode :before 'elpy-enable)
-  :config
-  ;; flycheck
-  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-  (add-hook 'elpy-mode-hook #'flycheck-mode))
+  (advice-add 'python-mode :before 'elpy-enable))
 
 (use-package blacken
   :ensure-system-package (black . "pipx install black-macchiato --include-deps")
