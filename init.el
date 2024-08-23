@@ -300,9 +300,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 ;; ** debugger
 (use-package realgud
-  :ensure nil ; ; realgud has to be installed manually to avoid https://github.com/realgud/realgud/issues/77
-  :commands (realgud:pdb realgud:trepan3k)  ; run it from a Python file
-  )
+  ; run it from a Python file
+  :commands (realgud:pdb realgud:trepan3k))
 
 ;; ** real-time syntax check
 (use-package flycheck
