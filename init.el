@@ -1034,6 +1034,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package org
   :ensure nil
   :custom
+  (org-list-allow-alphabetical t "allow a) b) c) plain list items")
   (org-id-link-to-org-use-id t "`C-c l' uses ID to link to an org entry")
   (org-enforce-todo-dependencies t "can't mark DONE if there are TODO children")
   (org-use-property-inheritance t "properties such as attachment dirs apply also for sublevels")
