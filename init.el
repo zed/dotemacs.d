@@ -1035,6 +1035,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; ** configure org
 (use-package org
   :ensure nil
+  :bind (
+         :map org-mode-map
+         ("C-c C-x C-s" . org-archive-subtree-default-with-confirmation)
+         )
   :custom
   (org-image-max-width 1.0 "limit the displayed image width")
   (org-list-allow-alphabetical t "allow a) b) c) plain list items")
