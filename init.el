@@ -1251,8 +1251,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :defer 2
   :config
   (setq jupyter-use-zmq nil)
-  ;; org src blocks languages
-  (setq org-babel-python-command "python3.12")
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
