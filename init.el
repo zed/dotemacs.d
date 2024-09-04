@@ -234,6 +234,7 @@ The first element is the docset's name second the docset's archive url."
 
   :delight
   :custom
+  (git-gutter:hide-gutter t "Hide gutter when there are no changes")
   (git-gutter:window-width 2)
   (git-gutter:modified-sign "☁")
   (git-gutter:added-sign "☀")
