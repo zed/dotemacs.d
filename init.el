@@ -1267,6 +1267,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ;; default args for jupyter-python
   (setq org-babel-default-header-args:jupyter-python
         '((:results . "replace")
+          (:display . "plain")
 	  (:async . "yes")
 	  (:session . "py3.12")
           ; to list: (jupyter-available-kernelspecs 'refresh)
