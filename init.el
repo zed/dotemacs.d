@@ -1605,6 +1605,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :init
   (setq minimap-major-modes '(prog-mode text-mode)))
 
+; an alternative for *help* buffer presentation
+(use-package helpful
+  :commands (helpful-callable helpful-variable helpful-key helpful-command helpful-at-point helpful-function))
+
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 
