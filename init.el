@@ -1587,7 +1587,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
     :hook (compilation-filter . ansi-color-compilation-filter))
 
 (use-package xterm-color
-  :commands xterm-color-colorize-buffer)
+  :commands xterm-color-colorize-buffer) ; interpret ansi escape codes
 
 (use-package rust-mode
   :hook (rust-mode . prettify-symbols-mode)
