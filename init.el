@@ -1622,6 +1622,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package emacs
   :ensure nil
   :custom
+  (tramp-allow-unsafe-temporary-files t "suppress: Autosave file on local temporary directory")
   (enable-local-variables :safe) ; suppress prompt for safe variables
   (indent-tabs-mode nil)
   (menu-bar-mode nil) ; hide Menu Bar
