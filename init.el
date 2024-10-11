@@ -337,7 +337,12 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (use-package pet
   :delight
-  :hook (python-base-mode . pet-mode))
+  :hook (python-base-mode . init:pet-mode-hook)
+  :config
+  (defun init:pet-mode-hook ()
+    "Disable pet-mode for TRAMP sessions."
+    (unless (file-remote-p default-directory)
+      (pet-mode))))
 
 ;; ** elpy (python)
 (use-package elpy
