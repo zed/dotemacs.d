@@ -1610,6 +1610,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package helpful
   :commands (helpful-callable helpful-variable helpful-key helpful-command helpful-at-point helpful-function))
 
+; pulsar
+; https://protesilaos.com/emacs/pulsar#h:6ca69953-1a89-4968-a46c-2fa5e57aca9b
+(use-package pulsar
+  :hook (window-state-change . pulsar-pulse-line))
+
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 
