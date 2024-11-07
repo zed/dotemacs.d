@@ -1620,6 +1620,17 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package pulsar
   :hook (window-state-change . pulsar-pulse-line))
 
+; https://github.com/karthink/gptel?tab=readme-ov-file#usage
+(use-package gptel
+  :commands (gptel gptel-send gptel-rewrite)
+  :config
+  (setq
+ gptel-model 'llama3.2:latest
+ gptel-backend (gptel-make-ollama "llama3.2"
+                 :host "localhost:11434"
+                 :stream t
+                 :models '(llama3.2:latest))))
+
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 
