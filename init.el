@@ -1631,6 +1631,17 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
                  :stream t
                  :models '(llama3.2:latest))))
 
+;
+(use-package protobuf-mode
+  :ensure nil   ; installed in early-init.el
+  :hook (protobuf-mode . init:protobuf-mode-hook)
+  :config
+  (defconst init:protobuf-style
+    '((c-basic-offset . 4)
+      (indent-tabs-mode . nil)))
+  (defun init:protobuf-mode-hook ()
+    (c-add-style "init-protobuf-style" init:protobuf-style t)))
+
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 
