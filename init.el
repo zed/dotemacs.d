@@ -383,6 +383,10 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :mode "\\.yml\\'"
   :bind ("C-m" . newline-and-indent))
 
+(use-package css-mode
+  :ensure nil
+  :mode "\\.tcss?\\'")
+
 ;; ** typescript
 (use-package tide
   :after (typescript-mode company flycheck)
