@@ -302,6 +302,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 ;; ** debugger
 (use-package realgud
   ; run it from a Python file
+  ; set breakpoint in command buffer (b <line>), to attach source file
+  ; https://stackoverflow.com/questions/21443801/how-to-attach-an-existing-buffer-to-a-realgud-debugger
   :commands (realgud:pdb realgud:trepan3k))
 
 ;; ** real-time syntax check
