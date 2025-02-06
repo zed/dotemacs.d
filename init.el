@@ -94,9 +94,10 @@
   (enable-recursive-minibuffers t)
   (counsel-search-engine 'google)
   :init
+  (when (executable-find "rg")
 					; https://oremacs.com/2017/08/04/ripgrep/
-  (setq counsel-grep-base-command
-	"rg -i -M 120 --no-heading --line-number --color never --text -e %s %s")
+    (setq counsel-grep-base-command
+	  "rg -i -M 120 --no-heading --line-number --color never --text -e %s %s"))
   :config
   ;; Enabling counsel-mode remaps built-in Emacs functions that have counsel replacements
   (counsel-mode 1)
@@ -203,6 +204,14 @@ The first element is the docset's name second the docset's archive url."
 (use-package rg
   :ensure-system-package (rg . ripgrep)
   :bind ("C-x C-r" . rg))
+;;; https://robbmann.io/emacsd/
+(use-package grep
+  :config
+  (when (executable-find "rg")
+    (setq grep-program "rg")
+    (grep-apply-setting
+     'grep-find-command
+     '("rg -n -H --color always --no-heading -e '' $(git rev-parse --show-toplevel || pwd)" . 27))))
 
 ;; ** ace-link
 (use-package ace-link
