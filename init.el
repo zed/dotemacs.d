@@ -1661,16 +1661,25 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (menu-bar-mode nil) ; hide Menu Bar
   (tool-bar-mode nil) ; hide Tool Bar
   (set-mark-command-repeat-pop t)
-  ; use Org mode for the *scratch* buffer
+                                        ; use Org mode for the *scratch* buffer
   (initial-major-mode 'org-mode)
-  ; make the *scratch* buffer empty
+                                        ; make the *scratch* buffer empty
   (initial-scratch-message "")
   :hook
   (after-save . init:chmod+x-files-with-shebang)
+  (prog-mode . show-paren-mode)
+  ;; automatically create matching parens in programming modes but not in org-mode
+  (prog-mode . electric-pair-mode) ; Enable in programming modes
+  (org-mode . init:disable-electric-pair-mode) ; Disable in org-mode
   :config
-  ; try to detect long line and mitigate performance issues
+                                        ; delete region when we yank on top of it
+  (delete-selection-mode t)
+                                        ; try to detect long line and mitigate performance issues
   (global-so-long-mode)
 
+  (defun init:disable-electric-pair-mode ()
+    "Disable electric-pair-mode in the current buffer."
+    (electric-pair-local-mode -1))
   (defun init:chmod+x-files-with-shebang ()
     (unless (string-match "__init__.py" (or (buffer-file-name) ""))
       (executable-make-buffer-file-executable-if-script-p)))
@@ -1731,7 +1740,6 @@ The DWIM behaviour of this command is as follows:
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
-(show-paren-mode)
 
 ;; ** https://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
 (defvar my-keys-minor-mode-map
