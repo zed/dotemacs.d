@@ -47,7 +47,7 @@
     (mapc 'disable-theme custom-enabled-themes))
   (advice-add 'load-theme :before #'init:disable-before-load)
   :config
-  (change-theme 'leuven 'leuven-dark))
+  (change-theme 'modus-operandi-deuteranopia 'modus-vivendi-deuteranopia))
 
 ;; ** navigating,searching,selecting lists ivy, swiper, counsel
 ;; *** ivy
