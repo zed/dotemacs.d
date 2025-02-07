@@ -372,6 +372,24 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (blacken-only-if-project-is-blackened t)
   )
 
+(use-package ruff-format
+  :commands ruff-format-region
+  :hook (python-mode . ruffed-enable)
+  :config
+  (defun ruffed-project-is-ruffed (&optional display)
+    "Whether the project has a pyproject.toml with [tool.ruff.format] in it."
+    (when-let (parent (locate-dominating-file default-directory "pyproject.toml"))
+      (with-temp-buffer
+        (insert-file-contents (concat parent "pyproject.toml"))
+        (re-search-forward "^\\[tool.ruff.format\\]$" nil t 1))))
+  (defun ruffed-enable (&optional _ignored)
+    "Enable ruff-format if the project is ruffed."
+    (interactive)
+    (if (ruffed-project-is-ruffed)
+        (add-hook 'before-save-hook 'ruff-format-buffer nil t)
+      (remove-hook 'before-save-hook 'ruff-format-buffer t))))
+
+
 (use-package idle-highlight-mode
   :ensure nil
   :hook ((python-mode . init:enable-idle-highlight-mode)
