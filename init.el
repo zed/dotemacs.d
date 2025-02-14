@@ -613,9 +613,40 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 ;;
 (customize-set-variable 'confirm-kill-processes nil)
 
-;; https://github.com/erreina/.emacs.d/blob/master/init.d/init-keybindings.el
-(require 'hydra-move-splitter)
 (with-eval-after-load-feature (ivy counsel)
+  ; 404 for hydra-move-splitter
+  (defun hydra-move-splitter-left (arg)
+  "Move window splitter left."
+  (interactive "p")
+  (if (let ((windmove-wrap-around))
+	(windmove-find-other-window 'right))
+      (shrink-window-horizontally arg)
+    (enlarge-window-horizontally arg)))
+
+(defun hydra-move-splitter-right (arg)
+  "Move window splitter right."
+  (interactive "p")
+  (if (let ((windmove-wrap-around))
+	(windmove-find-other-window 'right))
+      (enlarge-window-horizontally arg)
+    (shrink-window-horizontally arg)))
+
+(defun hydra-move-splitter-up (arg)
+  "Move window splitter up."
+  (interactive "p")
+  (if (let ((windmove-wrap-around))
+	(windmove-find-other-window 'up))
+      (enlarge-window arg)
+    (shrink-window arg)))
+
+(defun hydra-move-splitter-down (arg)
+  "Move window splitter down."
+  (interactive "p")
+  (if (let ((windmove-wrap-around))
+	(windmove-find-other-window 'up))
+      (shrink-window arg)
+    (enlarge-window arg)))
+
 (global-set-key (kbd "C-c w") (defhydra hydra-window (:hint nil)
   "
 Movement^^        ^Split^         ^Switch^      ^Resize^
