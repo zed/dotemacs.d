@@ -363,6 +363,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   ;; https://github.com/jorgenschaefer/elpy/blob/master/docs/introduction.rst
   (advice-add 'python-mode :before 'elpy-enable))
 
+;; *** format python files on save using black if project is configured for black
 (use-package blacken
   :ensure-system-package (black . "pipx install black-macchiato --include-deps")
   :ensure nil
@@ -372,6 +373,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (blacken-only-if-project-is-blackened t)
   )
 
+;; *** format python files on save using ruff if project is configured for ruff
 (use-package ruff-format
   :commands ruff-format-region
   :hook (python-mode . ruffed-enable)
@@ -389,7 +391,18 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
         (add-hook 'before-save-hook 'ruff-format-buffer nil t)
       (remove-hook 'before-save-hook 'ruff-format-buffer t))))
 
+;; *** use ruff as a linter for python-mode
+(use-package flymake-ruff
+  :hook (python-mode . init:flymake-ruff-load)
+  :config
+  (defun init:flymake-ruff-load (&optional _ignored)
+    "Configure flymake to use ruff check and disable python-flymake backend."
+    (interactive)
+    (when (derived-mode-p 'python-mode 'python-ts-mode)
+      (remove-hook 'flymake-diagnostic-functions #'python-flymake t)
+      (add-hook 'flymake-diagnostic-functions #'flymake-ruff--run-checker nil t))))
 
+;; **
 (use-package idle-highlight-mode
   :ensure nil
   :hook ((python-mode . init:enable-idle-highlight-mode)
