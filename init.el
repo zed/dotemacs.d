@@ -393,6 +393,9 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 ;; *** use ruff as a linter for python-mode
 (use-package flymake-ruff
+  :vc (:url "https://github.com/erickgnavar/flymake-ruff"
+            ; run ruff from project root dir if current buffer belongs to a project
+       :rev "refs/pull/27/merge")
   :hook (python-mode . init:flymake-ruff-load)
   :config
   (defun init:flymake-ruff-load (&optional _ignored)
