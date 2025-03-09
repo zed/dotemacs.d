@@ -376,18 +376,18 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 ;; *** format python files on save using ruff if project is configured for ruff
 (use-package ruff-format
   :commands ruff-format-region
-  :hook (python-mode . ruffed-enable)
+  :hook (python-mode . init:ruffed-enable)
   :config
-  (defun ruffed-project-is-ruffed (&optional display)
+  (defun init:ruffed-project-is-ruffed (&optional display)
     "Whether the project has a pyproject.toml with [tool.ruff.format] in it."
     (when-let (parent (locate-dominating-file default-directory "pyproject.toml"))
       (with-temp-buffer
         (insert-file-contents (concat parent "pyproject.toml"))
         (re-search-forward "^\\[tool.ruff.format\\]$" nil t 1))))
-  (defun ruffed-enable (&optional _ignored)
+  (defun init:ruffed-enable (&optional _ignored)
     "Enable ruff-format if the project is ruffed."
     (interactive)
-    (if (ruffed-project-is-ruffed)
+    (if (init:ruffed-project-is-ruffed)
         (add-hook 'before-save-hook 'ruff-format-buffer nil t)
       (remove-hook 'before-save-hook 'ruff-format-buffer t))))
 
@@ -395,10 +395,17 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (use-package flymake-ruff
   :hook (python-mode . init:flymake-ruff-load)
   :config
+  (defun init:flymake-ruff-is-ruffed (&optional display)
+    "Whether the project has a pyproject.toml with [tool.ruff.lint] in it."
+    (when-let (parent (locate-dominating-file default-directory "pyproject.toml"))
+      (with-temp-buffer
+        (insert-file-contents (concat parent "pyproject.toml"))
+        (re-search-forward "^\\[tool.ruff.lint\\]$" nil t 1))))
   (defun init:flymake-ruff-load (&optional _ignored)
-    "Configure flymake to use ruff check and disable python-flymake backend."
+    "Configure flymake to use ruff check and disable python-flymake backend if ruffed."
     (interactive)
-    (when (derived-mode-p 'python-mode 'python-ts-mode)
+    (when (and (derived-mode-p 'python-mode 'python-ts-mode)
+               (init:flymake-ruff-is-ruffed))
       (remove-hook 'flymake-diagnostic-functions #'python-flymake t)
       (add-hook 'flymake-diagnostic-functions #'flymake-ruff--run-checker nil t))))
 
@@ -1702,11 +1709,21 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :commands (gptel gptel-send gptel-rewrite)
   :config
   (setq
- gptel-model 'llama3.2:latest
- gptel-backend (gptel-make-ollama "llama3.2"
-                 :host "localhost:11434"
-                 :stream t
-                 :models '(llama3.2:latest))))
+   gptel-model 'llama3.2:latest
+   gptel-backend (gptel-make-ollama "Ollama"
+                   :host "localhost:11434"
+                   :stream t
+                   :models '(
+                             codellama:latest
+                             deepscaler:latest
+                             hf.co/bartowski/agentica-org_DeepScaleR-1.5B-Preview-GGUF:F16
+                             hf.co/unsloth/DeepSeek-R1-Distill-Llama-8B-GGUF:latest
+                             llama3.2-vision:latest
+                             llama3.2:latest
+                             phi4:latest
+                             tripplyons/r1-distill-qwen-7b:latest
+                             ))))
+
 
 ;
 (use-package protobuf-mode
