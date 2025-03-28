@@ -1804,6 +1804,30 @@ The DWIM behaviour of this command is as follows:
 
 (define-key global-map (kbd "C-g") #'prot/keyboard-quit-dwim)
 
+;; fix toggling fullscreen
+(progn
+  (defun init:toggle-frame-fullscreen (&optional frame)
+    "Toggle fullscreen state of FRAME.
+
+Like emacs' `toggle-frame-fullscreen' but fixes fullboth->fullheight transition."
+    (interactive)
+    (let ((fullscreen (frame-parameter frame 'fullscreen)))
+      (if (memq fullscreen '(fullscreen fullboth))
+	  (let ((fullscreen-restore (frame-parameter frame 'fullscreen-restore)))
+	    (if (memq fullscreen-restore '(maximized fullheight fullwidth))
+                (progn
+                                        ; Fix fullscreen=fullboth, fullscreen-restore=fullheight transition.
+                                        ;
+                                        ; Without intermediate fullscreen change,
+                                        ; the original fullscreen=fullheight doesn't change window size
+                                        ; (width remains full monitor width).
+                  (set-frame-parameter frame 'fullscreen nil)
+	          (set-frame-parameter frame 'fullscreen fullscreen-restore))
+	      (set-frame-parameter frame 'fullscreen nil)))
+        (modify-frame-parameters
+         frame `((fullscreen . fullboth) (fullscreen-restore . ,fullscreen))))))
+
+  (define-key global-map (kbd "<f11>") #'init:toggle-frame-fullscreen))
 
 (setq nand2tetris-core-base-dir (getenv "NAND2TETRIS_CORE_BASE_DIR"))
 (setq safe-local-variable-values
