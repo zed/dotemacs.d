@@ -116,6 +116,65 @@
   (advice-add 'counsel-yank-pop-action :around #'vterm-counsel-yank-pop-action)
   )
 
+;; ** embark -- act part in filter->select->act UI paradigm
+;; isearch/swiper/avy are responsible for filter;
+;; avy for selecting
+;; *** Annotations placed at the margin of the minibuffer for your completion candidates
+(use-package marginalia
+  :config
+  (marginalia-mode))
+
+;; *** Choose a command to run based on what is near point: Emacs Mini-Buffer Actions Rooted in Keymaps
+;; https://karthinks.com/software/fifteen-ways-to-use-embark/
+(use-package embark
+  :bind
+  (("C-." . embark-act)         ;; Actually…. & But first…
+   ("M-." . embark-dwim)        ;; note: xref-find-definitions is called either way
+   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+
+  :init
+
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
+
+  ;; Show the Embark target at point via Eldoc. You may adjust the
+  ;; Eldoc strategy, if you want to see the documentation from
+  ;; multiple providers. Beware that using this can be a little
+  ;; jarring since the message shown in the minibuffer can be more
+  ;; than one line, causing the modeline to move up and down:
+
+  ;; (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+
+  :config
+
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
+
+;; *** Consult users will also want the embark-consult package.
+(use-package embark-consult
+  :ensure t ; only need to install it, embark loads it after consult if found
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+
+;; **** Add embark-act as "." key to avy dispatch
+;; https://karthinks.com/software/avy-can-do-anything/#adc2ee
+(with-eval-after-load-feature (avy) ; note: don't wait for embark
+  (progn
+    (defun avy-action-embark (pt)
+      (unwind-protect
+          (save-excursion
+            (goto-char pt)
+            (embark-act))
+        (select-window
+         (cdr (ring-ref avy-ring 0))))
+      t)
+
+    (setf (alist-get ?. avy-dispatch-alist) 'avy-action-embark)))
+
 ;; *** projectile C-c p p
 (use-package projectile
   :delight
@@ -1114,6 +1173,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; ** flyspell
 (use-package flyspell
   :ensure nil
+  :bind
+  ; unbind C-. (to make it available for embark-act)
+  (:map flyspell-mode-map ("C-." . nil))
+  :custom
+  (flyspell-use-meta-tab nil "do not use M-TAB, C-M-i to correct word")
   :defer t
   :delight
   :hook
