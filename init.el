@@ -935,6 +935,14 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package dired-subtree
   :bind (:map dired-mode-map ("TAB" . dired-subtree-toggle)))
 
+(use-package dired-hist
+  :bind
+  (:map dired-mode-map
+        ("l" . #'dired-hist-go-back)
+        ("r" . #'dired-hist-go-forward))
+  :init
+  (dired-hist-mode 1))
+
 ;; ** Save point position between sessions
 (require 'saveplace)
 (setq-default save-place t) ; set global default value for buffer local variable
