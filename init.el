@@ -1808,6 +1808,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (defun init:protobuf-mode-hook ()
     (c-add-style "init-protobuf-style" init:protobuf-style t)))
 
+(use-package ace-window
+  :ensure nil   ; installed in early-init.el
+  :custom (aw-ignore-current t "ignore `selected-window'"))
+
 ;; ** Popper: Popup Buffers for Emacs
 (use-package popper
   :ensure t ; or :straight t
