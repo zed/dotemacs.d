@@ -1812,6 +1812,13 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :ensure nil   ; installed in early-init.el
   :custom (aw-ignore-current t "ignore `selected-window'"))
 
+;; ** consult-dir: insert paths into minibuffer prompts in Emacs
+(use-package consult-dir
+  :bind (("C-x C-d" . consult-dir)
+         :map minibuffer-local-completion-map
+         ("C-x C-d" . consult-dir)
+         ("C-x C-j" . consult-dir-jump-file)))
+
 ;; ** Popper: Popup Buffers for Emacs
 (use-package popper
   :ensure t ; or :straight t
