@@ -1861,6 +1861,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ;; automatically create matching parens in programming modes but not in org-mode
   (prog-mode . electric-pair-mode) ; Enable in programming modes
   (org-mode . init:disable-electric-pair-mode) ; Disable in org-mode
+  ; turn on imenu
+  (markdown-mode . #'imenu-add-menubar-index)
+  (makefile-mode . #'imenu-add-menubar-index)
+  (prog-mode . #'imenu-add-menubar-index)
+  (org-mode . #'imenu-add-menubar-index)
   :config
                                         ; delete region when we yank on top of it
   (delete-selection-mode t)
