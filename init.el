@@ -1808,6 +1808,25 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (defun init:protobuf-mode-hook ()
     (c-add-style "init-protobuf-style" init:protobuf-style t)))
 
+;; ** Popper: Popup Buffers for Emacs
+(use-package popper
+  :ensure t ; or :straight t
+  :bind (("C-`"   . popper-toggle)
+         ("M-`"   . popper-cycle)
+         ("C-M-`" . popper-toggle-type))
+  :init
+  (setq popper-reference-buffers
+        '("\\*Messages\\*"
+          "Output\\*$"
+          "\\*Async Shell Command\\*"
+          "\\*Warnings\\*"
+          "\\*Flymake diagnostics"
+          help-mode
+          compilation-mode))
+  (popper-mode +1)
+  (popper-echo-mode +1))                ; For echo area hints
+
+
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 
