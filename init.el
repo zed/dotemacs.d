@@ -14,9 +14,10 @@
 
 ;; ** Ensure system binaries exist alongside your package declarations.
 ;;   Enable :ensure-system-package keyword for use-package
-;; https://github.com/jwiegley/use-package?tab=readme-ov-file#keyword-extensions
-(use-package use-package-ensure-system-package
+;; https://www.gnu.org/software/emacs/manual/html_node/use-package/use_002dpackage_002densure_002dsystem_002dpackage.html
+(use-package system-packages
   :ensure t)
+(use-package use-package-ensure-system-package)
 
 ;; ** delight: remove modes from ModeLine
 ;; C-h v minor-mode-alist
@@ -1862,10 +1863,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (prog-mode . electric-pair-mode) ; Enable in programming modes
   (org-mode . init:disable-electric-pair-mode) ; Disable in org-mode
   ; turn on imenu
-  (markdown-mode . #'imenu-add-menubar-index)
-  (makefile-mode . #'imenu-add-menubar-index)
-  (prog-mode . #'imenu-add-menubar-index)
-  (org-mode . #'imenu-add-menubar-index)
+  (markdown-mode . imenu-add-menubar-index)
+  (makefile-mode . imenu-add-menubar-index)
+  (prog-mode . imenu-add-menubar-index)
+  (org-mode . imenu-add-menubar-index)
   :config
                                         ; delete region when we yank on top of it
   (delete-selection-mode t)

@@ -25,6 +25,7 @@
 (load custom-file)
 
 ;; * bootstrap el-get
+(setq el-get-install-skip-emacswiki-recipes t) ; don't build local emacswiki recipes
 (add-to-list 'load-path  (concat user-emacs-directory "el-get/el-get"))
 (unless (require 'el-get nil 'noerror)
   (with-current-buffer
@@ -100,9 +101,6 @@
   (autoload 'gfm-mode "markdown-mode"
     "Major mode for editing GitHub Flavored Markdown files" t)
   (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode)))
-
-(el-get-bundle sqlite-dump
-  :url "https://download.tuxfamily.org/user42/sqlite-dump.el")
 
 (el-get-bundle paredit)
 (el-get-bundle rainbow-delimiters
