@@ -1839,6 +1839,8 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (popper-echo-mode +1))                ; For echo area hints
 
 
+(use-package feature-mode
+  :mode "\.feature$")
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 
