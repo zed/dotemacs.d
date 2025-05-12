@@ -1831,8 +1831,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
         '("\\*Messages\\*"
           "Output\\*$"
           "\\*Async Shell Command\\*"
-          "\\*Warnings\\*"
           "\\*Flymake diagnostics"
+          "\\*system-packages\\*"
+          "\\*GNU Emacs\\*"
           help-mode
           compilation-mode))
   (popper-mode +1)
