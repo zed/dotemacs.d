@@ -17,7 +17,8 @@
 ;; https://www.gnu.org/software/emacs/manual/html_node/use-package/use_002dpackage_002densure_002dsystem_002dpackage.html
 (use-package system-packages
   :ensure t)
-(use-package use-package-ensure-system-package)
+(use-package use-package-ensure-system-package
+  :ensure nil)
 
 ;; ** delight: remove modes from ModeLine
 ;; C-h v minor-mode-alist
@@ -262,8 +263,7 @@ The first element is the docset's name second the docset's archive url."
   :custom
   (wgrep-auto-save-buffer t))
 (use-package rg
-  :ensure-system-package (rg . ripgrep)
-  :bind ("C-x C-r" . rg))
+  :ensure-system-package (rg . ripgrep))
 ;;; https://robbmann.io/emacsd/
 (use-package grep
   :config
@@ -1920,32 +1920,27 @@ The DWIM behaviour of this command is as follows:
    (t
     (keyboard-quit))))
 
-(define-key global-map (kbd "C-g") #'prot/keyboard-quit-dwim)
-
-;; fix toggling fullscreen
-(progn
-  (defun init:toggle-frame-fullscreen (&optional frame)
-    "Toggle fullscreen state of FRAME.
+;; fix toggling fullscreen on f11
+(defun init:toggle-frame-fullscreen (&optional frame)
+  "Toggle fullscreen state of FRAME.
 
 Like emacs' `toggle-frame-fullscreen' but fixes fullboth->fullheight transition."
-    (interactive)
-    (let ((fullscreen (frame-parameter frame 'fullscreen)))
-      (if (memq fullscreen '(fullscreen fullboth))
-	  (let ((fullscreen-restore (frame-parameter frame 'fullscreen-restore)))
-	    (if (memq fullscreen-restore '(maximized fullheight fullwidth))
-                (progn
+  (interactive)
+  (let ((fullscreen (frame-parameter frame 'fullscreen)))
+    (if (memq fullscreen '(fullscreen fullboth))
+	(let ((fullscreen-restore (frame-parameter frame 'fullscreen-restore)))
+	  (if (memq fullscreen-restore '(maximized fullheight fullwidth))
+              (progn
                                         ; Fix fullscreen=fullboth, fullscreen-restore=fullheight transition.
                                         ;
                                         ; Without intermediate fullscreen change,
                                         ; the original fullscreen=fullheight doesn't change window size
                                         ; (width remains full monitor width).
-                  (set-frame-parameter frame 'fullscreen nil)
-	          (set-frame-parameter frame 'fullscreen fullscreen-restore))
-	      (set-frame-parameter frame 'fullscreen nil)))
-        (modify-frame-parameters
-         frame `((fullscreen . fullboth) (fullscreen-restore . ,fullscreen))))))
-
-  (define-key global-map (kbd "<f11>") #'init:toggle-frame-fullscreen))
+                (set-frame-parameter frame 'fullscreen nil)
+	        (set-frame-parameter frame 'fullscreen fullscreen-restore))
+	    (set-frame-parameter frame 'fullscreen nil)))
+      (modify-frame-parameters
+       frame `((fullscreen . fullboth) (fullscreen-restore . ,fullscreen))))))
 
 (setq nand2tetris-core-base-dir (getenv "NAND2TETRIS_CORE_BASE_DIR"))
 (setq safe-local-variable-values
@@ -1975,8 +1970,11 @@ Like emacs' `toggle-frame-fullscreen' but fixes fullboth->fullheight transition.
 (defvar my-keys-minor-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "<f4>") #'ace-window)
+    (define-key map (kbd "C-g") #'prot/keyboard-quit-dwim)
+    (define-key map (kbd "<f11>") #'init:toggle-frame-fullscreen)
+    (define-key map (kbd "C-x C-r")  #'rg)
     map)
-  "my-keys-minor-mode keymap.")
+  "my-keys-minor-mode key map.")
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."
