@@ -1998,5 +1998,16 @@ Like emacs' `toggle-frame-fullscreen' but fixes fullboth->fullheight transition.
 		      (message "Loading %s...done (elapsed %.3fs) [after-init]"
 			       ,load-file-name elapsed)))
 		 t))
-;; * the end
+
+;; * Show agenda on startup
+(setq inhibit-splash-screen t)
+(setq org-agenda-window-setup 'current-window)
+(setq initial-buffer-choice nil) ; Prevent *scratch* from appearing
+(defun init:show-agenda ()
+  "Show agenda as the only window."
+  (delete-other-windows)
+  (org-agenda nil "a" nil))
+(add-hook 'after-init-hook #'init:show-agenda)
+
 (put 'scroll-left 'disabled nil)
+;; * the end
