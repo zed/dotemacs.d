@@ -1842,6 +1842,13 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 (use-package feature-mode
   :mode "\.feature$")
+
+(use-package telega
+  :custom
+  (telega-use-images t "Non-nil to show images. Explicitly set it to non-nil if using Emacs as a service and want to create X frames to show images.")
+  :config
+  ; docker pull zevlg/telega-server:latest
+  (setq telega-use-docker t))
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 
