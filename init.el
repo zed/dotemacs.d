@@ -1856,6 +1856,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package emacs
   :ensure nil
   :custom
+  (remote-file-name-inhibit-locks t "Whether to create file locks for remote files.")
   (tramp-allow-unsafe-temporary-files t "suppress: Autosave file on local temporary directory")
   (enable-local-variables :safe) ; suppress prompt for safe variables
   (indent-tabs-mode nil)
@@ -1868,6 +1869,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (initial-scratch-message "")
   :hook
   (after-save . init:chmod+x-files-with-shebang)
+  (find-file . init:vc-off-if-remote)
   (prog-mode . show-paren-mode)
   ;; automatically create matching parens in programming modes but not in org-mode
   (prog-mode . electric-pair-mode) ; Enable in programming modes
@@ -1892,7 +1894,12 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (defun init:align-regexp-with-spaces (orig-fun &rest args)
     (let ((indent-tabs-mode nil))
       (apply orig-fun args)))
-  (advice-add 'align-regexp :around #'init:align-regexp-with-spaces))
+  (advice-add 'align-regexp :around #'init:align-regexp-with-spaces)
+  (defun init:vc-off-if-remote ()
+    "Improve latency while using TRAMP."
+    ; https://www.reddit.com/r/emacs/comments/y92y4b/comment/it3a35r/
+    (if (file-remote-p (buffer-file-name))
+        (setq-local vc-handled-backends nil))))
 
 ;; make C-g close open minibuffer
 ;; https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/

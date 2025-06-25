@@ -12,22 +12,10 @@
 (setq gc-cons-threshold most-positive-fixnum)
 (setq gc-cons-percentage 0.5)
 
-;; ** more startup speedups (no measurable speedup but seems reasonable for TRAMP and such)
-;; https://github.com/DavidVujic/my-emacs-config/blob/21ba456a7398b568f148af4f43026f0c412ef1e5/early-init.el
-;; Same idea as above for the `file-name-handler-alist' and the
-;; `vc-handled-backends' with regard to startup speed optimisation.
-;; Here I am storing the default value with the intent of restoring it
-;; via the `emacs-startup-hook'.
-
-;; Note: can't set `file-name-handler-alist' to nil -- need *.gpg handling.
-(defvar prot-emacs--vc-handled-backends vc-handled-backends)
-(setq vc-handled-backends nil)
-
 (add-hook 'emacs-startup-hook
           (lambda ()
             (setq gc-cons-threshold (* 1000 1000 8))
-            (setq gc-cons-percentage 0.1)
-            (setq vc-handled-backends prot-emacs--vc-handled-backends)))
+            (setq gc-cons-percentage 0.1)))
 
 ;; ** https://www.reddit.com/r/emacs/comments/ct0h6m/this_nobbled_me_yesterday_on_debian_10_it_needs/
 (when (and (>= libgnutls-version 30603)
