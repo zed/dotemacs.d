@@ -38,7 +38,7 @@
   "Report time elapsed since emacs start."
   (or what-has-loaded (setq what-has-loaded load-file-name))
   (let ((elapsed (float-time (time-subtract (current-time)
-					      emacs-start-time))))
+					    emacs-start-time))))
     (message "Loading %s...done (elapsed %.3fs)" what-has-loaded elapsed)))
 
 ;; * load customizations
@@ -64,7 +64,7 @@
 
 ;; to suppress "free variable" warning
 (el-get-bundle! with-eval-after-load-feature
-  ; It fixes "Package cl is deprecated" warning on Emacs 27+
+                                        ; It fixes "Package cl is deprecated" warning on Emacs 27+
   :url "https://github.com/tarao/with-eval-after-load-feature-el/blob/889253d5e99503b16f36fcf91f7e6654f70f0d4d/with-eval-after-load-feature.el")
 (require 'use-package)
 (with-eval-after-load 'use-package
@@ -99,7 +99,7 @@
   :type github
   :pkgname "jorgenschaefer/emacs-tdd")
 
-                    ; format Python code on save (C-x C-s)
+                                        ; format Python code on save (C-x C-s)
 (el-get-bundle blacken
   :description "Reformat python buffers using the 'black' formatter"
   :type github
@@ -138,9 +138,9 @@
   (global-set-key (kbd "s-J") 'avy-pop-mark)
   (avy-setup-default))
 (with-eval-after-load-feature 'avy
-    (setq avy-background t))
+  (setq avy-background t))
 
-; *** jump to link in info, eww buffers: type O + appeared avy letters
+                                        ; *** jump to link in info, eww buffers: type O + appeared avy letters
 (el-get-bundle ace-link)
 
 
@@ -152,10 +152,10 @@
 
 ;; ** restclient
 (el-get-bundle restclient)
-; NOTE: avoid "recursive load" error from el-get
+                                        ; NOTE: avoid "recursive load" error from el-get
 (el-get-bundle company-restclient)
 
-; for ivy-regex-fuzzy sorting of large lists
+                                        ; for ivy-regex-fuzzy sorting of large lists
 (el-get-bundle flx)
 
 ;; *** ido/ivy/helm imenu tag selection across buffers with the same mode/project etc
@@ -178,7 +178,7 @@
 (el-get-bundle point-history
   :url "https://raw.githubusercontent.com/blue0513/point-history/65eb652549abc704e07311a7820956e467444ec5/point-history.el"
   (point-history-mode t))
-; M-x ivy-point-history
+                                        ; M-x ivy-point-history
 (el-get-bundle ivy-point-history
   :url "https://raw.githubusercontent.com/SuzumiyaAoba/ivy-point-history/88c0a585105271322ac0bc65418c7eb908139bcd/ivy-point-history.el")
 
@@ -197,8 +197,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; no new el-get packages from here on out
 (setq my:el-get-packages
-       ;; list of packages we use straight from official recipes
-       (mapcar #'el-get-as-symbol (mapcar #'el-get-source-name el-get-sources)))
+      ;; list of packages we use straight from official recipes
+      (mapcar #'el-get-as-symbol (mapcar #'el-get-source-name el-get-sources)))
 
 
 ;; https://github.com/dimitri/el-get/issues/2232

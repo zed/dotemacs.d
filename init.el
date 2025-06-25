@@ -53,21 +53,21 @@
 
 ;; ** navigating,searching,selecting lists ivy, swiper, counsel
 ;; *** ivy
-; https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
+                                        ; https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
 (use-package ivy
   :delight
   :init
   (ivy-mode 1)  ; turn on ivy for default functions
   :bind ("C-c C-r" . ivy-resume)
   :config
-  ; https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/
+                                        ; https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/
   (setq ivy-re-builders-alist
 	;; allow input not in order
         '((t   . ivy--regex-ignore-order))) ; "C-o m" toggles the current regexp builder
   (setq ivy-height 20)
   (setq ivy-use-virtual-buffers t
 	ivy-count-format "%d/%d")
-  ; remove "^" from the default regex
+                                        ; remove "^" from the default regex
   (setq ivy-initial-inputs-alist nil)
   )
 ;; **** ~C-o~ (=hydra-ivy/body=) invokes Hydra menus with key shortcuts.
@@ -107,13 +107,13 @@
   )
 (with-eval-after-load-feature (counsel vterm)
   (defun vterm-counsel-yank-pop-action (orig-fun &rest args)
-  (if (equal major-mode 'vterm-mode)
-      (let ((inhibit-read-only t)
-            (yank-undo-function (lambda (_start _end) (vterm-undo))))
-        (cl-letf (((symbol-function 'insert-for-yank)
-               (lambda (str) (vterm-send-string str t))))
+    (if (equal major-mode 'vterm-mode)
+        (let ((inhibit-read-only t)
+              (yank-undo-function (lambda (_start _end) (vterm-undo))))
+          (cl-letf (((symbol-function 'insert-for-yank)
+                     (lambda (str) (vterm-send-string str t))))
             (apply orig-fun args)))
-    (apply orig-fun args)))
+      (apply orig-fun args)))
 
   (advice-add 'counsel-yank-pop-action :around #'vterm-counsel-yank-pop-action)
   )
@@ -201,7 +201,7 @@
   ;; keys are invoked (causing the config) in the corresponding buffer
   :init
   (progn  ;; M-x counsel-dash-install-docset  (after using counsel-dash)
-          ;; M-x counsel-dash-install-user-docset -> 404 from https://dashes-to-dashes.herokuapp.com/docsets/contrib
+    ;; M-x counsel-dash-install-user-docset -> 404 from https://dashes-to-dashes.herokuapp.com/docsets/contrib
     ;;;; (setq url-debug t) ;; see *URL-DEBUG* buffer
     (defun python3-doc ()
       (interactive)
@@ -370,9 +370,9 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 ;; ** debugger
 (use-package realgud
-  ; run it from a Python file
-  ; set breakpoint in command buffer (b <line>), to attach source file
-  ; https://stackoverflow.com/questions/21443801/how-to-attach-an-existing-buffer-to-a-realgud-debugger
+                                        ; run it from a Python file
+                                        ; set breakpoint in command buffer (b <line>), to attach source file
+                                        ; https://stackoverflow.com/questions/21443801/how-to-attach-an-existing-buffer-to-a-realgud-debugger
   :commands (realgud:pdb realgud:trepan3k))
 
 ;; ** real-time syntax check
@@ -543,41 +543,41 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (use-package hydra
   :ensure nil
   :init
-(progn
-  ;; https://github.com/abo-abo/hydra/wiki/Basics
-  (defhydra hydra-zoom (global-map "C-c")
-    "zoom"
-    ("+" text-scale-increase "in")
-    ("-" text-scale-decrease "out"))
+  (progn
+    ;; https://github.com/abo-abo/hydra/wiki/Basics
+    (defhydra hydra-zoom (global-map "C-c")
+      "zoom"
+      ("+" text-scale-increase "in")
+      ("-" text-scale-decrease "out"))
 
-;; *** C-c n/p - next/prev logical line
-  (defhydra hydra-logical-line (global-map "C-c")
+    ;; *** C-c n/p - next/prev logical line
+    (defhydra hydra-logical-line (global-map "C-c")
       "logical line"
-    ("n" next-logical-line "next")
-    ; note: "C-c p" is reserved for projectile
-    ("p" previous-logical-line "prev" :bind nil))
+      ("n" next-logical-line "next")
+                                        ; note: "C-c p" is reserved for projectile
+      ("p" previous-logical-line "prev" :bind nil))
 
-;; *** https://github.com/abo-abo/hydra/wiki/Compilation
-  (defhydra hydra-next-error (global-map "C-x")
-    "
+    ;; *** https://github.com/abo-abo/hydra/wiki/Compilation
+    (defhydra hydra-next-error (global-map "C-x")
+      "
 Compilation errors:
 _j_: next error        _h_: first error    _q_uit
 _k_: previous error    _l_: last error
 "
-    ("`" next-error     nil)
-    ("j" next-error     nil :bind nil)
-    ("k" previous-error nil :bind nil)
-    ("h" first-error    nil :bind nil)
-    ("l" (condition-case err
-             (while t
-               (next-error))
-           (user-error nil))
-     nil :bind nil)
-    ("q" nil            nil :color blue))
+      ("`" next-error     nil)
+      ("j" next-error     nil :bind nil)
+      ("k" previous-error nil :bind nil)
+      ("h" first-error    nil :bind nil)
+      ("l" (condition-case err
+               (while t
+                 (next-error))
+             (user-error nil))
+       nil :bind nil)
+      ("q" nil            nil :color blue))
 
-;; *** https://github.com/abo-abo/hydra/wiki/multiple-cursors
-  (global-set-key (kbd "C-c m")  (defhydra hydra-multiple-cursors (:hint nil)
-    "
+    ;; *** https://github.com/abo-abo/hydra/wiki/multiple-cursors
+    (global-set-key (kbd "C-c m")  (defhydra hydra-multiple-cursors (:hint nil)
+                                     "
      ^Up^            ^Down^          ^Mark^                ^Edit^            ^Other^
 --------------------------------------------------------------------------------------
 [_p_]   Next    [_n_]   Next    [_a_] Mark all        [_l_] Edit lines  [_i_] Insert numbers
@@ -585,30 +585,30 @@ _k_: previous error    _l_: last error
 [_M-p_] Unmark  [_M-n_] Unmark  [_r_] Mark by regexp  [_C-e_] Edit EOL  [_s_] Sort regions
 ^ ^             ^ ^             [_d_] Mark in defun   [_C-'_] Hide unmatched [_q_] Quit
 "
-    ("a" mc/mark-all-like-this :exit t)
-    ("d" mc/mark-all-symbols-like-this-in-defun :exit t)
-    ("C-'" mc-hide-unmatched-lines-mode)
-    ("i" mc/insert-numbers :exit t)
-    ("n" mc/mark-next-like-this)
-    ("N" mc/skip-to-next-like-this)
-    ("l" mc/edit-lines :exit t)
-    ("m" mc/mark-all-dwim :exit t)
-    ("M-n" mc/unmark-next-like-this)
-    ("p" mc/mark-previous-like-this)
-    ("P" mc/skip-to-previous-like-this)
-    ("M-p" mc/unmark-previous-like-this)
-    ("r" mc/mark-all-in-region-regexp :exit t)
-    ("R" mc/reverse-regions)
-    ("s" mc/sort-regions)
-    ("q" nil)
-    ("C-a" mc/edit-beginnings-of-lines :exit t)
-    ("C-e" mc/edit-ends-of-lines :exit t)))
+                                     ("a" mc/mark-all-like-this :exit t)
+                                     ("d" mc/mark-all-symbols-like-this-in-defun :exit t)
+                                     ("C-'" mc-hide-unmatched-lines-mode)
+                                     ("i" mc/insert-numbers :exit t)
+                                     ("n" mc/mark-next-like-this)
+                                     ("N" mc/skip-to-next-like-this)
+                                     ("l" mc/edit-lines :exit t)
+                                     ("m" mc/mark-all-dwim :exit t)
+                                     ("M-n" mc/unmark-next-like-this)
+                                     ("p" mc/mark-previous-like-this)
+                                     ("P" mc/skip-to-previous-like-this)
+                                     ("M-p" mc/unmark-previous-like-this)
+                                     ("r" mc/mark-all-in-region-regexp :exit t)
+                                     ("R" mc/reverse-regions)
+                                     ("s" mc/sort-regions)
+                                     ("q" nil)
+                                     ("C-a" mc/edit-beginnings-of-lines :exit t)
+                                     ("C-e" mc/edit-ends-of-lines :exit t)))
 
-;; *** https://github.com/abo-abo/hydra/wiki/Dired
-  (with-eval-after-load-feature 'dired
-    (define-key dired-mode-map "."
-      (defhydra hydra-dired (:hint nil :color pink)
-    "
+    ;; *** https://github.com/abo-abo/hydra/wiki/Dired
+    (with-eval-after-load-feature 'dired
+      (define-key dired-mode-map "."
+                  (defhydra hydra-dired (:hint nil :color pink)
+                    "
 _+_ mkdir          _v_iew           _m_ark             _(_ details        _i_nsert-subdir    wdired
 _C_opy             _O_ view other   _U_nmark all                                             C-x C-q : edit
 _D_elete           _o_pen other     _u_nmark           _l_ redisplay      _w_ kill-subdir    C-c C-c : commit
@@ -621,114 +621,114 @@ _Z_ compress       _Q_ repl regexp
 
 T - tag prefix
 "
-    ("(" dired-hide-details-mode)
-    ("+" dired-create-directory)
-    ("?" dired-summary)
-    ("A" dired-do-find-regexp)
-    ("C" dired-do-copy) ;; Copy all marked files
-    ("D" dired-do-delete)
-    ("G" dired-do-chgrp)
-    ("g" revert-buffer) ;; read all directories again (refresh)
-    ("i" dired-subtree-insert) ;; insert subtree under its line
-    ("l" dired-do-redisplay) ;; relist the marked or singel directory
-    ("M" dired-do-chmod)
-    ("m" dired-mark)
-    ("O" dired-display-file)
-    ("o" dired-find-file-other-window)
-    ("Q" dired-do-find-regexp-and-replace)
-    ("R" dired-do-rename)
-    ("S" dired-do-symlink)
-    ("s" dired-sort-toggle-or-edit)
-    ("t" dired-toggle-marks)
-    ("U" dired-unmark-all-marks)
-    ("u" dired-unmark)
-    ("v" dired-view-file) ;; q to exit, s to search, = gets line #
-    ("w" dired-kill-subdir)
-    ("Y" dired-do-relsymlink)
-    ("Z" dired-do-compress)
-    ("q" nil :color blue)
-    ("." nil :color blue))))
+                    ("(" dired-hide-details-mode)
+                    ("+" dired-create-directory)
+                    ("?" dired-summary)
+                    ("A" dired-do-find-regexp)
+                    ("C" dired-do-copy) ;; Copy all marked files
+                    ("D" dired-do-delete)
+                    ("G" dired-do-chgrp)
+                    ("g" revert-buffer) ;; read all directories again (refresh)
+                    ("i" dired-subtree-insert) ;; insert subtree under its line
+                    ("l" dired-do-redisplay) ;; relist the marked or singel directory
+                    ("M" dired-do-chmod)
+                    ("m" dired-mark)
+                    ("O" dired-display-file)
+                    ("o" dired-find-file-other-window)
+                    ("Q" dired-do-find-regexp-and-replace)
+                    ("R" dired-do-rename)
+                    ("S" dired-do-symlink)
+                    ("s" dired-sort-toggle-or-edit)
+                    ("t" dired-toggle-marks)
+                    ("U" dired-unmark-all-marks)
+                    ("u" dired-unmark)
+                    ("v" dired-view-file) ;; q to exit, s to search, = gets line #
+                    ("w" dired-kill-subdir)
+                    ("Y" dired-do-relsymlink)
+                    ("Z" dired-do-compress)
+                    ("q" nil :color blue)
+                    ("." nil :color blue))))
 
-;; *** https://github.com/abo-abo/hydra/wiki/Rectangle-Operations
-  (with-eval-after-load-feature 'rect
-    (global-set-key
-     (kbd "C-c r")
-     (defhydra hydra-rectangle (:body-pre (rectangle-mark-mode 1)
-					  :color pink
-					  :hint nil
-					  :post (deactivate-mark))
-       "
+    ;; *** https://github.com/abo-abo/hydra/wiki/Rectangle-Operations
+    (with-eval-after-load-feature 'rect
+      (global-set-key
+       (kbd "C-c r")
+       (defhydra hydra-rectangle (:body-pre (rectangle-mark-mode 1)
+					    :color pink
+					    :hint nil
+					    :post (deactivate-mark))
+         "
   ^_k_^       _w_ copy      _o_pen       _N_umber-lines            |\\     -,,,--,,_
 _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..  \-;;,_
   ^_j_^       _d_ kill      _c_lear      _r_eset-region-mark      |,4-  ) )_   .;.(  `'-'
 ^^^^          _u_ndo        _q_ quit     ^ ^                     '---''(./..)-'(_\_)
 "
-       ("k" rectangle-previous-line)
-       ("j" rectangle-next-line)
-       ("h" rectangle-backward-char)
-       ("l" rectangle-forward-char)
-       ("d" kill-rectangle)		     ;; C-x r k
-       ("y" yank-rectangle)		     ;; C-x r y
-       ("w" copy-rectangle-as-kill)	     ;; C-x r M-w
-       ("o" open-rectangle)		     ;; C-x r o
-       ("t" string-rectangle)		     ;; C-x r t
-       ("c" clear-rectangle)		     ;; C-x r c
-       ("e" rectangle-exchange-point-and-mark) ;; C-x C-x
-       ("N" rectangle-number-lines)            ;; C-x r N
-       ("r" (if (region-active-p)
-		(deactivate-mark)
-	      (rectangle-mark-mode 1)))
-       ("u" undo nil)
-       ("q" nil))))
+         ("k" rectangle-previous-line)
+         ("j" rectangle-next-line)
+         ("h" rectangle-backward-char)
+         ("l" rectangle-forward-char)
+         ("d" kill-rectangle)		     ;; C-x r k
+         ("y" yank-rectangle)		     ;; C-x r y
+         ("w" copy-rectangle-as-kill)	     ;; C-x r M-w
+         ("o" open-rectangle)		     ;; C-x r o
+         ("t" string-rectangle)		     ;; C-x r t
+         ("c" clear-rectangle)		     ;; C-x r c
+         ("e" rectangle-exchange-point-and-mark) ;; C-x C-x
+         ("N" rectangle-number-lines)            ;; C-x r N
+         ("r" (if (region-active-p)
+		  (deactivate-mark)
+	        (rectangle-mark-mode 1)))
+         ("u" undo nil)
+         ("q" nil))))
 
-;; *** Windows management
-  (progn
-;; return to a previous window configuration easily with C-c <left>
-(require 'winner)
-(winner-mode)
-                   ; Navigate windows with s-<arrows>
-(windmove-default-keybindings 'super)
-(customize-set-variable 'windmove-wrap-around t)
+    ;; *** Windows management
+    (progn
+      ;; return to a previous window configuration easily with C-c <left>
+      (require 'winner)
+      (winner-mode)
+                                        ; Navigate windows with s-<arrows>
+      (windmove-default-keybindings 'super)
+      (customize-set-variable 'windmove-wrap-around t)
 
-;;
-(customize-set-variable 'confirm-kill-processes nil)
+      ;;
+      (customize-set-variable 'confirm-kill-processes nil)
 
-(with-eval-after-load-feature (ivy counsel)
-  ; 404 for hydra-move-splitter
-  (defun hydra-move-splitter-left (arg)
-  "Move window splitter left."
-  (interactive "p")
-  (if (let ((windmove-wrap-around))
-	(windmove-find-other-window 'right))
-      (shrink-window-horizontally arg)
-    (enlarge-window-horizontally arg)))
+      (with-eval-after-load-feature (ivy counsel)
+                                        ; 404 for hydra-move-splitter
+        (defun hydra-move-splitter-left (arg)
+          "Move window splitter left."
+          (interactive "p")
+          (if (let ((windmove-wrap-around))
+	        (windmove-find-other-window 'right))
+              (shrink-window-horizontally arg)
+            (enlarge-window-horizontally arg)))
 
-(defun hydra-move-splitter-right (arg)
-  "Move window splitter right."
-  (interactive "p")
-  (if (let ((windmove-wrap-around))
-	(windmove-find-other-window 'right))
-      (enlarge-window-horizontally arg)
-    (shrink-window-horizontally arg)))
+        (defun hydra-move-splitter-right (arg)
+          "Move window splitter right."
+          (interactive "p")
+          (if (let ((windmove-wrap-around))
+	        (windmove-find-other-window 'right))
+              (enlarge-window-horizontally arg)
+            (shrink-window-horizontally arg)))
 
-(defun hydra-move-splitter-up (arg)
-  "Move window splitter up."
-  (interactive "p")
-  (if (let ((windmove-wrap-around))
-	(windmove-find-other-window 'up))
-      (enlarge-window arg)
-    (shrink-window arg)))
+        (defun hydra-move-splitter-up (arg)
+          "Move window splitter up."
+          (interactive "p")
+          (if (let ((windmove-wrap-around))
+	        (windmove-find-other-window 'up))
+              (enlarge-window arg)
+            (shrink-window arg)))
 
-(defun hydra-move-splitter-down (arg)
-  "Move window splitter down."
-  (interactive "p")
-  (if (let ((windmove-wrap-around))
-	(windmove-find-other-window 'up))
-      (shrink-window arg)
-    (enlarge-window arg)))
+        (defun hydra-move-splitter-down (arg)
+          "Move window splitter down."
+          (interactive "p")
+          (if (let ((windmove-wrap-around))
+	        (windmove-find-other-window 'up))
+              (shrink-window arg)
+            (enlarge-window arg)))
 
-(global-set-key (kbd "C-c w") (defhydra hydra-window (:hint nil)
-  "
+        (global-set-key (kbd "C-c w") (defhydra hydra-window (:hint nil)
+                                        "
 Movement^^        ^Split^         ^Switch^      ^Resize^
 ----------------------------------------------------------------
 _j_ ←          _v_ertical       _b_uffer         _J_ X←
@@ -738,53 +738,53 @@ _l_ →         _r_ reset        _s_ave           _L_ X→
 _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ^ ^            _o_nly this      _d_elete
 "
-  ("j" windmove-left )
-  ("k" windmove-down )
-  ("i" windmove-up )
-  ("l" windmove-right )
-  ("J" hydra-move-splitter-left)
-  ("K" hydra-move-splitter-down)
-  ("I" hydra-move-splitter-up)
-  ("L" hydra-move-splitter-right)
-  ("b" ivy-switch-buffer :color blue)
-  ("B" ivy-switch-buffer)
-  ("f" counsel-find-file :color blue)
-  ("F" counsel-find-file)
-  ("a" (lambda ()
-	 (interactive)
-	 (ace-window 1)
-	 (add-hook 'ace-window-end-once-hook
-		   'hydra-window/body)))
-  ("h" (lambda ()
-	 (interactive)
-	 (split-window-right)
-	 (windmove-right)))
-  ("v" (lambda ()
-	 (interactive)
-	 (split-window-below)
-	 (windmove-down)))
-  ("S" (lambda ()
-	 (interactive)
-	 (ace-window 4)
-	 (add-hook 'ace-window-end-once-hook
-		   'hydra-window/body))
-        :color blue)
-  ("s" save-buffer :color blue)
-  ("d" delete-window :color blue)
-  ("D" (lambda ()
-	 (interactive)
-	 (ace-window 16)
-	 (add-hook 'ace-window-end-once-hook
-		   'hydra-window/body)))
-  ("o" delete-other-windows :color blue)
-  ("O" delete-other-windows)
-  ("m" ace-delete-other-windows :color blue)
-  ("M" ace-delete-other-windows)
-  ("u" (progn
-	 (winner-undo)
-	 (setq this-command 'winner-undo)))
-  ("r" winner-redo)
-  ("q" nil)))))))
+                                        ("j" windmove-left )
+                                        ("k" windmove-down )
+                                        ("i" windmove-up )
+                                        ("l" windmove-right )
+                                        ("J" hydra-move-splitter-left)
+                                        ("K" hydra-move-splitter-down)
+                                        ("I" hydra-move-splitter-up)
+                                        ("L" hydra-move-splitter-right)
+                                        ("b" ivy-switch-buffer :color blue)
+                                        ("B" ivy-switch-buffer)
+                                        ("f" counsel-find-file :color blue)
+                                        ("F" counsel-find-file)
+                                        ("a" (lambda ()
+	                                       (interactive)
+	                                       (ace-window 1)
+	                                       (add-hook 'ace-window-end-once-hook
+		                                         'hydra-window/body)))
+                                        ("h" (lambda ()
+	                                       (interactive)
+	                                       (split-window-right)
+	                                       (windmove-right)))
+                                        ("v" (lambda ()
+	                                       (interactive)
+	                                       (split-window-below)
+	                                       (windmove-down)))
+                                        ("S" (lambda ()
+	                                       (interactive)
+	                                       (ace-window 4)
+	                                       (add-hook 'ace-window-end-once-hook
+		                                         'hydra-window/body))
+                                         :color blue)
+                                        ("s" save-buffer :color blue)
+                                        ("d" delete-window :color blue)
+                                        ("D" (lambda ()
+	                                       (interactive)
+	                                       (ace-window 16)
+	                                       (add-hook 'ace-window-end-once-hook
+		                                         'hydra-window/body)))
+                                        ("o" delete-other-windows :color blue)
+                                        ("O" delete-other-windows)
+                                        ("m" ace-delete-other-windows :color blue)
+                                        ("M" ace-delete-other-windows)
+                                        ("u" (progn
+	                                       (winner-undo)
+	                                       (setq this-command 'winner-undo)))
+                                        ("r" winner-redo)
+                                        ("q" nil)))))))
 
 ;; *** PDF Tools https://github.com/abo-abo/hydra/wiki/PDF-Tools
 (use-package pdf-tools
@@ -792,7 +792,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (pdf-tools-install))
 (with-eval-after-load-feature 'pdf-tools
   (setq-default pdf-view-display-size #'fit-page)
-   (defhydra hydra-pdftools (:color blue :hint nil)
+  (defhydra hydra-pdftools (:color blue :hint nil)
     "
                                                                       ╭───────────┐
        Move  History   Scale/Fit     Annotations  Search/Link    Do   │ PDF Tools │
@@ -840,7 +840,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
     ("N" pdf-history-forward :color red)
     ("l" image-forward-hscroll :color red)
     ("h" image-backward-hscroll :color red))
-   (progn
+  (progn
     (define-key pdf-view-mode-map (kbd "\\") #'hydra-pdftools/body)
     (define-key pdf-view-mode-map (kbd "<s-spc>") #'pdf-view-scroll-down-or-next-page)
     (define-key pdf-view-mode-map (kbd "g")  #'pdf-view-first-page)
@@ -876,61 +876,61 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (progn
 					; uniquify buffers with the same name
 					; instead of buf<2>, etc it shows
-(setq uniquify-buffer-name-style 'reverse)
-(setq uniquify-after-kill-buffer-p t)
-(setq uniquify-ignore-buffers-re "^\\*")
+  (setq uniquify-buffer-name-style 'reverse)
+  (setq uniquify-after-kill-buffer-p t)
+  (setq uniquify-ignore-buffers-re "^\\*")
 
-                    ; enable recent files menu
+                                        ; enable recent files menu
 
-(recentf-mode t)
-(setq recentf-max-saved-items 100)
+  (recentf-mode t)
+  (setq recentf-max-saved-items 100)
 
-                    ; use 4 spaces instead of tabs for indentation
-                    ; http://stackoverflow.com/a/471916/
-(setq tab-width 4)
-(setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80))
+                                        ; use 4 spaces instead of tabs for indentation
+                                        ; http://stackoverflow.com/a/471916/
+  (setq tab-width 4)
+  (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80))
 
 
-;; Part of the Emacs Starter Kit
-;; Registers allow you to jump to a file or other location
-;; quickly. Use C-x r j followed by the letter of the register (i for
-;; init.el) to jump to it.
-;; You should add registers here for the files you edit most often.
-(dolist (r `((?i (file . ,(expand-file-name "~/.emacs")))))
-  (set-register (car r) (cadr r)))
+  ;; Part of the Emacs Starter Kit
+  ;; Registers allow you to jump to a file or other location
+  ;; quickly. Use C-x r j followed by the letter of the register (i for
+  ;; init.el) to jump to it.
+  ;; You should add registers here for the files you edit most often.
+  (dolist (r `((?i (file . ,(expand-file-name "~/.emacs")))))
+    (set-register (car r) (cadr r)))
 
-;; Commands which ask for a destination directory, such as those which
-;; copy and rename files or create links for them, try to guess the
-;; default target directory for the operation. Normally, they suggest
-;; the Dired buffer's default directory, but if the variable
-;; dired-dwim-target is non-nil, and if there is another Dired buffer
-;; displayed in the next window, that other buffer's directory is
-;; suggested instead.
-(setq dired-dwim-target t)
+  ;; Commands which ask for a destination directory, such as those which
+  ;; copy and rename files or create links for them, try to guess the
+  ;; default target directory for the operation. Normally, they suggest
+  ;; the Dired buffer's default directory, but if the variable
+  ;; dired-dwim-target is non-nil, and if there is another Dired buffer
+  ;; displayed in the next window, that other buffer's directory is
+  ;; suggested instead.
+  (setq dired-dwim-target t)
 
-;; [[~/src/emacs-starter-kit/starter-kit-bindings.el]]
-;; . Indentation help
-(global-set-key (kbd "C-x ^") #'join-line)
+  ;; [[~/src/emacs-starter-kit/starter-kit-bindings.el]]
+  ;; . Indentation help
+  (global-set-key (kbd "C-x ^") #'join-line)
 
-                    ; [[https://github.com/dimitri/emacs-kicker/blob/master/init.el]]
-                    ; If you do use M-x term, you will notice there's line mode that acts like
-                    ; emacs buffers, and there's the default char mode that will send your
-                    ; input char-by-char, so that curses application see each of your key
-                    ; strokes.
-                    ;
-                    ; The default way to toggle between them is C-c C-j and C-c C-k, let's
-                    ; better use just one key to do the same.
-(require 'term)
-(define-key term-raw-map  (kbd "C-'") #'term-line-mode)
-(define-key term-mode-map (kbd "C-'") #'term-char-mode)
-                    ; Have C-y act as usual in term-mode, to avoid C-' C-y C-'
-                    ; Well the real default would be C-c C-j C-y C-c C-k.
-(define-key term-raw-map  (kbd "C-y") #'term-paste)
+                                        ; [[https://github.com/dimitri/emacs-kicker/blob/master/init.el]]
+                                        ; If you do use M-x term, you will notice there's line mode that acts like
+                                        ; emacs buffers, and there's the default char mode that will send your
+                                        ; input char-by-char, so that curses application see each of your key
+                                        ; strokes.
+                                        ;
+                                        ; The default way to toggle between them is C-c C-j and C-c C-k, let's
+                                        ; better use just one key to do the same.
+  (require 'term)
+  (define-key term-raw-map  (kbd "C-'") #'term-line-mode)
+  (define-key term-mode-map (kbd "C-'") #'term-char-mode)
+                                        ; Have C-y act as usual in term-mode, to avoid C-' C-y C-'
+                                        ; Well the real default would be C-c C-j C-y C-c C-k.
+  (define-key term-raw-map  (kbd "C-y") #'term-paste)
 
-(global-unset-key (kbd "C-x C-c"))
+  (global-unset-key (kbd "C-x C-c"))
 
-                    ; C-x C-j opens dired with the cursor right on the file you're editing
-(require 'dired-x))
+                                        ; C-x C-j opens dired with the cursor right on the file you're editing
+  (require 'dired-x))
 
 ;; *** Insert directory subtree at point or remove it if it was not present
 (use-package dired-subtree
@@ -1063,22 +1063,22 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (add-hook 'erc-text-matched-hook #'erc-global-notify))
 
 ;; ** misc
-                    ; * https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links
+                                        ; * https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links
 (setq vc-follow-symlinks t)
 
 
-                    ; suppress Warning (mule): Invalid coding system `ascii' is specified
+                                        ; suppress Warning (mule): Invalid coding system `ascii' is specified
 (define-coding-system-alias 'ascii 'us-ascii)
 
 (setq compilation-ask-about-save nil)
 (setq compilation-read-command nil)
 
-                    ; use 'y'/'n' instead of 'yes'/'no'
+                                        ; use 'y'/'n' instead of 'yes'/'no'
 (fset 'yes-or-no-p 'y-or-n-p)
 
-                    ; whenever an external process changes a file underneath emacs, and there
-                    ; was no unsaved changes in the corresponding buffer, just revert its
-                    ; content to reflect what's on-disk.
+                                        ; whenever an external process changes a file underneath emacs, and there
+                                        ; was no unsaved changes in the corresponding buffer, just revert its
+                                        ; content to reflect what's on-disk.
 (global-auto-revert-mode 1)
 
 (column-number-mode)   ; enable columns numbers globally, it has a performance hit
@@ -1096,7 +1096,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (add-hook 'markdown-mode-hook #'init-trailing-whitespace-hook)
 (add-hook 'yaml-mode-hook #'init-trailing-whitespace-hook)
 
-                    ; copy/kill line on M-w, C-w
+                                        ; copy/kill line on M-w, C-w
 (defun init:slickcopy (beg end &optional region)
   "When called interactively with no active region, copy a single line instead."
   (interactive
@@ -1112,7 +1112,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
            (line-beginning-position 2)))))
 (advice-add 'kill-region :before #'init:slickcut)
 
-                    ; http://www.emacswiki.org/emacs/BackupDirectory
+                                        ; http://www.emacswiki.org/emacs/BackupDirectory
 (setq
  backup-by-copying t      ; don't clobber symlinks
  backup-directory-alist
@@ -1123,18 +1123,18 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
  vc-make-backup-files t   ; make backups of files, even when they're in version control
  version-control t)       ; use versioned backups
 
-                    ; Open *.m in Octave-mode instead of ObjC
+                                        ; Open *.m in Octave-mode instead of ObjC
 (setq auto-mode-alist
       (cons
        '("\\.m$" . octave-mode)
        auto-mode-alist))
 
-                    ; style I want to use in c++ mode
-                    ; from http://www.emacswiki.org/emacs/CPlusPlusMode
+                                        ; style I want to use in c++ mode
+                                        ; from http://www.emacswiki.org/emacs/CPlusPlusMode
 (c-add-style "my-style"
-         '("python"
-           (indent-tabs-mode . nil)        ; use spaces rather than tabs
-           (c-basic-offset . 2)))
+             '("python"
+               (indent-tabs-mode . nil)        ; use spaces rather than tabs
+               (c-basic-offset . 2)))
 (defun init:c-mode-common-hook ()
   (c-set-style "my-style")        ; use my-style defined above
   (auto-fill-mode)
@@ -1145,21 +1145,21 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; from https://emacs.stackexchange.com/questions/508/how-to-configure-specific-java-indentation
 ;; by @Sigma
 (c-add-style "my-java-style"
-	       '((c-basic-offset . 4)
-		 (c-offsets-alist . ((inline-open . 0)
-				     (topmost-intro-cont    . +)
-				     (statement-block-intro . +)
-				     (knr-argdecl-intro     . 5)
-				     (substatement-open     . +)
-				     (substatement-label    . +)
-				     (label                 . +)
-				     (statement-case-open   . +)
-				     (statement-cont        . ++)
-				     (arglist-intro  . c-lineup-arglist-intro-after-paren)
-				     (arglist-close  . c-lineup-arglist)
-				     (access-label   . 0)
-				     (inher-cont     . ++)
-                      (func-decl-cont . ++)))))
+	     '((c-basic-offset . 4)
+	       (c-offsets-alist . ((inline-open . 0)
+				   (topmost-intro-cont    . +)
+				   (statement-block-intro . +)
+				   (knr-argdecl-intro     . 5)
+				   (substatement-open     . +)
+				   (substatement-label    . +)
+				   (label                 . +)
+				   (statement-case-open   . +)
+				   (statement-cont        . ++)
+				   (arglist-intro  . c-lineup-arglist-intro-after-paren)
+				   (arglist-close  . c-lineup-arglist)
+				   (access-label   . 0)
+				   (inher-cont     . ++)
+                                   (func-decl-cont . ++)))))
 (defun init:java-mode-hook ()
   (c-set-style "my-java-style"))
 (add-hook 'java-mode-hook #'init:java-mode-hook)
@@ -1183,7 +1183,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package flyspell
   :ensure nil
   :bind
-  ; unbind C-. (to make it available for embark-act)
+                                        ; unbind C-. (to make it available for embark-act)
   (:map flyspell-mode-map ("C-." . nil))
   :custom
   (flyspell-use-meta-tab nil "do not use M-TAB, C-M-i to correct word")
@@ -1380,7 +1380,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :ensure nil
   :after org
   :hook
-    (org-mode . hl-line-mode))
+  (org-mode . hl-line-mode))
 
 (use-package htmlize
   :commands (htmlize-buffer htmlize-file htmlize-many-files htmlize-many-files-dired)
@@ -1432,7 +1432,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
           (:display . "plain")
 	  (:async . "yes")
 	  (:session . "py3.12")
-          ; to list: (jupyter-available-kernelspecs 'refresh)
+                                        ; to list: (jupyter-available-kernelspecs 'refresh)
 	  (:kernel . "python3")))
   ;; default args for sh
   (setq org-babel-default-header-args:sh
@@ -1444,9 +1444,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ;; from
   ;; https://github.com/emacs-jupyter/jupyter/issues/542#issuecomment-2210783148
   (defun gm/jupyter-api-request-xsrf-cookie-error-advice (func &rest args)
-  (condition-case nil
-      (apply func args)
-    (jupyter-api-http-error nil)))
+    (condition-case nil
+        (apply func args)
+      (jupyter-api-http-error nil)))
   (advice-add 'jupyter-api-request-xsrf-cookie :around #'gm/jupyter-api-request-xsrf-cookie-error-advice)
   )
 
@@ -1735,9 +1735,9 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; ** direnv: .envrc envvars visible for commands started in emacs
 (use-package envrc
-  ; expect envrc.el to cause less performance issues than direnv.el
+                                        ; expect envrc.el to cause less performance issues than direnv.el
   :config
-  ; buffer-local direnv integration for Emacs
+                                        ; buffer-local direnv integration for Emacs
   (envrc-global-mode))
 
 ;; * create presentations in emacs
@@ -1746,7 +1746,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; * colorize *compilation* buffer output (interpret escape codes)
 (use-package ansi-color
-    :hook (compilation-filter . ansi-color-compilation-filter))
+  :hook (compilation-filter . ansi-color-compilation-filter))
 
 (use-package xterm-color
   :commands xterm-color-colorize-buffer) ; interpret ansi escape codes
@@ -1758,7 +1758,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; ** htmlz-mode -- simple live html preview in browser
 (use-package htmlz-mode
   :vc (:url "https://github.com/zed/htmlz-mode"
-       :rev "build/set-package-requires")
+            :rev "build/set-package-requires")
   ;; M-x htmlz-mode in html buffer, to enable the minor-mode
   :commands htmlz-mode)
 
@@ -1768,16 +1768,16 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :init
   (setq minimap-major-modes '(prog-mode text-mode)))
 
-; an alternative for *help* buffer presentation
+                                        ; an alternative for *help* buffer presentation
 (use-package helpful
   :commands (helpful-callable helpful-variable helpful-key helpful-command helpful-at-point helpful-function))
 
-; pulsar
-; https://protesilaos.com/emacs/pulsar#h:6ca69953-1a89-4968-a46c-2fa5e57aca9b
+                                        ; pulsar
+                                        ; https://protesilaos.com/emacs/pulsar#h:6ca69953-1a89-4968-a46c-2fa5e57aca9b
 (use-package pulsar
   :hook (window-state-change . pulsar-pulse-line))
 
-; https://github.com/karthink/gptel?tab=readme-ov-file#usage
+                                        ; https://github.com/karthink/gptel?tab=readme-ov-file#usage
 (use-package gptel
   :commands (gptel gptel-send gptel-rewrite)
   :config
@@ -1798,7 +1798,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
                              ))))
 
 
-;
+                                        ;
 (use-package protobuf-mode
   :ensure nil   ; installed in early-init.el
   :hook (protobuf-mode . init:protobuf-mode-hook)
@@ -1847,7 +1847,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :custom
   (telega-use-images t "Non-nil to show images. Explicitly set it to non-nil if using Emacs as a service and want to create X frames to show images.")
   :config
-  ; docker pull zevlg/telega-server:latest
+                                        ; docker pull zevlg/telega-server:latest
   (setq telega-use-docker t))
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
@@ -1872,7 +1872,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   ;; automatically create matching parens in programming modes but not in org-mode
   (prog-mode . electric-pair-mode) ; Enable in programming modes
   (org-mode . init:disable-electric-pair-mode) ; Disable in org-mode
-  ; turn on imenu
+                                        ; turn on imenu
   (markdown-mode . imenu-add-menubar-index)
   (makefile-mode . imenu-add-menubar-index)
   (prog-mode . imenu-add-menubar-index)
