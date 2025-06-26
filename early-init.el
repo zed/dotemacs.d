@@ -32,7 +32,7 @@
 ;; * load customizations
 (require 'package)
 (add-to-list 'package-archives
-	     '("melpa" . "https://melpa.org/packages/") t)
+	     '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (setq custom-file "~/.custom.el")
 (load custom-file)
 
@@ -56,11 +56,13 @@
   :url "https://github.com/tarao/with-eval-after-load-feature-el/blob/889253d5e99503b16f36fcf91f7e6654f70f0d4d/with-eval-after-load-feature.el")
 (require 'use-package)
 (with-eval-after-load 'use-package
-  (setopt use-package-always-ensure t)
+  (when init-file-debug  ; emacs --debug-init
+    (setq use-package-verbose t
+          use-package-expand-minimally nil
+          use-package-compute-statistics t  ; M-x use-package-report to see the results
+          debug-on-error t))
   (require 'use-package-ensure)
-  (setq use-package-verbose t)
-					; M-x use-package-report to see the results
-  (setq use-package-compute-statistics t))
+  (setopt use-package-always-ensure t))
 
 (setq ad-redefinition-action 'accept) ;; suppress "got redefined" warning
 

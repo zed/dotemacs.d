@@ -23,6 +23,7 @@
 ;; ** delight: remove modes from ModeLine
 ;; C-h v minor-mode-alist
 (use-package delight
+  :ensure t
   :commands delight)
 
 ;; ** which-key: show commands for the current prefix after a delay
@@ -418,6 +419,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 ;; ** elpy (python)
 (use-package elpy
   :commands elpy-enable
+  :custom
+  (elpy-rpc-python-command "python3")
   :delight
   :init
   ;; https://github.com/jorgenschaefer/elpy/blob/master/docs/introduction.rst
@@ -1541,6 +1544,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 ;; ** C-a moves the point to the first non-whitespace character on the line
 (use-package crux
+  :pin "melpa-stable"
   :bind (("C-a" . crux-move-beginning-of-line)))
 
 ;; ** visible bookmark to jump around a file
@@ -1640,6 +1644,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
     (add-to-list 'company-backends 'company-restclient)))
 
 ;; ** slack config
+(use-package websocket) ;; Unable to activate package ‘slack’. Required package ‘websocket-1.12’ is unavailable
 (use-package alert)  ;; fix Error (use-package): Failed to install slack: https://melpa.org/packages/alert-20191126.2032.el: Not found
 (use-package slack
   :after alert
@@ -1855,6 +1860,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 ;; ** core emacs settings
 (use-package emacs
   :ensure nil
+  :no-require t
   :custom
   (remote-file-name-inhibit-locks t "Whether to create file locks for remote files.")
   (tramp-allow-unsafe-temporary-files t "suppress: Autosave file on local temporary directory")
