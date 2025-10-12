@@ -1415,7 +1415,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :after org
   :defer 2
   :config
-  (setq jupyter-use-zmq nil)
+  (setq jupyter-use-zmq t)
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
