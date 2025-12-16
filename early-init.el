@@ -33,6 +33,7 @@
 (require 'package)
 (add-to-list 'package-archives
 	     '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(setq package-install-upgrade-built-in t)  ; to update magit, transient, etc
 (setq custom-file "~/.custom.el")
 (load custom-file)
 
