@@ -1784,24 +1784,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
                                         ; https://github.com/karthink/gptel?tab=readme-ov-file#usage
 (use-package gptel
-  :commands (gptel gptel-send gptel-rewrite)
-  :config
-  (setq
-   gptel-model 'llama3.2:latest
-   gptel-backend (gptel-make-ollama "Ollama"
-                   :host "localhost:11434"
-                   :stream t
-                   :models '(
-                             codellama:latest
-                             deepscaler:latest
-                             hf.co/bartowski/agentica-org_DeepScaleR-1.5B-Preview-GGUF:F16
-                             hf.co/unsloth/DeepSeek-R1-Distill-Llama-8B-GGUF:latest
-                             llama3.2-vision:latest
-                             llama3.2:latest
-                             phi4:latest
-                             tripplyons/r1-distill-qwen-7b:latest
-                             ))))
-
+  :commands (gptel gptel-send gptel-rewrite))
 
                                         ;
 (use-package protobuf-mode
