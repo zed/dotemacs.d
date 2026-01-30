@@ -1873,6 +1873,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
                                         ; try to detect long line and mitigate performance issues
   (global-so-long-mode)
 
+  ;; soft wrap long lines
+  ;; Show wrap indicator in the left fringe
+  (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+  (global-visual-line-mode 1)
+
   (defun init:disable-electric-pair-mode ()
     "Disable electric-pair-mode in the current buffer."
     (electric-pair-local-mode -1))
