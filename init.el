@@ -1352,6 +1352,21 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
            (qpet/org-archive-without-delete)
            (qpet/org-archive-delete-logbook)))
 
+  ;; syntax hightlighting for org code blocks exported to pdf
+  (progn
+                                        ; Source - https://stackoverflow.com/a/21007117
+                                        ; Posted by steckerhalter, modified by community. See post 'Timeline' for change history
+                                        ; Retrieved 2026-01-21, License - CC BY-SA 4.0
+    (require 'ox-latex)
+    (add-to-list 'org-latex-packages-alist
+                 '("" "minted" t))
+    (setq org-latex-listings 'minted)
+    (setq org-latex-minted-options '(("style" "friendly")))
+    (setq org-latex-pdf-process
+          '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+            "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+            "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")))
+
   ;; copy link url from org to outside of org mode
   ;; https://emacs.stackexchange.com/questions/3981/how-to-copy-links-out-of-org-mode
   (progn
