@@ -1498,6 +1498,33 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :init
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
+
+;; *** convert .ipynb <-> org and use code-cells
+(use-package code-cells
+  :preface
+  ;; Only enable code-cells for org files paired with ipynb
+  (defun init:code-cells-maybe-enable ()
+    (when (and buffer-file-name
+               (string-match-p "\\.org\\'" buffer-file-name)
+               (file-exists-p (concat (file-name-sans-extension buffer-file-name) ".ipynb")))
+      (code-cells-mode)))
+  :hook
+  ;; Enable for Python directly (if cell boundaries are present)
+  (python-mode . code-cells-mode-maybe)
+  ;; Enable for paired org files
+  (org-mode . init:code-cells-maybe-enable)
+   :custom
+  (code-cells-convert-ipynb-style
+   '(("pandoc" "--to" "ipynb" "--from" "org")
+     ("pandoc" "--to" "org" "--from" "ipynb")
+     org-mode))
+  :bind (:map code-cells-mode-map
+         ("C-c C-s" . code-cells-convert-ipynb)
+         ("C-c C-c" . code-cells-eval)
+         ("<remap> <jupyter-eval-line-or-region>" . code-cells-eval)
+         ("M-p" . code-cells-backward-cell)
+         ("M-n" . code-cells-forward-cell)))
+
 ;; ** recursive directory tree comparison: M-x ztree-diff
 (use-package ztree
   :defer t
