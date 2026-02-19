@@ -419,6 +419,9 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 ;; ** elpy (python)
 (use-package elpy
   :commands elpy-enable
+  :hook (python-mode . (lambda ()
+                         (prettify-symbols-mode 1)
+                         (push '("lambda" . ?λ) prettify-symbols-alist)))
   :custom
   (elpy-rpc-python-command "python3")
   :delight
