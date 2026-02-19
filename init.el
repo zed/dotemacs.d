@@ -503,10 +503,50 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :mode "\\.tcss?\\'")
 
 ;; ** typescript
-(use-package tide
-  :after (typescript-mode company flycheck)
-  :hook ((typescript-mode . tide-setup)
-         (typescript-mode . tide-hl-identifier-mode)))
+;;; --- tree-sitter grammars for TS/TSX ---
+(setq treesit-language-source-alist
+      '((typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+        (tsx        "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+        (json       "https://github.com/tree-sitter/tree-sitter-json")))
+
+;; Use tree-sitter major modes for these file types:
+(add-to-list 'auto-mode-alist '("\\.ts\\'"  . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.mts\\'" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.cts\\'" . typescript-ts-mode))
+
+;; Optional: if you have old modes installed, prefer -ts- modes:
+(setq major-mode-remap-alist
+      '((typescript-mode . typescript-ts-mode)
+        (tsx-mode        . tsx-ts-mode)
+        (js-mode         . js-ts-mode)
+        (js2-mode        . js-ts-mode)
+        (json-mode       . json-ts-mode)))
+
+(use-package eglot
+  :ensure nil
+  :hook ((typescript-ts-mode . eglot-ensure)
+         (tsx-ts-mode        . eglot-ensure))
+  :config
+  ;; Tell eglot which server to use for TS/TSX:
+  (add-to-list 'eglot-server-programs
+               '((typescript-ts-mode tsx-ts-mode)
+                 . ("typescript-language-server" "--stdio")))
+
+  ;; Optional quality-of-life:
+  (setq eglot-autoshutdown t))
+
+(use-package prettier-js
+  :hook ((typescript-ts-mode . prettier-js-mode)
+         (tsx-ts-mode        . prettier-js-mode))
+  :config
+  ;; If you prefer format-on-save:
+  (setq prettier-js-args '("--single-quote" "true")))
+
+(add-hook 'prettier-js-mode-hook
+          (lambda ()
+            (add-hook 'before-save-hook #'prettier-js nil t)))
+
 
 ;; ** php
 (use-package php-mode

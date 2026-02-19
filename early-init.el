@@ -33,6 +33,14 @@
 (require 'package)
 (add-to-list 'package-archives
 	     '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa"        . "https://melpa.org/packages/") t) ; Fallback
+(add-to-list 'package-archives '("gnu"          . "https://elpa.gnu.org/packages/") t)
+;; Prefer MELPA Stable
+(setq package-archive-priorities
+      '(("melpa-stable" . 10)
+        ("gnu"          . 5)
+        ("melpa"        . 0)))
+
 (setq package-install-upgrade-built-in t)  ; to update magit, transient, etc
 (setq custom-file "~/.custom.el")
 (load custom-file)
