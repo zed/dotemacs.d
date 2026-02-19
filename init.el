@@ -1525,6 +1525,21 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
          ("M-p" . code-cells-backward-cell)
          ("M-n" . code-cells-forward-cell)))
 
+; Sending code chunks from python files to jupyter's REPL on C-x C-e
+; https://github.com/emacs-jupyter/jupyter/pull/573#issuecomment-2677444974
+(with-eval-after-load-feature (jupyter code-cells)
+  (defun gm/jupyter-eval-region (beg end)
+    "Evaluate the region between BEG and END."
+    (interactive "r")
+    (let* ((string (buffer-substring beg end))
+           (string (replace-regexp-in-string "\\`[\n]*" "" string)) ; Remove leading empty lines
+           (indent-length (string-match "[^ \t]" string)) ; Find indent length of the first line
+           (unindented-string (replace-regexp-in-string (format "^%s" (make-string indent-length ?\ ))
+                                                        "" string t t))) ; Remove exactly that amount of indentation
+      (jupyter-eval-string unindented-string)))
+  (setq jupyter-repl-echo-eval-p t)
+  (add-to-list 'code-cells-eval-region-commands '(jupyter-repl-interaction-mode . gm/jupyter-eval-region)))
+
 ;; ** recursive directory tree comparison: M-x ztree-diff
 (use-package ztree
   :defer t
