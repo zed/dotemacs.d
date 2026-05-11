@@ -7,11 +7,10 @@ declarations.
 ## Architecture
 
 - **`early-init.el`** — Package archives, `el-get` bootstrap,
-  native-comp settings, GC tuning, and packages installed via
-  `el-get-bundle`.
+  GC tuning, and packages installed via `el-get-bundle`.
 - **`init.el`** — Everything else: `use-package` declarations,
-  keybindings, hooks, and custom functions.
-- **No `use-package` declarations after line ~1940** — the file ends
+  keybindings, hooks, and custom functions. 2112 lines total.
+- **No `use-package` declarations after line 1940** — the file ends
   with core Emacs settings and a final `use-package emacs` block.
 - **`~/.custom.el`** — Expected to exist (set in `early-init.el` via
   `custom-file`). It is loaded unconditionally; do not delete it.
@@ -104,9 +103,6 @@ ignores `.secrets.el.gpg` decryption failures (the file is optional).
   `init:show-agenda`, which deletes other windows and opens
   `org-agenda`. This can be surprising when testing in a graphical
   frame.
-- **Native compilation** — Emacs 28+ compiles `.elc` → `.eln`
-  asynchronously. Warnings are silenced
-  (`native-comp-async-report-warnings-errors: silent`).
 - **GPG loopback** — In non-GUI sessions, `epa-pinentry-mode` is set
   to `loopback` to allow GPG passphrase entry via stdin (relevant for
   `~/.secrets.el.gpg`).
@@ -115,3 +111,6 @@ ignores `.secrets.el.gpg` decryption failures (the file is optional).
 - **TRAMP performance** — `vc-handled-backends` is set to `nil` for
   remote files via `find-file` hook.
 - **Large files** — Warning threshold is set to 1 GB (`large-file-warning-threshold`).
+- **Obsolete alias warnings suppressed** — `(setq warning-minimum-level :error)`
+  in `early-init.el` hides warnings from unmaintained packages (e.g.
+  `gist`, `elisp-format`) that still use obsolete `cl` aliases.
