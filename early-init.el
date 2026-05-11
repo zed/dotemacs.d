@@ -69,9 +69,11 @@
 (setq load-prefer-newer t) ; suppress warning about .autoloads.el files
 
 ;; to suppress "free variable" warning
+;; NOTE: must use raw URL, not blob (HTML page). el-get-bundle! with :type http
+;; downloads the URL as-is; blob URLs return HTML, not elisp.
 (el-get-bundle! with-eval-after-load-feature
-                                        ; It fixes "Package cl is deprecated" warning on Emacs 27+
-  :url "https://github.com/tarao/with-eval-after-load-feature-el/blob/889253d5e99503b16f36fcf91f7e6654f70f0d4d/with-eval-after-load-feature.el")
+  :type http
+  :url "https://raw.githubusercontent.com/tarao/with-eval-after-load-feature-el/889253d5e99503b16f36fcf91f7e6654f70f0d4d/with-eval-after-load-feature.el")
 (require 'use-package)
 (with-eval-after-load 'use-package
   (when init-file-debug  ; emacs --debug-init
