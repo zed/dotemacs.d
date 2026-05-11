@@ -837,6 +837,8 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 	                                       (setq this-command 'winner-undo)))
                                         ("r" winner-redo)
                                         ("q" nil)))))))
+  :config
+  (setq hydra-look-for-remap t)
 
 ;; *** PDF Tools https://github.com/abo-abo/hydra/wiki/PDF-Tools
 (use-package pdf-tools
@@ -1800,6 +1802,16 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
     ("l" dumb-jump-quick-look "Quick look")
     ("b" dumb-jump-back "Back")))
 
+;; ** avy: jump to visible text using char-based decision tree
+(use-package avy
+  :ensure nil
+  :bind (("M-s" . avy-goto-word-1)
+         ("s-j" . avy-goto-char-timer)
+         ("s-J" . avy-pop-mark))
+  :config
+  (avy-setup-default)
+  (setq avy-background t))
+
 ;; ** delete upto char
 (use-package avy-zap
   :bind
@@ -1930,7 +1942,11 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 (use-package ace-window
   :ensure nil   ; installed in early-init.el
-  :custom (aw-ignore-current t "ignore `selected-window'"))
+  :custom (aw-ignore-current t "ignore `selected-window'")
+  :config
+  (setq aw-background t)
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  (add-to-list 'aw-dispatch-alist '(?\\ hydra-window/body) t))
 
 ;; ** consult-dir: insert paths into minibuffer prompts in Emacs
 (use-package consult-dir
@@ -1971,6 +1987,40 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
 
 (use-package pi-coding-agent)
+;; ** multiple-cursors
+(use-package multiple-cursors
+  :ensure nil
+  :bind (("C-S-c C-S-c" . mc/edit-lines)
+         ("C->" . mc/mark-next-like-this)
+         ("C-<" . mc/mark-previous-like-this)
+         ("C-c C-<" . mc/mark-all-like-this)
+         ("C-S-<mouse-1>" . mc/add-cursor-on-click)))
+
+;; ** markdown-mode
+(use-package markdown-mode
+  :ensure nil
+  :mode (("\\.markdown\\'" . markdown-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("README\\.md\\'" . gfm-mode))
+  :init
+  (autoload 'gfm-mode "markdown-mode"
+    "Major mode for editing GitHub Flavored Markdown files" t))
+
+;; ** rainbow-delimiters
+(use-package rainbow-delimiters
+  :ensure nil
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+;; ** expand-region
+(use-package expand-region
+  :ensure nil
+  :bind ("C-=" . er/expand-region))
+
+;; ** point-history
+(use-package point-history
+  :ensure nil
+  :config
+  (point-history-mode t))
 
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")

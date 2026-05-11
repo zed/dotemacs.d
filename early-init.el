@@ -98,15 +98,9 @@
 ;; ** Hydra
 (el-get-bundle hydra
   :checkout "59a2a45a35027948476d1d7751b0f0215b1e61aa")
-(with-eval-after-load-feature 'hydra ; fix "free variable warning"
-  (setq hydra-look-for-remap t))
 
 (el-get-bundle ace-window
   :checkout "77115afc1b0b9f633084cf7479c767988106c196")
-(with-eval-after-load-feature 'ace-window
-  (setq aw-background t)
-  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-  (add-to-list 'aw-dispatch-alist '(?\\ hydra-window/body) t))
 
 ;; ** highlight jira formatted files
 (el-get-bundle jira-markup-mode
@@ -138,36 +132,20 @@
   :pkgname "wbolster/emacs-python-black")
 
 ;; ** misc
-(el-get-bundle multiple-cursors ;; see also hydra-multiple-cursors
-  :checkout "89f1a8df9b1fc721b1672b4c7b6d3ab451e7e3ef"
-  (global-set-key (kbd "C-S-c C-S-c") #'mc/edit-lines)
-  (global-set-key (kbd "C->") #'mc/mark-next-like-this)
-  (global-set-key (kbd "C-<") #'mc/mark-previous-like-this)
-  (global-set-key (kbd "C-c C-<") #'mc/mark-all-like-this)
-  (global-set-key (kbd "C-S-<mouse-1>") #'mc/add-cursor-on-click))
+(el-get-bundle multiple-cursors
+  :checkout "89f1a8df9b1fc721b1672b4c7b6d3ab451e7e3ef")
 
 (el-get-bundle markdown-mode
-  :checkout "7c51a2167c5a1330e0ab52fe5b2d03c1ead122ca"
-  (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-  (autoload 'gfm-mode "markdown-mode"
-    "Major mode for editing GitHub Flavored Markdown files" t)
-  (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode)))
+  :checkout "7c51a2167c5a1330e0ab52fe5b2d03c1ead122ca")
 
 (el-get-bundle paredit
   :checkout "af075775af91f2dbc63b915d762b4aec092946c4")
 (el-get-bundle rainbow-delimiters
-  :checkout "f40ece58df8b2f0fb6c8576b527755a552a5e763"
-  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+  :checkout "f40ece58df8b2f0fb6c8576b527755a552a5e763")
+
 ;; ** jump to visible input (use keyboard as a mouse)
 (el-get-bundle avy
-  :checkout "933d1f36cca0f71e4acb5fac707e9ae26c536264"
-  (global-set-key (kbd "M-s") 'avy-goto-word-1)
-  (global-set-key (kbd "s-j") 'avy-goto-char-timer)
-  (global-set-key (kbd "s-J") 'avy-pop-mark)
-  (avy-setup-default))
-(with-eval-after-load-feature 'avy
-  (setq avy-background t))
+  :checkout "933d1f36cca0f71e4acb5fac707e9ae26c536264")
 
                                         ; *** jump to link in info, eww buffers: type O + appeared avy letters
 (el-get-bundle ace-link
@@ -177,8 +155,7 @@
 
 ;; ** Increase selection by semantic units
 (el-get-bundle expand-region
-  :checkout "351279272330cae6cecea941b0033a8dd8bcc4e8"
-  (global-set-key (kbd "C-=") 'er/expand-region))
+  :checkout "351279272330cae6cecea941b0033a8dd8bcc4e8")
 
 ;; ** restclient
 (el-get-bundle restclient
@@ -214,8 +191,7 @@
 (el-get-bundle popwin
   :checkout "ec77f3f1631cb2666971c57027a64833636ef0f6")
 (el-get-bundle point-history
-  :url "https://raw.githubusercontent.com/blue0513/point-history/65eb652549abc704e07311a7820956e467444ec5/point-history.el"
-  (point-history-mode t))
+  :url "https://raw.githubusercontent.com/blue0513/point-history/65eb652549abc704e07311a7820956e467444ec5/point-history.el")
                                         ; M-x ivy-point-history
 (el-get-bundle ivy-point-history
   :url "https://raw.githubusercontent.com/SuzumiyaAoba/ivy-point-history/88c0a585105271322ac0bc65418c7eb908139bcd/ivy-point-history.el")
