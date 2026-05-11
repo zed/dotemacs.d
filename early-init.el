@@ -11,6 +11,9 @@
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (when (fboundp 'tooltip-mode) (tooltip-mode -1))
 
+;; ** suppress obsolete alias warnings from unmaintained packages
+(setq warning-minimum-level :error)
+
 ;; ** adjust gc to speedup startup (4s->2s)
 ;; We up the gc threshold to temporarily prevent it from running, then
 ;; reset it later after startup is complete. Not resetting it will
