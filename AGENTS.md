@@ -40,6 +40,8 @@ on next startup.
 - `lexical-binding: t` is declared in both init files.
 - **Gitmoji** — Commit messages use gitmoji prefixes (e.g. `✨`, `♻️`, `🐛`).
   See existing git history for examples.
+- **LLM-generated commits** — Commits created by an AI assistant are
+  tagged with `[LLM-generated]` in the message body.
 
 ## Language / Mode Notes
 

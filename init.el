@@ -1929,7 +1929,6 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
           (concat "*gpt: " (truncate-string-to-width summary 50) "*"))))))
   (add-hook 'gptel-post-response-functions #'init:gptel-rename-buffer))
 
-                                        ;
 (use-package protobuf-mode
   :ensure nil   ; installed in early-init.el
   :hook (protobuf-mode . init:protobuf-mode-hook)
@@ -2051,7 +2050,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
                                         ; turn on imenu
   (markdown-mode . imenu-add-menubar-index)
   (makefile-mode . imenu-add-menubar-index)
-  (prog-mode . imenu-add-menubar-index)
+  (prog-mode . (lambda ()
+                   (condition-case nil
+                       (imenu-add-menubar-index)
+                     (imenu-unavailable nil))))
   (org-mode . imenu-add-menubar-index)
   :config
                                         ; delete region when we yank on top of it
