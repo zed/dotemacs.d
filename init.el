@@ -1937,6 +1937,10 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   :config
                                         ; docker pull zevlg/telega-server:latest
   (setq telega-use-docker t))
+
+
+(use-package pi-coding-agent)
+
 ;; * ^^^last non-core use-package
 (init:report-elapsed-time "use-package")
 
