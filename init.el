@@ -523,6 +523,12 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
         (js2-mode        . js-ts-mode)
         (json-mode       . json-ts-mode)))
 
+;; prefer python-mode (elpy) instead of python-ts-mode
+(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+(setq major-mode-remap-alist
+      (assq-delete-all 'python-mode major-mode-remap-alist))
+
+
 (use-package eglot
   :ensure nil
   :hook ((typescript-ts-mode . eglot-ensure)
