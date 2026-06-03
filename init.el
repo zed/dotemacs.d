@@ -1884,6 +1884,7 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
                                         ; https://github.com/karthink/gptel?tab=readme-ov-file#usage
 (use-package gptel
   :commands (gptel gptel-send gptel-rewrite)
+  ; gptel-model, gptel-backend are defined in .secrets.el.gpg
   :custom (gptel-default-mode 'org-mode))
 
                                         ;
