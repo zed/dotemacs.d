@@ -1891,7 +1891,31 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 (use-package gptel
   :commands (gptel gptel-send gptel-rewrite)
   ; gptel-model, gptel-backend are defined in .secrets.el.gpg
-  :custom (gptel-default-mode 'org-mode))
+  :custom (gptel-default-mode 'org-mode)
+  :config
+  (defun init:gptel-rename-buffer (beg _end)
+    "Rename current gptel buffer to a summary of the query."
+    (when-let*
+        ((prefix (gptel-prompt-prefix-string))
+         (query-start
+          (save-excursion
+            (goto-char beg)
+            (catch 'found
+              (while (re-search-backward
+                      (concat "^" (regexp-quote prefix)) nil t)
+                (unless (eq (get-text-property (point) 'gptel) 'response)
+                  (throw 'found (match-end 0))))
+              (point-min))))
+         (query (string-trim
+                 (buffer-substring-no-properties query-start beg)))
+          (summary (replace-regexp-in-string
+                    "\\[\\[.*?\\]\\[\\(.*?\\)\\]\\]" "\\1"
+                    (replace-regexp-in-string "\n.*" "" query))))
+       (unless (string-empty-p summary)
+        (rename-buffer
+         (generate-new-buffer-name
+          (concat "*gpt: " (truncate-string-to-width summary 50) "*"))))))
+  (add-hook 'gptel-post-response-functions #'init:gptel-rename-buffer))
 
                                         ;
 (use-package protobuf-mode
