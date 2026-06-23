@@ -1985,7 +1985,8 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
   (setq telega-use-docker t))
 
 
-(use-package pi-coding-agent)
+(use-package pi-coding-agent
+  :custom (pi-coding-agent-project-trust-policy 'default))
 ;; ** multiple-cursors
 (use-package multiple-cursors
   :ensure nil
