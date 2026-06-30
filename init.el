@@ -2194,7 +2194,16 @@ Like emacs' `toggle-frame-fullscreen' but fixes fullboth->fullheight transition.
   "Show agenda as the only window."
   (delete-other-windows)
   (org-agenda nil "a" nil))
-(add-hook 'after-init-hook #'init:show-agenda)
+(if (daemonp)
+    ;; In daemon mode, after-init-hook fires before any frame exists.
+    ;; Show agenda when the first client frame is created instead.
+    (add-hook 'server-after-make-frame-hook #'init:show-agenda-once)
+  (add-hook 'after-init-hook #'init:show-agenda))
+
+(defun init:show-agenda-once ()
+  "Show agenda on first frame, then remove self from hook."
+  (remove-hook 'server-after-make-frame-hook #'init:show-agenda-once)
+  (init:show-agenda))
 
 (put 'scroll-left 'disabled nil)
 ;; * the end
