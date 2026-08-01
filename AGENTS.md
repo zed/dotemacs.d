@@ -83,7 +83,7 @@ emacs -Q
 
 # Batch sanity check (loads init without interactive UI)
 # Requires ~/.custom.el to exist and keyring access for ~/.secrets.el.gpg
-keyring get me .secrets.el | \
+keyring get "$USER" .secrets.el | \
   emacs --batch --eval "
     (progn
       (setq debug-on-error nil

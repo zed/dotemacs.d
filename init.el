@@ -1106,14 +1106,23 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 					; Notify when someone mentions my nick.
 					; http://bbs.archlinux.org/viewtopic.php?id=40190
   (defun erc-global-notify (matched-type nick msg)
+    "Call notify-send when someone mentions my nick.
+MATCHED-TYPE is the symbol ERC passes (we act on `current-nick').
+NICK is the \"nick!user@host\" sender string; MSG is the IRC line.
+Pass NICK and MSG to `notify-send' as separate argv strings via
+`call-process' — never interpolate them into a shell string, since
+both are attacker-controlled IRC content."
     (interactive)
     (when (eq matched-type 'current-nick)
-      (shell-command
-       (concat "notify-send -t 4000 -c \"im.received\" \""
-	       (car (split-string nick "!"))
-	       " mentioned your nick\" \""
-	       msg
-	       "\""))))
+      ;; call-process bypasses the shell entirely, so no quoting is
+      ;; needed and no $(...)/backtick payload in MSG can execute.
+      (apply #'call-process
+             "notify-send" nil 0 nil
+             (list "-t" "4000"
+                   "-c" "im.received"
+                   (format "%s mentioned your nick"
+                           (car (split-string nick "!")))
+                   msg))))
   (add-hook 'erc-text-matched-hook #'erc-global-notify))
 
 ;; ** misc
