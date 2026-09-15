@@ -1,4 +1,4 @@
-; -*- coding: utf-8 lexical-binding: t; -*-
+; -*- coding: utf-8; lexical-binding: t; -*-
 ;; * configure packages
 (when (< emacs-major-version 27)
   (package-initialize))
@@ -446,7 +446,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :config
   (defun init:ruffed-project-is-ruffed (&optional display)
     "Whether the project has a pyproject.toml with [tool.ruff.format] in it."
-    (when-let (parent (locate-dominating-file default-directory "pyproject.toml"))
+    (when-let* ((parent (locate-dominating-file default-directory "pyproject.toml")))
       (with-temp-buffer
         (insert-file-contents (concat parent "pyproject.toml"))
         (re-search-forward "^\\[tool.ruff.format\\]$" nil t 1))))
@@ -463,7 +463,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :config
   (defun init:flymake-ruff-is-ruffed (&optional display)
     "Whether the project has a pyproject.toml with [tool.ruff.lint] in it."
-    (when-let (parent (locate-dominating-file default-directory "pyproject.toml"))
+    (when-let* ((parent (locate-dominating-file default-directory "pyproject.toml")))
       (with-temp-buffer
         (insert-file-contents (concat parent "pyproject.toml"))
         (re-search-forward "^\\[tool.ruff.lint\\]$" nil t 1))))

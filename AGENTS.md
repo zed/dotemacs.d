@@ -83,21 +83,28 @@ emacs -Q
 
 # Batch sanity check (loads init without interactive UI)
 # Requires ~/.custom.el to exist and keyring access for ~/.secrets.el.gpg
-keyring get "$USER" .secrets.el | \
+keyring get "$USER" .secrets.el.gpg | \
   emacs --batch --eval "
     (progn
       (setq debug-on-error nil
             package-check-signature nil
             epa-pinentry-mode 'loopback)
       (load \"~/.emacs.d/early-init.el\")
-      (condition-case nil
-          (load \"~/.emacs.d/init.el\")
-        (error nil))
+      ;; batch startup skips package activation; the daemon does this
+      ;; between early-init and init, so replicate it here
+      (package-activate-all)
+      (condition-case err
+          ;; ~/.emacs is the real init (symlink into this repo);
+          ;; ~/.emacs.d/init.el does NOT exist here
+          (load \"~/.emacs\")
+        (error (message \"=== INIT LOAD ERROR: %S ===\" err)))
       (message \"=== INIT LOADED SUCCESSFULLY ===\"))"
 ```
 
-The batch check catches syntax errors and missing autoloads. It silently
-ignores `.secrets.el.gpg` decryption failures (the file is optional).
+The batch check catches syntax errors and missing autoloads. Watch for
+`=== INIT LOAD ERROR ===` in the output — the `condition-case` keeps the
+run going past init errors, it must not hide them. Decryption failures
+of `.secrets.el.gpg` are silently ignored (the file is optional).
 
 ## Gotchas
 
