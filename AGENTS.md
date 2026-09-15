@@ -151,3 +151,12 @@ of `.secrets.el.gpg` are silently ignored (the file is optional).
   warnings ever reappear, the fix is
   `M-x el-get-merge-properties-into-status` (or a real reinstall), not
   editing files.
+- **Stale .elc/.eln after an Emacs snap refresh (seen 2026-09)** —
+  the snap tracks Emacs master; when a core macro changes between
+  builds (e.g. `define-globalized-minor-mode` grew
+  `<mode>--set-explicitly`), packages whose `.elc`/`.eln` were
+  compiled under the old build crash with `Symbol's value as variable
+  is void: <mode>--set-explicitly` in long-running daemons.  Fix:
+  delete the package's `.elc` + its `~/.emacs.d/eln-cache/<ver>/*.eln`,
+  batch recompile (`byte-compile-file` + `native-compile`), restart
+  Emacs.  `M-x package-reinstall` works too.
