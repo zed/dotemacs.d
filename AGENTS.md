@@ -160,3 +160,23 @@ of `.secrets.el.gpg` are silently ignored (the file is optional).
   delete the package's `.elc` + its `~/.emacs.d/eln-cache/<ver>/*.eln`,
   batch recompile (`byte-compile-file` + `native-compile`), restart
   Emacs.  `M-x package-reinstall` works too.
+- **Emacs 31 (snap master ≥ 2026-09-04) core incompatibilities** —
+  two classes, both shimmed in `init.el` (see "Emacs 31 (snap master)
+  compatibility shims" near the top and the `company` block):
+  1. `cl-remove-if-not` (and 21 sibling `cl-*-if(-not)` functions in
+     cl-seq) was reimplemented as `(cl-remove pred list :test-not
+     #'funcall)`; a nil predicate now errors with `funcall: Symbol's
+     function definition is void: nil` (Emacs ≤ 30 tolerated nil).
+     This broke ivy's alist path (`ivy--reset-state`): counsel `C-r`
+     minibuffer history, the `rg` files prompt, `ivy-reverse-i-search`.
+  2. New core subrs `all`, `any`, `take`, `drop` (and `remove`): any
+     `(pcase x ... ((pred functionp) ...))` or `(functionp 'sym)` check
+     on a symbol with one of these names now matches where it didn't
+     before.  This broke `company-dabbrev` (upstream default
+     `company-dabbrev-other-buffers = 'all` → company called
+     `(all BUFFER)` → `Wrong number of arguments: #<subr all>, 1`).
+  Debugging tip: signals swallowed by inner `condition-case` handlers
+  can be captured pre-unwind via `signal-hook-function`; note that
+  transient (`transient--get-description`) and org (`org-store-link`)
+  deliberately probe function arity through caught
+  `wrong-number-of-arguments` signals — those are false positives.

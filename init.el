@@ -12,6 +12,18 @@
   (setq epa-pinentry-mode 'loopback))
 (require '.secrets "~/.secrets.el.gpg" 'noerror)
 
+;; ** Emacs 31 (snap master) compatibility shims
+;; Emacs 31 reimplemented `cl-remove-if-not' as
+;; (cl-remove pred list :test-not #'funcall); a nil PRED now errors with
+;; "funcall: Symbol's function definition is void: nil".  Emacs <= 30
+;; tolerated nil (nothing was removed).  ivy (`ivy--reset-state' on alist
+;; collections) passes a nil predicate, which broke counsel's C-r
+;; minibuffer history and the rg files prompt.
+(define-advice cl-remove-if-not (:around (orig pred list &rest keys) init:nil-pred)
+  (if pred
+      (apply orig pred list keys)
+    (apply #'cl-remove nil list keys)))
+
 ;; ** Ensure system binaries exist alongside your package declarations.
 ;;   Enable :ensure-system-package keyword for use-package
 ;; https://www.gnu.org/software/emacs/manual/html_node/use-package/use_002dpackage_002densure_002dsystem_002dpackage.html
@@ -1757,7 +1769,16 @@ both are attacker-controlled IRC content."
   :init
   (global-company-mode)
   (with-eval-after-load-feature (company restclient)
-    (add-to-list 'company-backends 'company-restclient)))
+    (add-to-list 'company-backends 'company-restclient))
+  :config
+  ;; Emacs 31 added a core subr `all' (also `any', `take', `drop').
+  ;; `company-dabbrev--fetch' does (pcase company-dabbrev-other-buffers
+  ;; ... ((pred functionp) ...) (`all ...)): the symbol `all' (upstream
+  ;; default) now satisfies `functionp', so company calls (all BUFFER)
+  ;; -> "Wrong number of arguments: #<subr all>, 1".  A function that
+  ;; returns `all' takes the intended pcase branch with identical
+  ;; behavior (search all other buffers).
+  (setq company-dabbrev-other-buffers (lambda (_) 'all)))
 
 ;; ** slack config
 (use-package websocket) ;; Unable to activate package ‘slack’. Required package ‘websocket-1.12’ is unavailable
