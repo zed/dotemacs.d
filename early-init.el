@@ -64,25 +64,27 @@
     (goto-char (point-max))
     (eval-print-last-sexp)))
 (add-to-list 'el-get-recipe-path (concat user-emacs-directory "el-get-user/recipes"))
+(require 'el-get-bundle)  ; no longer autoloaded by el-get itself (el-get 5.2+)
 
 ;; * install packages
 (setq load-prefer-newer t) ; suppress warning about .autoloads.el files
 
-;; WORKAROUND: Patch el-get-bundle bug (sets 's' to string instead of nil)
-;; Must patch before any el-get-bundle macro expansion. See el-get issue #2985.
-(let ((bundle-file (expand-file-name "el-get/el-get-bundle.el" el-get-dir)))
-  (when (file-exists-p bundle-file)
-    (with-temp-buffer
-      (insert-file-contents bundle-file)
-      (goto-char (point-min))
-      (when (search-forward "(setq s (car spec))" nil t)
-        (replace-match "(setq s nil)" t t)
-        (write-region (point-min) (point-max) bundle-file)
-        (byte-compile-file bundle-file)))))
-
-;; to suppress "free variable" warning
-(el-get-bundle with-eval-after-load-feature)
-(require 'with-eval-after-load-feature)
+;; Shim for the dropped `with-eval-after-load-feature' package
+;; (unmaintained since 2014, pulls in obsolete cl on Emacs 31+).
+;; The original also preloaded features at byte-compile time to silence
+;; free-variable warnings; init.el is loaded as source and never
+;; byte-compiled, so plain nested `with-eval-after-load' is equivalent.
+(defmacro with-eval-after-load-feature (feature &rest body)
+  "Run BODY after FEATURE is loaded.
+FEATURE is a (quoted) symbol or a list of symbols; for a list, BODY
+runs after all of them have been loaded, in order."
+  (declare (indent 1) (debug t))
+  (let* ((fs (if (and (listp feature) (eq (car-safe feature) 'quote))
+                 (cdr feature)
+               feature))
+         (form `(progn ,@body)))
+    (dolist (f (reverse fs) form)
+      (setq form `(with-eval-after-load ',f ,form)))))
 (require 'use-package)
 (with-eval-after-load 'use-package
   (when init-file-debug  ; emacs --debug-init
@@ -98,6 +100,13 @@
 ;; ** Hydra
 (el-get-bundle hydra
   :checkout "59a2a45a35027948476d1d7751b0f0215b1e61aa")
+
+;; ** jump to visible input (use keyboard as a mouse)
+;; NOTE: must be declared BEFORE ace-window/ace-link, which :depend on
+;; avy — otherwise the dependency-driven init sees the built-in recipe
+;; (without :checkout) and el-get warns about the cached recipe.
+(el-get-bundle avy
+  :checkout "933d1f36cca0f71e4acb5fac707e9ae26c536264")
 
 (el-get-bundle ace-window
   :checkout "77115afc1b0b9f633084cf7479c767988106c196")
@@ -123,8 +132,11 @@
   :type github
   :pkgname "proofit404/blacken")
 
+;; NOTE: keep this pin at the same commit as the elpa reformatter
+;; (MELPA Stable, currently 0.7 = bfe3f1c) — elpa zig-mode/ruff-format
+;; and el-get python-black share the load-path, so the copies must not drift.
 (el-get-bundle reformatter
-  :checkout "6ac08cebafb9e04b825ed22d82269ff69cc5f87f")
+  :checkout "bfe3f1c6ece952d39921db16f601123bdd1748ab")
 (el-get-bundle python-black
   :checkout "4da1519345b3d5c513d82ef0d39536dd9c626d42"
   :description "Emacs package to reformat Python using black-macchiato"
@@ -142,10 +154,6 @@
   :checkout "af075775af91f2dbc63b915d762b4aec092946c4")
 (el-get-bundle rainbow-delimiters
   :checkout "f40ece58df8b2f0fb6c8576b527755a552a5e763")
-
-;; ** jump to visible input (use keyboard as a mouse)
-(el-get-bundle avy
-  :checkout "933d1f36cca0f71e4acb5fac707e9ae26c536264")
 
                                         ; *** jump to link in info, eww buffers: type O + appeared avy letters
 (el-get-bundle ace-link
@@ -165,9 +173,6 @@
   :checkout "e5a3ec54edb44776738c13e13e34c85b3085277b")
 
                                         ; for ivy-regex-fuzzy sorting of large lists
-(el-get-bundle flx
-  :checkout "4b1346eb9a8a76ee9c9dede69738c63ad97ac5b6")
-
 ;; *** ido/ivy/helm imenu tag selection across buffers with the same mode/project etc
 (el-get-bundle imenu-anywhere
   :checkout "06ec33d79e33edf01b9118aead1eabeae8ee08b1")
@@ -216,22 +221,6 @@
 ;; https://github.com/dimitri/el-get/issues/2232
 (el-get-ensure-byte-compilable-autoload-file el-get-autoload-file)
 (el-get-cleanup my:el-get-packages) ; uninstall packages that are not mentioned
-
-;; WORKAROUND: Fix bug in el-get-bundle-parse-name (el-get issue #2985)
-;; The bug sets 's' to a string instead of nil, causing plist-put to fail
-;; when a package name doesn't match any pattern (no recipe, no github prefix).
-;; Must patch before running el-get 'sync because macro expansion uses the
-;; compiled function.
-(let ((bundle-file (expand-file-name "el-get/el-get-bundle.el" el-get-dir)))
-  (when (file-exists-p bundle-file)
-    (with-temp-buffer
-      (insert-file-contents bundle-file)
-      (goto-char (point-min))
-      (when (search-forward "(setq s (car spec))" nil t)
-        (replace-match "(setq s nil)" t t)
-        (write-region (point-min) (point-max) bundle-file)
-        (byte-compile-file bundle-file)
-        (load bundle-file)))))
 
 (el-get 'sync my:el-get-packages)
 (init:report-elapsed-time "el-get-packages")

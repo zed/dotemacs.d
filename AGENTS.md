@@ -32,11 +32,20 @@ Two systems are used:
 must also ensure it is captured in that list or it will be uninstalled
 on next startup.
 
+**Do not edit files under `~/.emacs.d/` directly** — `elpa/` and
+`el-get/` are installed artifacts managed by their package managers.
+Change them through `package.el` / `el-get` (update, reinstall, drop),
+not by hand: manual edits are lost on the next update and are
+invisible to this repo. If a package is unmaintained, prefer dropping
+it for a small shim in the repo (see the
+`with-eval-after-load-feature` shim in `early-init.el`) or forking it.
+
 ## Key Conventions
 
 - `init:` prefix is used for all user-defined functions (e.g. `init:report-elapsed-time`).
-- `with-eval-after-load-feature` is used instead of
-  `with-eval-after-load` (provided by an `el-get` bundle).
+- `with-eval-after-load-feature` is a shim macro in `early-init.el`
+  wrapping `with-eval-after-load` (the old `el-get` bundle was
+  dropped: unmaintained since 2014, required obsolete `cl`).
 - `lexical-binding: t` is declared in both init files.
 - **Gitmoji** — Commit messages use gitmoji prefixes (e.g. `✨`, `♻️`, `🐛`).
   See existing git history for examples.
@@ -123,3 +132,22 @@ of `.secrets.el.gpg` are silently ignored (the file is optional).
 - **Obsolete alias warnings suppressed** — `(setq warning-minimum-level :error)`
   in `early-init.el` hides warnings from unmaintained packages (e.g.
   `gist`, `elisp-format`) that still use obsolete `cl` aliases.
+- **Duplicated packages (el-get + elpa) must not drift** — 7 packages
+  are installed through BOTH managers (ace-window, avy, dash, hydra,
+  markdown-mode, reformatter, restclient): elpa copies are forced by
+  elpa dependents (e.g. zig-mode needs elpa reformatter — package.el
+  can't see el-get installs and refuses activation), el-get copies are
+  deliberate pins needed by el-get dependents. The el-get copy wins on
+  `load-path`, so the pin IS the running version for everyone.
+  Convention: pin the el-get `:checkout` to the exact commit behind
+  the installed elpa version (for MELPA snapshots the pin date == the
+  snapshot version, e.g. avy 2024-11-01 == 20241101.1357; for stable
+  the tag commit, e.g. reformatter 0.7 == bfe3f1c). When the elpa side
+  upgrades, re-pin + `M-x el-get-reinstall`.
+- **el-get ≥ 5.2 migration done (2026-09)** — el-get was updated past
+  the recipe-cache format change; all `el-get-bundle` packages had
+  their cached recipes force-merged (`el-get-merge-properties-into-status`).
+  If "Must update or reinstall ... to modify its cached recipe"
+  warnings ever reappear, the fix is
+  `M-x el-get-merge-properties-into-status` (or a real reinstall), not
+  editing files.
