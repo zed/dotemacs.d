@@ -504,6 +504,28 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (use-package web-mode
   :ensure nil
   :mode "\\.html?\\'")
+;; ** conf-mode — TOML buffers
+(use-package conf-mode
+  :ensure nil                          ; built-in (conf-toml-mode handles .toml)
+  :commands (init:toml-to-yaml)        ; M-x-callable before conf-mode ever loads
+  :bind (:map conf-toml-mode-map
+              ;; org-style export key, like org-export-dispatch
+              ("C-c C-e" . init:toml-to-yaml))
+  :config
+  (defun init:toml-to-yaml ()
+    "Convert the current buffer's TOML to YAML in a new buffer."
+    (interactive)
+    (let ((out (get-buffer-create
+                (concat (file-name-base (buffer-name)) ".yaml"))))
+      (shell-command-on-region
+       (point-min) (point-max)
+       "uvx remarshal -if toml -of yaml"
+       out)                    ; output goes to OUT, current buffer untouched;
+                                  ; OUT is erased on repeat runs
+      (pop-to-buffer out)
+      (yaml-mode)
+      (goto-char (point-min)))))
+
 ;; ** yaml-mode
 (use-package yaml-mode
   :ensure nil
