@@ -8,12 +8,13 @@ This document lists all packages used in this Emacs configuration, their install
 - 🔄 **Unpinned** — Installed from MELPA/MELPA Stable, updates with `package.el`
 - 📄 **Single-file** — Installed from a raw URL (no version control)
 - 📦 **Built-in** — Ships with Emacs
+- 🏠 **Vendored** — Patched copy lives in `vendor/` (upstream unmaintained)
 
 ---
 
-## el-get Packages (37 total)
+## el-get Packages (33 total)
 
-### Pinned Git Packages (23)
+### Pinned Git Packages (22)
 
 | Package | Commit | Source | Description |
 |---------|--------|--------|-------------|
@@ -23,7 +24,6 @@ This document lists all packages used in this Emacs configuration, their install
 | 📌 **blacken** | `196cc080` | GitHub | Python black formatter |
 | 📌 **company-restclient** | `e5a3ec54` | GitHub | Company backend for restclient |
 | 📌 **expand-region** | `35127927` | GitHub | Increase selection by semantic units |
-| 📌 **flx** | `4b1346eb` | GitHub | Fuzzy matching for ivy |
 | 📌 **hydra** | `59a2a45a` | GitHub | Keybinding menus |
 | 📌 **idle-highlight-mode** | `c466f2a9` | GitHub | Highlight word under point |
 | 📌 **imenu-anywhere** | `06ec33d7` | GitHub | Cross-buffer imenu navigation |
@@ -34,26 +34,30 @@ This document lists all packages used in this Emacs configuration, their install
 | 📌 **popwin** | `ec77f3f1` | GitHub | Popup window management |
 | 📌 **python-black** | `4da15193` | GitHub | Python black-macchiato formatter |
 | 📌 **rainbow-delimiters** | `f40ece58` | GitHub | Color-coded parentheses |
-| 📌 **reformatter** | `6ac08ceb` | GitHub | Generic reformatting framework |
+| 📌 **reformatter** | `f2cb5946` | GitHub | Generic reformatting framework |
 | 📌 **restclient** | `e2a2b134` | GitHub | HTTP REST client |
 | 📌 **tdd** | `1f18a061` | GitHub | Test-driven development helper |
 | 📌 **typing** | `a2ef25dd` | GitHub | Typing practice |
 | 📌 **web-mode** | `994cb350` | GitHub | Web template editing |
 | 📌 **yaml-mode** | `d91f8787` | GitHub | YAML major mode |
 
-### Unpinned el-get Packages (10)
+`company-restclient`'s standard recipe is overridden in
+`~/.emacs.d/el-get-user/recipes/company-restclient.rcp` (no
+`know-your-http-well` dependency — vendored instead, see below). Keep the
+`:checkout` in the `.rcp` in sync with the `el-get-bundle` in
+`early-init.el`.
+
+### Unpinned el-get Packages (5)
 
 | Package | Source | Description |
 |---------|--------|-------------|
-| **company-mode** | el-get recipe | Auto-completion framework |
+| **cl-lib** | el-get recipe (builtin) | Legacy recipe entry |
+| **company-mode** | el-get recipe | Auto-completion framework (tracks master; currently `1cc907a` = 1.1.0) |
 | **dash** | el-get recipe | Modern list library |
 | **el-get** | bootstrap | Package manager itself |
-| **htmlz-mode** | el-get recipe | HTML compression |
-| **know-your-http-well** | el-get recipe | HTTP reference |
-| **noflet** | el-get recipe | Local function overrides |
-| **with-eval-after-load-feature** | el-get recipe | Enhanced after-load hooks |
+| **noflet** | el-get recipe | Local function overrides (dep of ace-link) |
 
-### Single-File URL Packages (4)
+### Single-File URL Packages (6)
 
 | Package | URL | Description |
 |---------|-----|-------------|
@@ -63,6 +67,17 @@ This document lists all packages used in this Emacs configuration, their install
 | 📄 **protobuf-mode** | raw GitHub | Protocol Buffers major mode |
 | 📄 **tla-mode** | raw GitHub | TLA+ specification language |
 | 📄 **try** | raw GitHub | Try packages without installing |
+
+---
+
+## Vendored Packages (1)
+
+Patched copies in `vendor/` of packages that are dead upstream and warned
+on Emacs 31. See `vendor/README.md` for provenance and the exact patches.
+
+| Package | Origin | Reason for vendoring |
+|---------|--------|----------------------|
+| 🏠 **know-your-http-well** | el-get checkout `c916e82` | Its files lack lexical-binding cookies (warning on every load); el-get package dropped via the `.rcp` override above. Only the two data files company-restclient uses (`http-headers`, `http-methods`) are vendored — `http-relations`/`http-status-codes` are dropped (the latter also carries a GPLv2+ header, unlike the Unlicensed upstream) |
 
 ---
 
@@ -132,9 +147,10 @@ This document lists all packages used in this Emacs configuration, their install
 
 | Category | Count | Pinned |
 |----------|-------|--------|
-| el-get (git) | 23 | ✅ 23 (100%) |
-| el-get (recipe) | 10 | ❌ 0 (0%) |
+| el-get (git) | 22 | ✅ 22 (100%) |
+| el-get (recipe) | 5 | ❌ 0 (0%) |
 | el-get (single-file) | 6 | ❌ N/A (no VCS) |
+| Vendored | 1 | ✅ frozen copy |
 | MELPA/MELPA Stable/GNU | 150+ | ❌ 0 (0%) |
 
 ### Pinning Strategy
@@ -164,15 +180,22 @@ The following packages are installed in both `el-get/` and `elpa/`:
 |---------|---------------|--------------|---------------|
 | ace-window | 📌 `77115afc` | 🔄 `20220911.358` | el-get |
 | avy | 📌 `933d1f36` | 🔄 `20241101.1357` | el-get |
+| company-mode | 🔄 master (`1cc907a` = 1.1.0) | 🔄 `1.1.0` | el-get |
 | dash | 🔄 recipe | 🔄 `20250312.1307` | el-get |
 | hydra | 📌 `59a2a45a` | 🔄 `20250316.1254` | el-get |
 | markdown-mode | 📌 `7c51a216` | 🔄 `20250624.631` | el-get |
-| reformatter | 📌 `6ac08ceb` | 🔄 `20241204.1051` | el-get |
+| reformatter | 📌 `f2cb5946` | 🔄 `20241204.1051` | el-get |
 | restclient | 📌 `e2a2b134` | 🔄 `20250629.2016` | el-get |
 
 These duplicates exist because some packages are installed via el-get (for pinning) but also declared in `use-package` with `:ensure t` (which installs from MELPA). The el-get version takes precedence in the load path.
 
+`company-mode` is not pinned: the el-get copy tracks master and is updated
+manually (`cd ~/.emacs.d/el-get/company-mode && git pull`) whenever the
+elpa copy is upgraded past it. `reformatter`'s pin is kept at the exact
+commit behind the installed elpa snapshot (see the NOTE in
+`early-init.el`).
+
 ---
 
-*Last updated: 2026-05-11*
-*Generated from: early-init.el (el-get), init.el (use-package)*
+*Last updated: 2026-09-17*
+*Generated from: early-init.el (el-get), init.el (use-package), el-get/.status.el*

@@ -1,0 +1,11 @@
+;; Local override of the standard el-get recipe: drop the
+;; know-your-http-well dependency (vendored instead — see
+;; vendor/know-your-http-well/ in the repo). Keep the :checkout pin
+;; in sync with the el-get-bundle in early-init.el.
+(:name company-restclient
+       :description "Company-mode completion back-end for restclient-mode."
+       :website "https://github.com/iquiw/company-restclient"
+       :type github
+       :pkgname "iquiw/company-restclient"
+       :checkout "e5a3ec54edb44776738c13e13e34c85b3085277b"
+       :depends (company-mode restclient))

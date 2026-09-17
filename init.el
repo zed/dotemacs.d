@@ -601,14 +601,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (progn
     (flycheck-gometalinter-setup)))
 
-;;; from https://github.com/mswift42/.emacs.d/blob/master/init.el
-(use-package company-go
-
-  :defer t
-  :init
-  (with-eval-after-load 'company
-    (add-to-list 'company-backends 'company-go)))
-
 (use-package go-mode
   :defer t
   )
@@ -1658,11 +1650,6 @@ both are attacker-controlled IRC content."
   :ensure nil
   :demand t
   :after blacken
-  )
-
-;; ** M-x elisp-format-region
-(use-package elisp-format
-  :defer 100
   )
 
 ;; ** google-this

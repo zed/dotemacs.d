@@ -97,6 +97,19 @@ runs after all of them have been loaded, in order."
 
 (setq ad-redefinition-action 'accept) ;; suppress "got redefined" warning
 
+;; ** Silence "Accessing slot ... via obsolete initarg name" chatter from
+;; packages that access slots via their :initarg (e.g. old gh/pcache).
+;; t keeps the backward-compat path working, just without the message.
+(setq eieio-backward-compatibility t)
+
+;; ** vendored packages (see vendor/README.md in the repo)
+;; know-your-http-well: upstream is dead and its files lack
+;; lexical-binding cookies (warning spam on every load since Emacs 30).
+;; company-restclient's recipe override in el-get-user/recipes/ drops the
+;; dependency on the el-get package; this vendored copy serves it instead.
+(add-to-list 'load-path
+             (concat user-emacs-directory "vendor/know-your-http-well"))
+
 ;; ** Hydra
 (el-get-bundle hydra
   :checkout "59a2a45a35027948476d1d7751b0f0215b1e61aa")
@@ -133,10 +146,11 @@ runs after all of them have been loaded, in order."
   :pkgname "proofit404/blacken")
 
 ;; NOTE: keep this pin at the same commit as the elpa reformatter
-;; (MELPA Stable, currently 0.7 = bfe3f1c) — elpa zig-mode/ruff-format
-;; and el-get python-black share the load-path, so the copies must not drift.
+;; (MELPA snapshot, currently 20241204.1051 = f2cb594) — elpa
+;; zig-mode/ruff-format and el-get python-black share the load-path, so
+;; the copies must not drift.
 (el-get-bundle reformatter
-  :checkout "bfe3f1c6ece952d39921db16f601123bdd1748ab")
+  :checkout "f2cb59466b1c3f85a8c960f7d4b7b7ead015bedc")
 (el-get-bundle python-black
   :checkout "4da1519345b3d5c513d82ef0d39536dd9c626d42"
   :description "Emacs package to reformat Python using black-macchiato"
