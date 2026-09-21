@@ -4,14 +4,19 @@ This is a personal Emacs configuration (not a package). It is
 bootstrapped via `el-get` and uses `use-package` for most package
 declarations.
 
+This file is loaded into every agent session — keep it to rules
+needed on every task. Incident history and one-off specifics belong
+in commit messages; handle recurrences when they come up, not by
+pre-documenting them here.
+
 ## Architecture
 
 - **`early-init.el`** — Package archives, `el-get` bootstrap,
   GC tuning, and packages installed via `el-get-bundle`.
 - **`init.el`** — Everything else: `use-package` declarations,
-  keybindings, hooks, and custom functions. 2112 lines total.
-- **No `use-package` declarations after line 1940** — the file ends
-  with core Emacs settings and a final `use-package emacs` block.
+  keybindings, hooks, and custom functions. The file ends with core
+  Emacs settings and a final `use-package emacs` block — add new
+  `use-package` declarations before that tail.
 - **`~/.custom.el`** — Expected to exist (set in `early-init.el` via
   `custom-file`). It is loaded unconditionally; do not delete it.
 - **`~/.secrets.el.gpg`** — GPG-encrypted secrets loaded early
@@ -46,6 +51,10 @@ invisible to this repo. If a package is unmaintained, prefer dropping
 it for a small shim in the repo (see the
 `with-eval-after-load-feature` shim in `early-init.el`) or forking it.
 
+**Do not reinstall `know-your-http-well` via el-get** — it is
+vendored in `vendor/` (see `vendor/README.md`); the el-get package is
+dropped via the recipe override `el-get-user/recipes/company-restclient.rcp`.
+
 ## Key Conventions
 
 - `init:` prefix is used for all user-defined functions (e.g. `init:report-elapsed-time`).
@@ -57,33 +66,6 @@ it for a small shim in the repo (see the
   See existing git history for examples.
 - **LLM-generated commits** — Commits created by an AI assistant are
   tagged with `[LLM-generated]` in the message body.
-
-## Language / Mode Notes
-
-- **Python** — `elpy` is enabled via advice on
-  `python-mode`. Format-on-save uses `ruff-format` if
-  `[tool.ruff.format]` is found in `pyproject.toml`, otherwise
-  `blacken` if `[tool.black]` is present. `flymake-ruff` replaces the
-  default Python flymake backend when `[tool.ruff.lint]` is present.
-- **TypeScript/TSX** — Uses tree-sitter modes (`typescript-ts-mode`,
-  `tsx-ts-mode`). `eglot` is used for LSP with
-  `typescript-language-server`. `prettier-js` runs on save.
-- **Org** — Extensive config including `jupyter`, `ob-async`,
-  `code-cells` (for `.ipynb` ↔ `.org` conversion via pandoc), and
-  `org-fc` (spaced repetition, loaded from `~/src/org-fc`).
-- **C/C++** — Custom style `my-style` (2-space indent, no tabs).
-- **Java** — Custom style `my-java-style` (4-space indent).
-
-## External Dependencies
-
-Some packages declare `:ensure-system-package` dependencies. Notable ones:
-- `ripgrep` (for `rg`, `counsel-grep`)
-- `git` (for `magit`)
-- `sqlite3` (for `counsel-dash`)
-- `shellcheck` (for `sh-mode` flycheck)
-- `black` / `black-macchiato` (for `blacken`)
-- `pandoc` (for `code-cells` ipynb conversion)
-- `hunspell` + dictionaries (for `flyspell` multi-language)
 
 ## Testing / Validation
 
@@ -130,99 +112,22 @@ of `.secrets.el.gpg` are silently ignored (the file is optional).
 - **GPG loopback** — In non-GUI sessions, `epa-pinentry-mode` is set
   to `loopback` to allow GPG passphrase entry via stdin (relevant for
   `~/.secrets.el.gpg`).
-- **Electric pair** — Enabled in `prog-mode`, explicitly disabled in
-  `org-mode`.
-- **TRAMP performance** — `vc-handled-backends` is set to `nil` for
-  remote files via `find-file` hook.
-- **Large files** — Warning threshold is set to 1 GB (`large-file-warning-threshold`).
 - **Obsolete alias warnings suppressed** — `(setq warning-minimum-level :error)`
   in `early-init.el` hides warnings from unmaintained packages (e.g.
   `gist`) that still use obsolete `cl` aliases.
-- **Duplicated packages (el-get + elpa) must not drift** — 8 packages
-  are installed through BOTH managers (ace-window, avy, company-mode,
-  dash, hydra, markdown-mode, reformatter, restclient): elpa copies are forced by
-  elpa dependents (e.g. zig-mode needs elpa reformatter — package.el
-  can't see el-get installs and refuses activation), el-get copies are
-  deliberate pins needed by el-get dependents. The el-get copy wins on
-  `load-path`, so the pin IS the running version for everyone.
-  Convention: pin the el-get `:checkout` to the exact commit behind
-  the installed elpa version (for MELPA snapshots find the commit in
-  the archive-contents `:commit` field, e.g. reformatter 20241204.1051
-  == f2cb594). When the elpa side upgrades, re-pin + `M-x
-  el-get-reinstall`. `company-mode` is the one exception: unpinned,
-  tracks master; after upgrading elpa company, `git pull` the el-get
-  copy too (it is the copy that actually runs).
-- **el-get "cached recipe" warnings** — if "Must update or reinstall
-  ... to modify its cached recipe" warnings appear, re-run
-  `el-get-merge-properties-into-status` for every entry in
-  `el-get-sources` (operation `'reinstall`) in a batch Emacs, or do a
-  real reinstall. Never edit `.status.el` by hand.
-- **el-get `.loaddefs.el` can silently go empty (Emacs 29+)** — el-get
-  regenerates autoloads per package via `loaddefs-generate`, which
-  (a) only scrapes files NEWER than the existing output file and (b)
-  does not recurse into subdirectories. If `.loaddefs.el` is ever
-  recreated as an empty rubric, per-package regeneration adds nothing
-  and every el-get autoload disappears (first symptom:
-  `defhydra` void in the hydra `use-package` `:init`). Fix: delete
-  `.loaddefs.el{,c,~}` and regenerate in ONE call over all installed
-  package dirs, then strip the `no-byte-compile` cookie el-get
-  dislikes and byte-compile:
 
-  ```elisp
-  (let* ((pkgs (el-get-list-package-names-with-status "installed"))
-         (dirs (delete-dups (seq-filter #'file-directory-p
-                          (delq nil (apply #'append
-                                 (mapcar #'el-get-load-path pkgs)))))))
-    (loaddefs-generate dirs el-get-autoload-file))
-  ```
-- **Vendored dead packages** — `vendor/` holds patched copies of
-  packages that are unmaintained upstream and warned on Emacs 31 (see
-  `vendor/README.md`): currently just `know-your-http-well` (el-get
-  package dropped via the recipe override
-  `el-get-user/recipes/company-restclient.rcp` in this repo, so
-  `el-get-cleanup` removes it). Do not reinstall it via el-get. The
-  missing-lexical-cookie warning bypasses both
-  `warning-minimum-level` and `warning-suppress-types`, so
-  suppression is not an alternative to vendoring.
-- **eieio obsolete-initarg chatter** — `eieio-backward-compatibility`
-  is set to `t` in `early-init.el`: packages accessing slots via their
-  `:initarg` (old `gh`/`pcache` did) print "Accessing slot ... via
-  obsolete initarg name" straight to `*Messages*` (plain `message`,
-  not filterable by `warning-minimum-level`). pcache ≥ 2026-07 fixed
-  its side; the variable stays as insurance for other old packages.
-- **realgud recursive autoloads** — realgud ships
-  `realgud-recursive-autoloads.el` inside its tarball; released
-  tarballs may lack the lexical-binding cookie (fixed on upstream
-  master). After a realgud package update, check line 1 for the
-  cookie; if missing, regenerate with `loaddefs-generate` over ALL
-  leaf subdirs of the package's `realgud/` dir (no recursion, see the
-  `.loaddefs.el` gotcha above).
-- **Stale .elc/.eln after an Emacs snap refresh** —
-  the snap tracks Emacs master; when a core macro changes between
-  builds (e.g. `define-globalized-minor-mode` grew
-  `<mode>--set-explicitly`), packages whose `.elc`/`.eln` were
-  compiled under the old build crash with `Symbol's value as variable
-  is void: <mode>--set-explicitly` in long-running daemons.  Fix:
-  delete the package's `.elc` + its `~/.emacs.d/eln-cache/<ver>/*.eln`,
-  batch recompile (`byte-compile-file` + `native-compile`), restart
-  Emacs.  `M-x package-reinstall` works too.
-- **Emacs 31 (snap master ≥ 2026-09-04) core incompatibilities** —
-  two classes, both shimmed in `init.el` (see "Emacs 31 (snap master)
-  compatibility shims" near the top and the `company` block):
-  1. `cl-remove-if-not` (and 21 sibling `cl-*-if(-not)` functions in
-     cl-seq) was reimplemented as `(cl-remove pred list :test-not
-     #'funcall)`; a nil predicate now errors with `funcall: Symbol's
-     function definition is void: nil` (Emacs ≤ 30 tolerated nil).
-     This broke ivy's alist path (`ivy--reset-state`): counsel `C-r`
-     minibuffer history, the `rg` files prompt, `ivy-reverse-i-search`.
-  2. New core subrs `all`, `any`, `take`, `drop` (and `remove`): any
-     `(pcase x ... ((pred functionp) ...))` or `(functionp 'sym)` check
-     on a symbol with one of these names now matches where it didn't
-     before.  This broke `company-dabbrev` (upstream default
-     `company-dabbrev-other-buffers = 'all` → company called
-     `(all BUFFER)` → `Wrong number of arguments: #<subr all>, 1`).
-  Debugging tip: signals swallowed by inner `condition-case` handlers
-  can be captured pre-unwind via `signal-hook-function`; note that
-  transient (`transient--get-description`) and org (`org-store-link`)
-  deliberately probe function arity through caught
-  `wrong-number-of-arguments` signals — those are false positives.
+## Maintenance playbooks (load on demand)
+
+AGENTS.md holds always-on rules and orientation. Procedures for
+package/Emacs upkeep live in repo skills — load them BEFORE the
+matching task (pi auto-lists `.agents/skills/`; other harnesses: read
+the SKILL.md files directly):
+
+- **`.agents/skills/emacs-package-maintenance/`** — upgrading or
+  reinstalling el-get/elpa packages; el-get "cached recipe" warnings;
+  empty `.loaddefs.el` (all el-get autoloads void); keeping
+  el-get↔elpa duplicate pins in sync; vendored packages; realgud
+  autoloads; eieio obsolete-initarg chatter.
+- **`.agents/skills/emacs-version-upgrade/`** — after an Emacs snap
+  refresh: stale `.elc`/`.eln` crashes, core incompatibilities (the
+  shims live in init.el), debugging swallowed signals.
