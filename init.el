@@ -2024,8 +2024,8 @@ both are attacker-controlled IRC content."
   (setq telega-use-docker t))
 
 
-(use-package pi-coding-agent
-  :custom (pi-coding-agent-project-trust-policy 'default))
+(use-package pilish
+  :custom (pilish-project-trust-policy 'default))
 ;; ** multiple-cursors
 (use-package multiple-cursors
   :ensure nil
