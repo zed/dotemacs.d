@@ -1,6 +1,6 @@
 ---
 name: emacs-package-maintenance
-description: Use when upgrading, reinstalling, pinning or dropping el-get/elpa packages in this Emacs config (~/.emacs.d), when el-get prints "Must update or reinstall ... cached recipe" warnings, when el-get autoloads break (e.g. "void defhydra" at startup), when keeping el-get↔elpa duplicate pins in sync, or when touching vendored packages under vendor/.
+description: Use when upgrading, reinstalling, pinning or dropping el-get/elpa packages in this Emacs config (~/.emacs.d), when looking up which version/tag MELPA stable or unstable offers for a package, when doing a clean package.el install/reinstall, when el-get prints "Must update or reinstall ... cached recipe" warnings, when el-get autoloads break (e.g. "void defhydra" at startup), when keeping el-get↔elpa duplicate pins in sync, or when touching vendored packages under vendor/.
 ---
 
 # Emacs package maintenance (el-get + elpa)
@@ -28,6 +28,54 @@ f2cb594). When the elpa side upgrades, re-pin + `M-x
 el-get-reinstall`. `company-mode` is the one exception: unpinned,
 tracks master; after upgrading elpa company, `git pull` the el-get
 copy too (it is the copy that actually runs).
+
+## Looking up MELPA distributives (archive-contents)
+
+For "what does MELPA actually offer for package X", fetch
+archive-contents directly (full download — entries are
+alphabetical, so truncating the file loses later packages):
+
+```bash
+curl -s https://stable.melpa.org/packages/archive-contents | rg -o '\(NAME \. \[\([0-9 ]+\).*'
+curl -s https://melpa.org/packages/archive-contents         | rg -o '\(NAME \. \[\([0-9 ]+\).*'
+# gnu:   https://elpa.gnu.org/packages/archive-contents
+# nongnu: https://elpa.nongnu.org/nongnu/archive-contents
+```
+
+stable.melpa.org builds only from version tags — the version IS the
+tag (`(3 3 0)` = v3.3.0; `:commit` is its commit, `:revdesc` shows
+"v3.3.0-0-g…"). melpa.org serves dated snapshots (`(20261004
+1450)`), always newer-looking than any tag. The config prefers
+stable (priorities in early-init.el), so a tagged version there is
+what a plain `package-install` picks. To map an installed elpa
+version to an upstream commit, match `:commit`/`:revdesc` extras
+(this is also how the el-get pins below get their `:checkout`).
+
+## Clean package.el install/upgrade (no local hacks)
+
+Install through package.el only — never untar into `elpa/`, copy a
+dir in, or hand-write autoloads. Batch script (replicates
+early-init.el's archives/priorities verbatim):
+
+```elisp
+(require 'package)
+(setq package-check-signature nil)
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa"        . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("gnu"          . "https://elpa.gnu.org/packages/") t)
+(setq package-archive-priorities
+      '(("melpa-stable" . 10) ("gnu" . 5) ("melpa" . 0)))
+(package-initialize)
+(package-refresh-contents)
+(package-install 'NAME)
+```
+
+Gotchas: re-running the script after a successful install prints
+"'NAME' is already installed" — that is success, not failure.
+Verify with `(assq 'NAME package-alist)` — keys are SYMBOLS; `assoc
+"NAME"` silently returns nil. Then run the batch sanity check in
+AGENTS.md. `package-selected-packages` lives in `~/.custom.el`; a
+use-package'd package should already be listed there.
 
 ## el-get "cached recipe" warnings
 
