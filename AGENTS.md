@@ -100,8 +100,14 @@ keyring get "$USER" .secrets.el.gpg | \
 
 The batch check catches syntax errors and missing autoloads. Watch for
 `=== INIT LOAD ERROR ===` in the output — the `condition-case` keeps the
-run going past init errors, it must not hide them. Decryption failures
-of `.secrets.el.gpg` are silently ignored (the file is optional).
+run going past init errors, it must not hide them. Decryption
+failures of `.secrets.el.gpg` are silently ignored (the file is
+optional). If the keyring collection is locked, however, the check
+misbehaves instead of failing cleanly: it either dies at the secrets
+passphrase prompt (`End of file during parsing` / no marker at all —
+racy), or reports `INIT LOAD ERROR (Decryption failed ...)`. Treat
+both as an unmet-keyring precondition, not a config regression — the
+gate is only meaningful with the keyring unlocked.
 
 ## Gotchas
 
