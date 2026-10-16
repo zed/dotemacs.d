@@ -66,6 +66,11 @@ dropped via the recipe override `el-get-user/recipes/company-restclient.rcp`.
   See existing git history for examples.
 - **LLM-generated commits** — Commits created by an AI assistant are
   tagged with `[LLM-generated]` in the message body.
+- **Public repo — no employer specifics.** This config is pushed to public
+  GitHub: never name the employer's internal tools, hosts, or machine
+  identifiers in code, comments, docs, or commit messages — use neutral
+  terms (e.g. the notmuch tags `review`/`tracker`). Employer specifics
+  belong in the internal dotfiles repo or `~/.secrets.d/`.
 
 ## Testing / Validation
 
