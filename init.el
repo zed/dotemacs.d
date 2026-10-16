@@ -2025,7 +2025,87 @@ both are attacker-controlled IRC content."
 
 
 (use-package pilish
-  :custom (pilish-project-trust-policy 'default))
+  :custom (pilish-project-trust-policy 'default)
+  :hook (pilish-chat-mode . init:pilish-chat-font-lock-guard)
+  :config
+  ;; Shim until MELPA ships capped rewrite line counting; the guard
+  ;; drops the overrides once the package provides them.
+  (unless (fboundp 'pilish--count-screen-lines-capped)
+    (defun pilish--count-screen-lines-capped (beg end cap window)
+      "Return screen lines between BEG and END in WINDOW, capped at CAP."
+      (save-excursion
+        (goto-char beg)
+        (let ((lim (save-excursion
+                     (min end (progn (forward-line cap) (point))))))
+          (min cap (count-screen-lines beg lim nil window)))))
+    (defun pilish--window-start-fills-window-p
+        (start point-max body-height window)
+      "Return non-nil when START still fills WINDOW after a rewrite."
+      (>= (pilish--count-screen-lines-capped
+           start point-max (max 1 (1- body-height)) window)
+          (1- body-height)))
+    (defun pilish--restore-window-rewrite-state
+        (window-state &optional map-position)
+      "Restore WINDOW-STATE after a large buffer rewrite."
+      (let ((win (plist-get window-state :window)))
+        (when (and (window-live-p win)
+                   (eq (window-buffer win) (current-buffer)))
+          (with-selected-window win
+            (let* ((point-max (point-max))
+                   (point (pilish--resolve-window-rewrite-point
+                           window-state map-position)))
+              (if (plist-get window-state :tail-p)
+                  (progn
+                    (goto-char point-max)
+                    (recenter -1))
+                (goto-char point)
+                (let* ((body-height (max 1 (window-body-height win)))
+                       (saved-start
+                        (pilish--map-window-rewrite-pos
+                         (plist-get window-state :start)
+                         map-position
+                         point)))
+                  (if (pilish--window-start-fills-window-p
+                       saved-start point-max body-height win)
+                      (progn
+                        (set-window-start win saved-start t)
+                        (set-window-point win (max point saved-start)))
+                    (let* ((above-lines (pilish--count-screen-lines-capped
+                                         (point-min) point body-height win))
+                           (tail-lines (max 1 (pilish--count-screen-lines-capped
+                                               point point-max body-height win)))
+                           (row (pilish--clamp-rewrite-point-row
+                                 (plist-get window-state :row)
+                                 above-lines
+                                 tail-lines
+                                 body-height)))
+                      (recenter row)))))))))))
+
+  ;; Disable font-lock on huge chat buffers: tree-sitter-markdown parse
+  ;; time explodes on large buffers — every fontification pass pegs the
+  ;; daemon at 100% CPU and Emacs stops servicing input.  A 612KB chat
+  ;; buffer reproduced the lockup.
+  (defvar init:pilish-chat-font-lock-max-bytes (* 256 1024)
+    "Byte size above which font-lock is disabled in pilish chat buffers.")
+
+  (defun init:pilish-chat-font-lock-watchdog (&rest _)
+    "Disable font-lock in oversized pilish chat buffers."
+    (when (and font-lock-mode
+               (> (buffer-size) init:pilish-chat-font-lock-max-bytes))
+      (remove-hook 'after-change-functions
+                   #'init:pilish-chat-font-lock-watchdog t)
+      (font-lock-mode -1)
+      (message "font-lock disabled in %s: %d bytes > %d (tree-sitter-markdown parse too slow)"
+               (buffer-name) (buffer-size)
+               init:pilish-chat-font-lock-max-bytes)))
+
+  (defun init:pilish-chat-font-lock-guard ()
+    "Disable font-lock if already oversized, then watch for growth."
+    (init:pilish-chat-font-lock-watchdog)
+    (when font-lock-mode
+      (add-hook 'after-change-functions
+                #'init:pilish-chat-font-lock-watchdog nil t))))
+
 ;; ** multiple-cursors
 (use-package multiple-cursors
   :ensure nil
