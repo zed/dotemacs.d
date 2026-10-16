@@ -1102,6 +1102,59 @@ _q_ cancel     _D_lt Other      _S_wap           _m_aximize
 
   (require 'spam))
 
+;; ** notmuch — read mail from a local Maildir (~/Mail), indexed by notmuch(1)
+;;
+;; Stack: IMAP -> mbsync/isync -> ~/Mail -> notmuch index -> this frontend.
+;; Sync+tagging runs as the systemd user units mail-sync.{service,timer}
+;; (every 5 min); `notmuch new' itself pulls via the pre-new hook and tags
+;; via the post-new hook (~/Mail/.notmuch/hooks/), so refreshing from Emacs
+;; runs the full cycle too. The rest of the stack (mbsync/notmuch configs,
+;; hook engine, tagging rules, sync timer) lives in the dotfiles repo (stow
+;; `mail' pkg; `make stow' regenerates ~/.mbsyncrc + ~/.notmuch-config) and
+;; machine-locals under ~/.secrets.d/mail/ — nothing secret here.
+;;
+;; Tag vocabulary (defined by the machine-local rules file): review /
+;; tracker / skim = robot mail, important = human company mail.
+;;
+;; The elisp ships with the system `notmuch' package and must stay in
+;; lockstep with the notmuch(1) binary — never install it from MELPA.
+;; Debian's elpa-notmuch elisp lives in a version-suffixed elpa-src dir;
+;; glob it so apt upgrades don't rot the path (snap Emacs skips
+;; debian-startup, so this site-lisp isn't on load-path by itself).
+;; Machines without the package just get a warning — init must load
+;; cleanly on every host.
+(if (not (executable-find "notmuch"))
+    (warn "notmuch(1) not installed — skipping mail frontend (apt install notmuch elpa-notmuch)")
+  (dolist (dir (sort (file-expand-wildcards
+                      "/usr/share/emacs/site-lisp/elpa-src/notmuch-*")
+                     #'string<))
+    (add-to-list 'load-path dir))
+  (use-package notmuch
+  :ensure nil
+  :custom
+  (notmuch-saved-searches
+   '((:name "Important unread"
+            :query "tag:inbox and tag:unread and not tag:skim"
+            :key "i")
+     ;; robot views open in tree view: one line per message, best for skimming
+     (:name "Tracker unread"
+            :query "tag:tracker and tag:unread"
+            :key "t"
+            :search-type tree)
+     (:name "Review unread"
+            :query "tag:review and tag:unread"
+            :key "g"                     ; overrides hello's `g' refresh
+            :search-type tree)
+     (:name "All unread"
+            :query "tag:unread"
+            :key "u")))
+    (notmuch-search-oldest-first nil)  ; newest mail at the top
+    :config
+    ;; HTML mail as plain, monospace, uncolored text (also affects eww)
+    (setq shr-width 80
+          shr-use-colors nil
+          shr-use-fonts nil)))
+
 ;; ** irc
 (defun irc-start ()
   (interactive)

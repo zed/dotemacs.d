@@ -9,6 +9,7 @@ This document lists all packages used in this Emacs configuration, their install
 - 📄 **Single-file** — Installed from a raw URL (no version control)
 - 📦 **Built-in** — Ships with Emacs
 - 🏠 **Vendored** — Patched copy lives in `vendor/` (upstream unmaintained)
+- 🖥️ **System** — Ships with an apt package; version-locked to the system binary
 
 ---
 
@@ -78,6 +79,18 @@ on Emacs 31. See `vendor/README.md` for provenance and the exact patches.
 | Package | Origin | Reason for vendoring |
 |---------|--------|----------------------|
 | 🏠 **know-your-http-well** | el-get checkout `c916e82` | Its files lack lexical-binding cookies (warning on every load); el-get package dropped via the `.rcp` override above. Only the two data files company-restclient uses (`http-headers`, `http-methods`) are vendored — `http-relations`/`http-status-codes` are dropped (the latter also carries a GPLv2+ header, unlike the Unlicensed upstream) |
+
+---
+
+## System Packages (1)
+
+Elisp that ships with an apt package, pinned to the system binary's
+version — never install these from MELPA (version mismatch with the CLI
+breaks the frontend).
+
+| Package | Source | Load path | Description |
+|---------|--------|-----------|-------------|
+| 🖥️ **notmuch** | apt `notmuch` | `/usr/share/emacs/site-lisp/notmuch` | Mail client over a local notmuch index (`~/Mail`, synced by mbsync + systemd `mail-sync.timer`) |
 
 ---
 
