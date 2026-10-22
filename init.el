@@ -2077,6 +2077,13 @@ both are attacker-controlled IRC content."
   (setq telega-use-docker t))
 
 
+;; PILISH_DEV=1 emacs loads the ~/src/pilish checkout ahead of the MELPA
+;; package.
+;; Keep the checkout's .elc current with `make compile' after edits;
+;; without the env var the MELPA package plus the shim below apply.
+(when (getenv "PILISH_DEV")
+  (add-to-list 'load-path (expand-file-name "~/src/pilish")))
+
 (use-package pilish
   :custom (pilish-project-trust-policy 'default)
   :hook (pilish-chat-mode . init:pilish-chat-font-lock-guard)
