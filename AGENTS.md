@@ -79,8 +79,12 @@ emacs --debug-init
 emacs -Q
 
 # Batch sanity check (loads init without interactive UI)
-# Requires ~/.custom.el to exist and keyring access for ~/.secrets.el.gpg
-keyring get "$USER" .secrets.el.gpg | \
+# Requires ~/.custom.el to exist and keyring access for ~/.secrets.el.gpg.
+# The keyring item's username attribute is ".secrets.el" (no .gpg).
+# Init decrypts two files (~/.secrets.el.gpg and ~/.secrets.d/<machine>.el.gpg);
+# each batch passphrase prompt consumes one line of stdin, so pipe the
+# passphrase once per file or the second prompt dies on EOF.
+{ keyring get "$USER" .secrets.el; echo; keyring get "$USER" .secrets.el; echo; } | \
   emacs --batch --eval "
     (progn
       (setq debug-on-error nil
